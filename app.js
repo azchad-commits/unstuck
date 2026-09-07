@@ -7,7 +7,7 @@
 // ---------- storage (device-local, always on) ----------
 const KEY = "unstuck-v1", TKEY = "unstuck-timer", MINS = [5, 10, 15, 30, 45, 60, 90];
 let db = { plans: [], current: null, stats: {} };
-let view = "day", openDay = null, monthCursor = null, editDays = new Set(), lastDayIso = null;
+let view = "day", openDay = null, monthCursor = null, weekStart = null, editDays = new Set(), lastDayIso = null;
 const $ = id => document.getElementById(id);
 
 function normalize(p) {
@@ -138,8 +138,8 @@ function render() {
   if (!plan() && livePlans().length) { db.current = livePlans()[0].id; persist(); }
   const p = plan();
   const live = livePlans();
-  $("plansel").innerHTML = live.map(x => `<option value="${x.id}" ${x.id === db.current ? "selected" : ""}>${esc(x.name)}</option>`).join("") + `<option value="__new">+ New countdown</option>`;
-  $("plansel").hidden = live.length === 0;
+  $("planBtn").hidden = live.length === 0;
+  $("planName").textContent = p ? p.name : "";
   const main = $("main"); main.innerHTML = "";
   document.querySelectorAll(".views button[data-v]").forEach(b => { const on = b.dataset.v === view; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
   if (!p) {
@@ -155,7 +155,19 @@ function render() {
   $("lbl").innerHTML = (left > 0 ? "days left" : left === 0 ? "deadline day" : "done") + "<b>" + fmt(T) + "</b>";
   if (left < 0) main.appendChild(celebration(p));
   if (view === "day") { renderDays(main, p, T, [iso(T)], true); renderOtherToday(main, T, p); renderRecap(main, T); }
-  else if (view === "week") { const ds = []; for (let i = 0; i < 7; i++) ds.push(iso(addDays(T, i))); renderDays(main, p, T, ds, false); }
+  else if (view === "week") {
+    // The week window can start on any date (month taps land here); ‹ › page by 7 days.
+    const start = weekStart ? pd(weekStart) : T;
+    const wlbl = d => d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    const nav = document.createElement("div");
+    nav.style.cssText = "display:flex;justify-content:space-between;align-items:center;margin-bottom:8px";
+    nav.innerHTML = `<button class="min" id="wp" aria-label="Earlier week">‹</button><b aria-live="polite">${iso(start) === iso(T) ? "Next 7 days" : wlbl(start) + " – " + wlbl(addDays(start, 6))}</b><button class="min" id="wn" aria-label="Later week">›</button>`;
+    main.appendChild(nav);
+    nav.querySelector("#wp").onclick = () => { weekStart = iso(addDays(start, -7)); openDay = null; render(); };
+    nav.querySelector("#wn").onclick = () => { weekStart = iso(addDays(start, 7)); openDay = null; render(); };
+    const dss = []; for (let i = 0; i < 7; i++) dss.push(iso(addDays(start, i)));
+    renderDays(main, p, T, dss, false);
+  }
   else renderMonth(main, p, T);
   const n = document.createElement("p"); n.className = "note"; n.textContent = "Tap the minutes on a task to start its timer. Tap ☆ to make it the one thing."; main.appendChild(n);
 }
@@ -304,7 +316,7 @@ function renderMonth(main, p, T) {
     const cell = document.createElement("button"); cell.type = "button"; cell.className = "cell" + (ds === iso(T) ? " today" : "") + (inRange ? "" : " out");
     cell.setAttribute("aria-label", `${fmt(d)}${inRange ? ", " + dl + " days left" : ""}, ${tasks.length} tasks, ${done} done`);
     cell.innerHTML = `<div class="n">${i}</div><div class="l${inRange && dl <= 6 ? " urgent" : ""}">${inRange ? dl + " left" : ""}</div>${tasks.length ? `<div class="prog"><i style="width:${pct}%"></i></div>` : ""}`;
-    cell.onclick = () => { view = "week"; openDay = ds; render(); };
+    cell.onclick = () => { view = "week"; weekStart = iso(d); openDay = ds; render(); };
     grid.appendChild(cell);
   }
   main.appendChild(grid);
@@ -468,7 +480,9 @@ let stuckRef = null, stuckName = "Smallest thing you can see";
 function prepStuck() {
   const p = plan(); stuckRef = null; stuckName = "Smallest thing you can see";
   if (p) {
-    const t = (p.tasks[iso(today())] || []).find(x => x.star && !x.done);
+    // Prefer today's one thing; if it's done, fall back to the next unfinished task today.
+    const list = p.tasks[iso(today())] || [];
+    const t = list.find(x => x.star && !x.done) || list.find(x => !x.done);
     if (t) { stuckRef = { pid: p.id, ds: iso(today()), tid: t.id }; stuckName = t.title; $("ten").textContent = `Start 10 minutes on: ${t.title}`; return; }
   }
   $("ten").textContent = "Start 10 minutes";
@@ -486,12 +500,28 @@ $("pcreate").onclick = () => {
   if (!$("pstart").value || !$("pend").value) { $("pmsg").textContent = "Pick a start and end date."; return; }
   if ($("pend").value < $("pstart").value) { $("pmsg").textContent = "The deadline needs to be on or after the start."; return; }
   const p = normalize({ id: uid(), name, start: $("pstart").value, end: $("pend").value });
-  db.plans.push(p); db.current = p.id; save(p); closeSheet($("newplan")); view = "day"; render();
+  db.plans.push(p); db.current = p.id; save(p); closeSheet($("newplan")); view = "day"; weekStart = null; render();
 };
 // Enter anywhere in the sheet creates the countdown (matches the task-add input).
 ["pname", "pstart", "pend"].forEach(id => $(id).addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("pcreate").click(); } }));
-$("plansel").onchange = e => { if (e.target.value === "__new") { openNew($("plansel")); render(); } else { db.current = e.target.value; persist(); openDay = null; render(); } };
-document.querySelectorAll(".views button[data-v]").forEach(b => b.onclick = () => { view = b.dataset.v; openDay = null; render(); });
+// Countdown switcher: big tappable rows instead of a cramped dropdown.
+function renderPlanSheet() {
+  const T = today(); const ds = iso(T);
+  $("planList").innerHTML = livePlans().map(q => {
+    const l = q.tasks[ds] || []; const done = l.filter(t => t.done).length;
+    const dl = daysLeft(q, T);
+    const bits = [dl < 0 ? "done" : dl === 0 ? "day 0" : dl + " left"];
+    if (l.length) bits.push(done + "/" + l.length + " today");
+    return `<button class="prow ${q.id === db.current ? "on" : ""}" data-id="${q.id}"${q.id === db.current ? ' aria-current="true"' : ""}><span class="pn">${esc(q.name)}</span><span class="pd">${bits.join(" · ")}</span></button>`;
+  }).join("");
+  $("planList").querySelectorAll(".prow").forEach(b => b.onclick = () => {
+    db.current = b.dataset.id; persist(); openDay = null; weekStart = null;
+    closeSheet($("plansSheet")); render();
+  });
+}
+$("planBtn").onclick = () => { renderPlanSheet(); openSheet("plansSheet", $("planBtn")); };
+$("pnew").onclick = () => { closeSheet($("plansSheet")); openNew($("planBtn")); };
+document.querySelectorAll(".views button[data-v]").forEach(b => b.onclick = () => { view = b.dataset.v; openDay = null; weekStart = null; render(); });
 
 // ---------- carry-over: yesterday's unfinished tasks, once per day ----------
 // Everything is checked by default so the fast path stays two taps; unchecking a row means

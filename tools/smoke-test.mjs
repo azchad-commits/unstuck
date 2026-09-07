@@ -74,12 +74,31 @@ try {
   await page.click('.views button[data-v="week"]'); check(await page.locator(".day").count() === 7, "week view shows 7 days");
   await page.click('.views button[data-v="month"]'); check(await page.locator(".month .cell:not(.empty)").count() >= 28, "month view renders grid");
 
-  // Second countdown via the Enter key; merged today shows the other plan's tasks
-  await page.selectOption("#plansel", "__new");
+  // Month → future date: the week window jumps to the tapped day instead of snapping back
+  await page.click('.views button[data-v="month"]');
+  const target = new Date(); target.setDate(target.getDate() + 10);
+  if (target.getMonth() !== new Date().getMonth()) await page.click("#nm");
+  const tlbl = target.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  await page.click(`.month .cell[aria-label^="${tlbl}"]`);
+  check((await page.locator(".day").first().textContent()).includes(tlbl), "month tap opens that future day in the week view");
+  check(await page.locator("#wn").count() === 1 && await page.locator("#wp").count() === 1, "week view has earlier/later paging");
+  await page.click("#wp");
+  check(!(await page.locator(".day").first().textContent()).includes(tlbl), "week paging moves the window");
+  await page.click('.views button[data-v="day"]');
+
+  // Second countdown via the switcher sheet; Enter submits; merged today shows the other plan
+  await page.click("#planBtn");
+  check(await page.locator("#plansSheet.on").isVisible() && await page.locator(".prow").count() === 1, "countdown switcher sheet opens");
+  await page.click("#pnew");
   await page.fill("#pname", "Second thing");
   await page.press("#pname", "Enter");
   check(await page.locator("#newplan.on").count() === 0, "Enter submits the new-countdown sheet");
   check(await page.locator(".day.other").count() === 1 && (await page.locator(".day.other").textContent()).includes("Move out"), "today view shows the other countdown's tasks");
+  await page.click("#planBtn");
+  check(await page.locator(".prow").count() === 2 && await page.locator(".prow.on").count() === 1, "switcher lists both countdowns, current highlighted");
+  await page.locator(".prow").first().click();
+  check((await page.textContent("#planName")) === "Move out", "tapping a row switches countdowns");
+  await page.click("#planBtn"); await page.locator(".prow").nth(1).click(); // back to Second thing for the menu tests
 
   // Menu: export downloads a backup file
   await page.click("#menuBtn");
@@ -137,7 +156,9 @@ try {
 
   // One-tap hosted list: ?import= fetches a same-origin backup and merges it
   await page.goto("http://127.0.0.1:8765/?import=issac-list.json"); await page.waitForTimeout(600);
-  check((await page.locator("#plansel option").allTextContents()).some(t => t.includes("Issac list")), "?import= loads a hosted list");
+  await page.click("#planBtn");
+  check((await page.textContent("#planList")).includes("Issac list"), "?import= loads a hosted list");
+  await page.keyboard.press("Escape");
   check(!page.url().includes("import="), "?import= cleans itself out of the URL");
 
   // Offline: shell served from SW cache
