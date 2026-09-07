@@ -459,7 +459,8 @@ document.addEventListener("visibilitychange", () => {
 let sheetOpener = null;
 function openSheet(id, opener) {
   const s = $(id); s.classList.add("on"); sheetOpener = opener || document.activeElement;
-  const f = s.querySelector("input:not([hidden]), button:not([hidden])"); if (f) setTimeout(() => f.focus(), 30);
+  // Skip checkboxes: focusing one draws a heavy ring on the first carry row.
+  const f = s.querySelector('input:not([type="checkbox"]):not([hidden]), button:not([hidden])'); if (f) setTimeout(() => f.focus(), 30);
 }
 function closeSheet(s) { s.classList.remove("on"); if (sheetOpener && sheetOpener.focus) sheetOpener.focus(); sheetOpener = null; }
 document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => closeSheet(b.closest(".sheet")));
