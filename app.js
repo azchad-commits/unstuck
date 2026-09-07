@@ -543,26 +543,43 @@ $("mexport").onclick = () => {
   $("mmsg").textContent = "Backup saved. Keep the file somewhere safe.";
 };
 $("mimport").onclick = () => $("mimportfile").click();
+// Merge a backup object ({db:{plans,stats}} or bare {plans}) into local state. Returns how many plans landed.
+function importBackup(d) {
+  const src = d && d.db && Array.isArray(d.db.plans) ? d.db : (d && Array.isArray(d.plans) ? d : null);
+  if (!src) throw new Error("That file doesn't look like an Unstuck backup.");
+  let n = 0;
+  for (const raw of src.plans) {
+    if (!raw || !raw.id || !raw.start || !raw.end) continue;
+    const inc = normalize(raw); const i = db.plans.findIndex(x => x.id === inc.id);
+    if (i < 0) db.plans.push(inc); else db.plans[i] = mergePlans(db.plans[i], inc);
+    sync.markDirty(inc.id); n++;
+  }
+  for (const [ds, sec] of Object.entries(src.stats || {})) db.stats[ds] = Math.max(db.stats[ds] || 0, +sec || 0);
+  persist(); render();
+  return n;
+}
 $("mimportfile").onchange = async e => {
   const f = e.target.files[0]; e.target.value = ""; if (!f) return;
   try {
-    const d = JSON.parse(await f.text());
-    const src = d && d.db && Array.isArray(d.db.plans) ? d.db : (d && Array.isArray(d.plans) ? d : null);
-    if (!src) throw new Error("That file doesn't look like an Unstuck backup.");
-    let n = 0;
-    for (const raw of src.plans) {
-      if (!raw || !raw.id || !raw.start || !raw.end) continue;
-      const inc = normalize(raw); const i = db.plans.findIndex(x => x.id === inc.id);
-      if (i < 0) db.plans.push(inc); else db.plans[i] = mergePlans(db.plans[i], inc);
-      sync.markDirty(inc.id); n++;
-    }
-    for (const [ds, sec] of Object.entries(src.stats || {})) db.stats[ds] = Math.max(db.stats[ds] || 0, +sec || 0);
-    persist(); render();
+    const n = importBackup(JSON.parse(await f.text()));
     $("mmsg").textContent = `Imported ${n} countdown${n === 1 ? "" : "s"}.`; $("mmsg").classList.remove("err");
   } catch (err) {
     $("mmsg").textContent = (err && err.message) || "Couldn't read that file."; $("mmsg").classList.add("err");
   }
 };
+// ?import=<path> — load a list hosted alongside the app (same origin only) with one tap.
+// Merging is idempotent (same plan ids), so opening the link twice can't duplicate anything.
+function importFromUrl(imp) {
+  let u = null;
+  try { u = new URL(imp, location.href); } catch (e) {}
+  if (!u || u.origin !== location.origin) { banner("Lists can only be loaded from this app's own site.", true); return; }
+  fetch(u).then(r => { if (!r.ok) throw new Error("Couldn't fetch that list (" + r.status + ")."); return r.json(); })
+    .then(d => {
+      const n = importBackup(d);
+      toast(`Added ${n} countdown${n === 1 ? "" : "s"}. It's yours now — it saves on this phone.`, null);
+    })
+    .catch(e => banner((e && e.message) || "Couldn't load that list.", true));
+}
 
 // ---------- PWA: service worker + install prompt ----------
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(e => console.warn("service worker failed", e)));
@@ -703,7 +720,11 @@ const sync = (() => {
 
 // ---------- boot ----------
 load(); resumeTimer(); render(); sync.init().catch(e => console.warn("sync init failed", e));
-if (new URLSearchParams(location.search).get("stuck") === "1") {
+const params = new URLSearchParams(location.search);
+if (params.get("import")) {
+  history.replaceState(null, "", location.pathname);
+  importFromUrl(params.get("import"));
+} else if (params.get("stuck") === "1") {
   prepStuck(); openSheet("stuck", $("stuckBtn")); history.replaceState(null, "", location.pathname);
 } else checkCarry();
 })();

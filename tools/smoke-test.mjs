@@ -125,6 +125,11 @@ try {
   await page.click("#ten"); check(/^(09|10):\d\d$/.test(await page.textContent("#tt")), "stuck sheet starts 10-min timer");
   await page.goto("http://127.0.0.1:8765/?stuck=1"); check(await page.locator("#stuck.on").isVisible(), "?stuck=1 shortcut opens sheet");
 
+  // One-tap hosted list: ?import= fetches a same-origin backup and merges it
+  await page.goto("http://127.0.0.1:8765/?import=issac-list.json"); await page.waitForTimeout(600);
+  check((await page.locator("#plansel option").allTextContents()).some(t => t.includes("Issac list")), "?import= loads a hosted list");
+  check(!page.url().includes("import="), "?import= cleans itself out of the URL");
+
   // Offline: shell served from SW cache
   await ctx.setOffline(true);
   await page.reload();

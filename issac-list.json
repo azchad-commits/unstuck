@@ -1,0 +1,396 @@
+{
+ "app": "unstuck",
+ "version": 1,
+ "exported": "2026-09-07T20:34:48.757Z",
+ "db": {
+  "plans": [
+   {
+    "id": "0ec272ef-4957-4b50-bedc-81e0469860b8",
+    "name": "Issac list",
+    "start": "2026-09-06",
+    "end": "2026-09-30",
+    "tasks": {
+     "2026-09-06": [
+      {
+       "id": "6145276e-af5c-4ebe-a180-488bf56991d7",
+       "title": "Get supplies: boxes, packing tape, trash bags, Sharpies, 4 colors of sticky notes",
+       "min": 45,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "1d512f65-562d-4bdd-a0fb-f55044ca71c7",
+       "title": "Build 10 boxes and put a stack of trash bags in every room",
+       "min": 30,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-07": [
+      {
+       "id": "b96280cf-89b8-42b1-9d7a-072a7bde4879",
+       "title": "While Chad tags the OFFICE: bag everything with a TRASH tag, take it to the bin",
+       "min": 30,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "4fbaa613-1978-4141-b9a3-53cfac658f23",
+       "title": "Take clear photos of every SELL-tagged item so far (good light, plain background)",
+       "min": 30,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-08": [
+      {
+       "id": "3a506fd0-33c7-4986-8c80-e25d22a13568",
+       "title": "Bag TRASH from the MASTER BEDROOM, out to the bin",
+       "min": 30,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "3cbc45d0-16cf-4b99-a492-04be638da7bd",
+       "title": "Break down empty boxes and cardboard, put them in recycling",
+       "min": 20,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-09": [
+      {
+       "id": "64283755-6c8b-401e-8bb4-a1765b2f43ef",
+       "title": "6:00 AM: carry the boxes Chad points at from the garage into the main room. Stop at 7:00.",
+       "min": 60,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "b002eda5-9249-4974-9c40-1619335ca245",
+       "title": "Wipe dust off anything sellable that came out of the garage",
+       "min": 20,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-10": [
+      {
+       "id": "d9ab1026-14aa-419f-ba56-26bac6d12e8e",
+       "title": "Bag TRASH from the KITCHEN: expired food, chipped dishes, mystery containers",
+       "min": 30,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "a9d42ccc-bc29-481e-a46e-44ac3da443be",
+       "title": "Photograph kitchen SELL items, send photos to Chad",
+       "min": 20,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-11": [
+      {
+       "id": "559085f6-e85d-40b0-b07d-bbbce10c30bb",
+       "title": "Bag TRASH from LAUNDRY + EXTRA ROOM",
+       "min": 30,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "ce072af1-3e74-48f1-bd90-68d9cf025a27",
+       "title": "Fold and box DONATE-tagged clothes and linens",
+       "min": 30,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-12": [
+      {
+       "id": "920c4e23-afa4-45a1-9999-72a8bfd34637",
+       "title": "6:00 AM: garage carry duty. Stop at 7:00.",
+       "min": 60,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "7ae62ef5-232a-4903-8c2a-a4ab02db3f70",
+       "title": "Be the porch pickup person: hand items to buyers, collect cash/Venmo, text Chad 'sold'",
+       "min": 0,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-13": [
+      {
+       "id": "be68f2df-c9eb-4a0a-994c-78b76b1e961a",
+       "title": "Bag TRASH from the MAIN ROOM",
+       "min": 30,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "ee5dbab2-08c2-4d8b-becd-fd43c32abab8",
+       "title": "Make a DONATE zone in the garage: clear a corner, put a big sign on it",
+       "min": 20,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-14": [
+      {
+       "id": "980311ea-f471-40e2-b948-043aef8351f0",
+       "title": "Tape shut and label every box Chad packs today: room + contents, on two sides",
+       "min": 30,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "8f150cdf-8d12-43c8-a23f-e2c02c953e38",
+       "title": "Trash run to the bin",
+       "min": 15,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-15": [
+      {
+       "id": "a212c0a5-40f0-41c5-a747-b67396b2a5f9",
+       "title": "Tape and label master bedroom boxes",
+       "min": 30,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "943697bb-abdc-43a7-bb3b-f3775d69546b",
+       "title": "Carry DONATE items from office + master to the garage DONATE zone",
+       "min": 30,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-16": [
+      {
+       "id": "2ff3a6cb-6485-4266-acfe-0e2d9abf9c9b",
+       "title": "6:00 AM: garage carry duty. Stop at 7:00.",
+       "min": 60,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "132d3ed3-6f11-4690-bd88-097fc8ecd42e",
+       "title": "Sweep the cleared part of the garage",
+       "min": 20,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-17": [
+      {
+       "id": "59474554-b847-4512-96fc-f90b0bc884c1",
+       "title": "Wrap dishes in paper/towels while Chad decides what's keep",
+       "min": 45,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "7ffb6a4e-f438-4f46-a041-461bd356b35a",
+       "title": "Tape and label kitchen boxes",
+       "min": 20,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-18": [
+      {
+       "id": "9147eefe-fdef-469d-9040-f364f2864018",
+       "title": "Carry DONATE items from laundry + extra room to the garage zone",
+       "min": 30,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "e6b56540-d5a9-4d47-95be-496a08b19215",
+       "title": "Porch pickup person",
+       "min": 0,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-19": [
+      {
+       "id": "0324081d-aab6-4790-b310-3519f852b086",
+       "title": "6:00 AM: last garage carry. Everything left is tagged or trash.",
+       "min": 60,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "37dafbd6-0cc2-49ca-bc71-81dae492b042",
+       "title": "Bag garage TRASH into contractor bags",
+       "min": 30,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-20": [
+      {
+       "id": "ba821736-435e-4156-b351-e90d8126db9e",
+       "title": "Load the car with the office + master boxes",
+       "min": 30,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "230655ba-dfdd-4321-a62c-cb018ded543e",
+       "title": "Ride along to the new place, unload, stack boxes by room",
+       "min": 60,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-21": [
+      {
+       "id": "83369590-766d-441c-a777-5fa1d2f24365",
+       "title": "Tape and label main room boxes",
+       "min": 30,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "339b639d-6f81-4b46-a152-333dd7ccc35a",
+       "title": "Load carload #2, unload at the new place",
+       "min": 45,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-22": [
+      {
+       "id": "d230ff97-4a6e-4b87-a730-eb11f9f8381b",
+       "title": "Load and unload carload #3",
+       "min": 45,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "a9a1be0a-7334-4ac1-86e2-e2a903576776",
+       "title": "Porch pickup person",
+       "min": 0,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-23": [
+      {
+       "id": "88de1949-ffd2-44fc-8c0c-78d3dee94938",
+       "title": "Move every DONATE item to the garage zone or front door; nothing hiding in closets",
+       "min": 45,
+       "done": false,
+       "star": true
+      }
+     ],
+     "2026-09-24": [
+      {
+       "id": "398e2d63-aee5-4c28-b677-f1efecf7eee0",
+       "title": "Load and unload carload #4",
+       "min": 45,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "8abee1d1-01f6-404e-bea5-06004655afe7",
+       "title": "Re-tag anything Chad calls 'donate' today and move it to the zone",
+       "min": 20,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-25": [
+      {
+       "id": "fa5e464d-664e-4d7e-a61b-efbeb68ea083",
+       "title": "Be there for the donation pickup, help load their truck",
+       "min": 0,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "8c238086-619a-4702-ba65-af12591e14e5",
+       "title": "Set out FREE curb-alert items at the curb with a sign",
+       "min": 15,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-26": [
+      {
+       "id": "4434a842-f079-4795-a6c9-b6cad6447947",
+       "title": "Drag all TRASH bags and junk to one pile in the driveway",
+       "min": 60,
+       "done": false,
+       "star": true
+      }
+     ],
+     "2026-09-27": [
+      {
+       "id": "929ade77-9271-43cc-8fb2-7c34e9ace9a1",
+       "title": "Help the hauler load. Then walk every room and closet for stragglers.",
+       "min": 60,
+       "done": false,
+       "star": true
+      }
+     ],
+     "2026-09-28": [
+      {
+       "id": "c1565273-1eae-4a8c-8709-65c714d5bd54",
+       "title": "Help move the bed, dresser, and big items to the new place",
+       "min": 120,
+       "done": false,
+       "star": true
+      }
+     ],
+     "2026-09-29": [
+      {
+       "id": "d264e059-8fb3-4fdd-8dc0-d60cc5c0fc68",
+       "title": "Bathrooms: toilet, sink, tub, mirror",
+       "min": 45,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "9d7bb25d-639f-432b-bf80-ab50b6412cd9",
+       "title": "Vacuum every room, sweep garage and patio",
+       "min": 45,
+       "done": false,
+       "star": false
+      }
+     ],
+     "2026-09-30": [
+      {
+       "id": "e337b368-359f-4f3f-88f8-9dd334d17366",
+       "title": "Walk every room with Chad while he takes photos. Check closets, cabinets, drawers.",
+       "min": 15,
+       "done": false,
+       "star": true
+      },
+      {
+       "id": "b2556c6b-1188-4a34-b64b-7fc0dc775618",
+       "title": "Load the last trash bag. Done.",
+       "min": 10,
+       "done": false,
+       "star": false
+      }
+     ]
+    },
+    "tombstones": [],
+    "daily": [],
+    "deleted": false,
+    "archived": false,
+    "updated_at": "2026-09-07T20:22:53.998Z"
+   }
+  ],
+  "current": "0ec272ef-4957-4b50-bedc-81e0469860b8",
+  "stats": {}
+ }
+}
