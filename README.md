@@ -1,0 +1,96 @@
+# Unstuck
+
+A countdown planner for people with ADHD and time blindness. Every task carries a time; tapping the time starts a timer that ends with *"You're allowed to stop."*
+
+This is a plain static PWA — no build step, no framework. Open `index.html` over HTTPS (or `localhost`) and it works. Add Supabase keys and it syncs across devices.
+
+```
+index.html              app shell + styles
+app.js                  all logic (local-first storage, timer, views, sync)
+config.js               ← your Supabase URL + anon key go here (blank = local-only)
+manifest.webmanifest    PWA manifest
+sw.js                   service worker (offline app shell)
+icons/                  generated icons (tools/make-icons.py regenerates them)
+supabase/schema.sql     table + Row Level Security + realtime
+landing.html            marketing landing page (links to ./ — the app); self-contained, screenshots embedded
+```
+
+## 1. Put it on GitHub Pages (5 minutes)
+
+1. Create a new GitHub repo (e.g. `unstuck`), upload everything in this folder to the root of the `main` branch.
+2. Repo → **Settings → Pages** → Source: *Deploy from a branch* → Branch: `main`, folder `/ (root)` → Save.
+3. In a minute or two your app is live at `https://<your-username>.github.io/unstuck/`.
+
+All paths are relative, so it works at a sub-path like `/unstuck/` or on a custom domain. GitHub Pages is HTTPS, which the service worker and add-to-home-screen both require.
+
+**Install on a phone:** open the URL in Safari (iOS) → Share → *Add to Home Screen*; or Chrome (Android) → the "Add" banner the app shows, or menu → *Install app*. It opens full-screen with no browser chrome.
+
+## 2. Turn on sync with Supabase (10 minutes)
+
+Without keys the app is fully functional and device-local — the Sync button doesn't even appear. To sync:
+
+1. **Create a project** at [supabase.com](https://supabase.com) (free tier is plenty). Pick a region near you.
+2. **Run the schema.** Dashboard → *SQL Editor* → *New query* → paste the contents of `supabase/schema.sql` → *Run*. This creates the `plans` table, locks it down with Row Level Security so users only see their own rows, and enables realtime.
+3. **Allow your app URL for magic links.** Dashboard → *Authentication → URL Configuration*:
+   - **Site URL:** `https://<your-username>.github.io/unstuck/`
+   - **Redirect URLs:** add the same URL (and `http://localhost:8000/` if you test locally).
+4. **Copy your keys.** Dashboard → *Project Settings → API*: copy the **Project URL** and the **anon public** key into `config.js`:
+   ```js
+   window.UNSTUCK_CONFIG = {
+     supabaseUrl: "https://xxxxxxxxxxxx.supabase.co",
+     supabaseAnonKey: "eyJhbGciOi..."
+   };
+   ```
+   The anon key is designed to be public; RLS is what protects the data. Never put the `service_role` key in the app.
+5. Commit and push. Installed copies pick up new code (including `config.js`) on their next online open — the service worker is network-first for code. Still bump `CACHE` in `sw.js` when you ship so old cache entries get evicted.
+
+Then in the app: tap **Sync** → enter your email → tap the link in the email. It opens Unstuck signed in. Do the same on a second device and both stay in step.
+
+Free-tier magic-link emails are rate-limited (a handful per hour) and come from Supabase's shared sender. When you're ready for real users, set up custom SMTP under *Authentication → SMTP Settings* so links come from your own domain and don't land in spam.
+
+## How sync works
+
+- **Local first.** Every change is written to `localStorage` immediately. The app never waits on the network.
+- **Push.** Changed plans are marked dirty and upserted to Supabase ~1 s later. Dirty IDs survive a reload, so an offline edit gets pushed the next time you're online.
+- **Pull.** On sign-in, on coming back online, and whenever the app returns to the foreground, the app fetches your plans and merges them.
+- **Conflicts.** Merged *per task*, not per plan: tasks added on two devices while offline are unioned by id, a task deleted anywhere stays deleted (tombstones), and only the same task edited on both sides resolves by `updated_at` (newer wins). The server clamps any `updated_at` more than 2 minutes in the future, so a phone with a wrong clock can't win every merge.
+- **Incremental pulls.** After the first sync, only rows changed since the last pull (with a 5-minute overlap) are fetched, which keeps free-tier bandwidth low.
+- **Realtime.** A second device that's open receives changes live via Supabase Realtime, no refresh.
+- **Sign out** keeps the local copy on the device; nothing is deleted.
+
+## Security notes
+
+- supabase-js is loaded from jsDelivr pinned to an exact version with a Subresource Integrity hash, so a tampered CDN file refuses to run. To upgrade: change the version in `app.js` (`LIB`), then regenerate the hash — `npm pack @supabase/supabase-js@<ver>` and `openssl dgst -sha384 -binary package/dist/umd/supabase.js | openssl base64 -A` — or fetch the CDN URL in a browser and hash it with `crypto.subtle`.
+- Plan and task ids are `crypto.randomUUID()`.
+- All user text is HTML-escaped before rendering. RLS is the only thing between users; never ship the `service_role` key.
+
+## Tests
+
+```
+node tools/smoke-test.mjs   # headless Playwright: manifest, service worker, offline, timer, views, a11y basics
+node tools/merge-test.mjs   # sync merge scenarios (two-device adds, deletes, star conflicts)
+```
+
+## Local development
+
+```
+python3 -m http.server 8000
+# open http://localhost:8000
+```
+
+Service workers cache aggressively. In DevTools → Application → Service Workers, tick *Update on reload* while developing, or unregister it.
+
+## Regenerating icons
+
+```
+pip install pillow
+python3 tools/make-icons.py
+```
+
+## Scope
+
+See `unstuck-spec.md` in the project. This build covers all of **P0** (plan + tasks + tap-to-timer + check-off + D/W/M + star + I'm stuck + PWA) and pulls **accounts + sync** forward from Phase 2. Templates, helper lists, and reminders are still P1.
+
+## Review log
+
+Reviewed with the ECC plugin's typescript-reviewer, security-reviewer, database-reviewer, a11y-architect, and silent-failure-hunter agents. Applied: per-task merge with tombstones (was whole-plan last-write-wins), server-side clock clamp, network-first service worker for code (config changes propagate), only-cache-OK responses, corrupted-state backup instead of wipe, visible "couldn't save" banner, no double beep on resumed timers, multi-tab `storage` sync, pinned + SRI'd supabase-js, UUID ids, unconditional magic-link URL cleanup, sync handlers that survive a failed library load, keyboard-reachable star button (long-press removed), accessible dialogs (role, focus trap, Escape, focus return), month cells as buttons, `aria-expanded`/`aria-pressed`, timer announcements only on start/end, undo on delete, focus-visible styles, contrast fixes, reduced-motion scroll. Deferred: hard-deleting old tombstoned rows.

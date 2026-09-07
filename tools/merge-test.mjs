@@ -1,0 +1,22 @@
+// Unit test for the per-task merge: extracts mergePlans from app.js and runs conflict scenarios.
+import fs from "node:fs";
+const src = fs.readFileSync(new URL("../app.js", import.meta.url), "utf8");
+const body = src.slice(src.indexOf("function mergePlans"), src.indexOf("const same ="));
+const norm = "function normalize(p){return {updated_at:new Date(0).toISOString(),deleted:false,tombstones:[],tasks:{},...p};}";
+const mergePlans = new Function(norm + body + "; return mergePlans;")();
+let fails = 0; const check = (ok, n) => { console.log((ok ? "PASS " : "FAIL ") + n); if (!ok) fails++; };
+const base = { id: "p", name: "Move", start: "2026-09-06", end: "2026-09-27", tasks: {}, tombstones: [] };
+const A = { ...base, updated_at: "2026-09-06T10:00:00Z", tasks: { "2026-09-06": [{ id: "a", title: "Pack kitchen", min: 45, done: false, star: true }] } };
+const B = { ...base, updated_at: "2026-09-06T10:05:00Z", tasks: { "2026-09-07": [{ id: "b", title: "Label boxes", min: 15, done: false, star: true }] } };
+let m = mergePlans(A, B);
+check(m.tasks["2026-09-06"]?.length === 1 && m.tasks["2026-09-07"]?.length === 1, "offline adds on two devices both survive (old LWW would drop one)");
+const A2 = { ...A, updated_at: "2026-09-06T11:00:00Z", tasks: { "2026-09-06": [{ id: "a", title: "Pack kitchen", min: 45, done: true, star: true }] } };
+m = mergePlans(A2, B); check(m.tasks["2026-09-06"][0].done === true, "same task edited → newer plan's version wins");
+const Bdel = { ...B, updated_at: "2026-09-06T12:00:00Z", tasks: {}, tombstones: ["b"] };
+m = mergePlans(A, Bdel); check(!m.tasks["2026-09-07"] && m.tombstones.includes("b"), "delete on one device sticks after merge (tombstone)");
+m = mergePlans(Bdel, A); check(!m.tasks["2026-09-07"], "tombstone wins regardless of argument order");
+const C = { ...base, updated_at: "2026-09-06T13:00:00Z", tasks: { "2026-09-06": [{ id: "c", title: "Call movers", min: 10, done: false, star: true }] } };
+m = mergePlans(A, C); const stars = m.tasks["2026-09-06"].filter(t => t.star);
+check(stars.length === 1 && stars[0].id === "c", "two stars on one day → exactly one remains, from the newer side");
+check(mergePlans(A, { ...A }).tasks["2026-09-06"].length === 1, "merging identical plans is a no-op");
+console.log(fails ? `\n${fails} FAILED` : "\nALL PASSED"); process.exit(fails ? 1 : 0);
