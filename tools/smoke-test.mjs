@@ -122,6 +122,12 @@ try {
   const dlPromise = page.waitForEvent("download");
   await page.click("#mexport");
   check((await dlPromise).suggestedFilename().startsWith("unstuck-backup-"), "export downloads a backup file");
+  const icsPromise = page.waitForEvent("download");
+  await page.click("#mics");
+  const icsDl = await icsPromise;
+  check(icsDl.suggestedFilename().endsWith(".ics"), "calendar export downloads an .ics file");
+  const icsText = (await import("node:fs")).readFileSync(await icsDl.path(), "utf8");
+  check(icsText.includes("BEGIN:VCALENDAR") && icsText.includes("BEGIN:VEVENT") && icsText.includes("VALARM") && icsText.includes("DTSTART"), "ics has daily events with alarms");
   await page.keyboard.press("Escape");
 
   // Corrupted state is backed up, not wiped
@@ -167,7 +173,26 @@ try {
     return JSON.stringify(p.tasks[ds] || []);
   });
   check(pulled.includes("Old thing"), "future task pulls back to today");
+  await page.click("#undo");
+  const undone = await page.evaluate(() => {
+    const p = JSON.parse(localStorage.getItem("unstuck-v1")).plans.find(x => !x.deleted);
+    const d = new Date(); d.setDate(d.getDate() + 1);
+    const ds = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    return JSON.stringify(p.tasks[ds] || []);
+  });
+  check(undone.includes("Old thing"), "undo puts the moved task back");
   await page.click('.views button[data-v="day"]');
+
+  // Estimate calibration: 5 finished timed tasks at 1.5x planned → hint appears
+  await page.evaluate(() => {
+    const raw = JSON.parse(localStorage.getItem("unstuck-v1"));
+    const p = raw.plans.find(x => !x.deleted);
+    const d = new Date(); const ds = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    p.tasks[ds] = (p.tasks[ds] || []).concat([1, 2, 3, 4, 5].map(i => ({ id: "cal" + i, title: "done " + i, min: 10, done: true, spent: 900 })));
+    localStorage.setItem("unstuck-v1", JSON.stringify(raw));
+  });
+  await page.reload({ waitUntil: "networkidle" });
+  check(await page.locator(".cal").count() === 1 && (await page.textContent(".cal")).includes("50%"), "estimate calibration hint shows the real overrun");
 
   // Timer end → permission to stop
   await page.evaluate(() => { localStorage.setItem("unstuck-timer", JSON.stringify({ end: Date.now() + 1200, name: "x" })); });
@@ -203,6 +228,13 @@ try {
   await page.reload({ waitUntil: "networkidle" });
   check(await page.locator("#syncBtn").isVisible(), "sync button shows when config has keys");
   await page.click("#syncBtn"); check(await page.locator("#syncSheet.on").isVisible(), "sync sheet opens with email form");
+
+  // iOS Safari never fires beforeinstallprompt — the manual add-to-home-screen nudge covers it
+  const ios = await browser.newContext({ viewport: { width: 390, height: 780 }, hasTouch: true, isMobile: true, userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1" });
+  const ipage = await ios.newPage();
+  await ipage.goto("http://127.0.0.1:8765/", { waitUntil: "networkidle" });
+  check(await ipage.locator("#install.on").isVisible() && (await ipage.textContent("#installTxt")).includes("Home Screen"), "iOS gets the add-to-home-screen nudge");
+  await ios.close();
 
   check(errors.length === 0, "no console/page errors" + (errors.length ? " → " + errors.join(" | ") : ""));
   await page.screenshot({ path: path.join(root, "..", "unstuck-screenshot.png") });

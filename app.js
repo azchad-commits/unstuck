@@ -122,6 +122,26 @@ function moveTaskCore(p, fromDs, t, toDs) {
   const nt = { ...t, id: uid(), done: false }; delete nt.dailyId;
   if (nt.star && list.some(x => x.star)) nt.star = false;
   list.push(nt);
+  return nt;
+}
+// Reverse a move: remove the copy, un-tombstone the original, tombstone the copy, restore.
+function undoMove(e) {
+  e.p.tasks[e.toDs] = (e.p.tasks[e.toDs] || []).filter(x => x.id !== e.nt.id);
+  if (!e.p.tasks[e.toDs].length) delete e.p.tasks[e.toDs];
+  e.p.tombstones = (e.p.tombstones || []).filter(id => id !== e.t.id).concat(e.nt.id).slice(-500);
+  (e.p.tasks[e.fromDs] = e.p.tasks[e.fromDs] || []).push(e.t);
+  save(e.p);
+}
+// Estimate calibration: median of actual/planned across finished timed tasks. Only speaks up
+// with 5+ samples and a real pattern (≥30% over) — a nudge toward honest estimates, never a grade.
+function overrunFactor() {
+  const ratios = [];
+  for (const p of db.plans) if (!p.deleted) for (const list of Object.values(p.tasks || {})) for (const t of list)
+    if (t.done && t.min && (t.spent || 0) >= 60) ratios.push(t.spent / (t.min * 60));
+  if (ratios.length < 5) return null;
+  ratios.sort((a, b) => a - b);
+  const med = ratios[Math.floor(ratios.length / 2)];
+  return med >= 1.3 ? med : null;
 }
 
 // ---------- render ----------
@@ -225,14 +245,16 @@ function wireTasks(el, p, ds, tasks, ctx) {
     const mv = row.querySelector(".mv"); if (mv) mv.onclick = () => {
       const pull = ctx.isPast || (!ctx.isPast && !ctx.isToday);
       const toDs = pull ? iso(today()) : iso(addDays(today(), 1));
-      moveTaskCore(p, ds, t, toDs); save(p); render();
-      toast(pull ? `"${t.title}" moved to today` : `"${t.title}" moved to tomorrow`, null);
+      const nt = moveTaskCore(p, ds, t, toDs); save(p); render();
+      toast(pull ? `"${t.title}" moved to today` : `"${t.title}" moved to tomorrow`,
+        () => { undoMove({ p, fromDs: ds, toDs, t, nt }); render(); });
     };
     const rp = row.querySelector(".rep"); if (rp) rp.onclick = () => toggleDaily(p, t);
   });
 }
 
 function renderDays(main, p, T, dates, expandAll) {
+  const overrun = overrunFactor();
   dates.forEach(ds => {
     ensureDaily(p, ds);
     const d = pd(ds); const dl = daysLeft(p, d); const tasks = p.tasks[ds] || [];
@@ -246,7 +268,7 @@ function renderDays(main, p, T, dates, expandAll) {
     const bodyId = "body-" + ds;
     el.innerHTML = `<div class="hd"><button class="hdmain" ${expandAll ? "" : `aria-expanded="${open}" aria-controls="${bodyId}"`}><span class="d">${fmt(d)}<small>${star ? esc(star.title) : (tasks.length ? tasks.length + " tasks" : "nothing planned")}</small></span>${isToday ? '<span class="tag">Today</span>' : ""}<span class="left ${dl >= 0 && dl <= 6 ? "urgent" : ""}">${allDone ? "✓ done" : dl < 0 ? "past" : dl === 0 ? "day 0" : dl + " left"}</span></button>${open && tasks.length ? `<button class="editbtn" aria-pressed="${editing}">${editing ? "Done" : "Edit"}</button>` : ""}</div>
     ${open ? `<div class="body" id="${bodyId}">${heroHTML(p, ds, star)}${tasks.map(t => taskRowHTML(p, ds, t, ctx)).join("")}
-    <div class="add"><input placeholder="Add a task…" aria-label="New task for ${fmt(d)}"><select aria-label="Minutes">${MINS.map(m => `<option value="${m}" ${m === 30 ? "selected" : ""}>${m}m</option>`).join("")}<option value="0">no timer</option></select><button>Add</button></div></div>` : ""}`;
+    <div class="add"><input placeholder="Add a task…" aria-label="New task for ${fmt(d)}"><select aria-label="Minutes">${MINS.map(m => `<option value="${m}" ${m === 30 ? "selected" : ""}>${m}m</option>`).join("")}<option value="0">no timer</option></select><button>Add</button></div>${isToday && overrun ? `<div class="cal">Timed tasks usually take you ~${Math.round((overrun - 1) * 100)}% longer than planned — the next size up often fits.</div>` : ""}</div>` : ""}`;
     el.querySelector(".hdmain").onclick = () => { if (!expandAll) { openDay = openDay === ds ? "" : ds; render(); } };
     const editBtn = el.querySelector(".editbtn");
     if (editBtn) editBtn.onclick = () => { if (editing) editDays.delete(ds); else editDays.add(ds); render(); };
@@ -655,11 +677,11 @@ $("carryMove").onclick = () => {
   const sel = carryChecked(); if (!sel.length) return;
   const destDs = $("carryDest").value || iso(today());
   const short = ($("carryDest").selectedOptions[0] || {}).dataset ? $("carryDest").selectedOptions[0].dataset.short : "today";
-  const touched = new Set();
-  for (const c of sel) { moveTaskCore(c.p, c.ds, c.t, destDs); touched.add(c.p); }
+  const touched = new Set(); const moved = [];
+  for (const c of sel) { const nt = moveTaskCore(c.p, c.ds, c.t, destDs); moved.push({ p: c.p, fromDs: c.ds, toDs: destDs, t: c.t, nt }); touched.add(c.p); }
   touched.forEach(p => save(p));
   closeSheet($("carry")); render();
-  toast(`Moved ${sel.length} to ${short}`, null);
+  toast(`Moved ${sel.length} to ${short}`, () => { moved.forEach(undoMove); render(); });
   carryItems = [];
 };
 $("carryDrop").onclick = () => {
@@ -668,7 +690,8 @@ $("carryDrop").onclick = () => {
   for (const c of sel) { c.t.dropped = true; touched.add(c.p); }
   touched.forEach(p => save(p));
   closeSheet($("carry")); render();
-  toast(sel.length === carryItems.length ? "Let go. Clean slate." : `Let ${sel.length} go`, null);
+  toast(sel.length === carryItems.length ? "Let go. Clean slate." : `Let ${sel.length} go`,
+    () => { for (const c of sel) delete c.t.dropped; touched.forEach(p => save(p)); render(); });
   carryItems = [];
 };
 
@@ -690,6 +713,36 @@ $("mexport").onclick = () => {
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 10000);
   $("mmsg").textContent = "Backup saved. Keep the file somewhere safe.";
+};
+// Calendar export: one 8:00 AM event per remaining day with an alert — the phone's calendar
+// becomes the nag, no push server needed. Re-importing later just updates (stable UIDs).
+const icsEscape = s => String(s).replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
+$("mics").onclick = () => {
+  const p = plan();
+  if (!p) { $("mmsg").textContent = "Start a countdown first."; $("mmsg").classList.add("err"); return; }
+  const T = today();
+  const stamp = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Unstuck//EN", "CALSCALE:GREGORIAN"];
+  for (let d = new Date(Math.max(+T, +pd(p.start))); iso(d) <= p.end; d = addDays(d, 1)) {
+    const ds = iso(d); ensureDaily(p, ds);
+    const left = daysLeft(p, d);
+    const tasks = p.tasks[ds] || []; const star = tasks.find(t => t.star);
+    const what = star ? star.title : tasks.length ? tasks.length + " tasks" : "open Unstuck";
+    const dt = ds.replace(/-/g, "");
+    lines.push("BEGIN:VEVENT", `UID:unstuck-${p.id}-${ds}`, `DTSTAMP:${stamp}`,
+      `DTSTART:${dt}T080000`, `DTEND:${dt}T083000`,
+      `SUMMARY:${icsEscape(`${left === 0 ? "Day 0" : left + " left"} — ${what}`)}`,
+      `DESCRIPTION:${icsEscape(tasks.length ? tasks.map(t => "• " + t.title + (t.min ? ` (${t.min}m)` : "")).join("\n") : "You're allowed to just start.")}`,
+      "BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${icsEscape("Unstuck — " + what)}`, "TRIGGER:PT0S", "END:VALARM",
+      "END:VEVENT");
+  }
+  lines.push("END:VCALENDAR");
+  const blob = new Blob([lines.join("\r\n")], { type: "text/calendar" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = `unstuck-${(p.name.replace(/[^\w-]+/g, "-").toLowerCase() || "countdown")}.ics`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  $("mmsg").textContent = "Calendar file saved. Open it and your calendar takes over the morning reminders."; $("mmsg").classList.remove("err");
 };
 $("mimport").onclick = () => $("mimportfile").click();
 // Merge a backup object ({db:{plans,stats}} or bare {plans}) into local state. Returns how many plans landed.
@@ -741,6 +794,18 @@ window.addEventListener("beforeinstallprompt", e => {
 $("installBtn").onclick = async () => { if (!deferredInstall) return; deferredInstall.prompt(); await deferredInstall.userChoice; deferredInstall = null; $("install").classList.remove("on"); };
 $("installX").onclick = () => { $("install").classList.remove("on"); try { localStorage.setItem("unstuck-install-dismissed", "1"); } catch (e) {} };
 window.addEventListener("appinstalled", () => $("install").classList.remove("on"));
+// iOS Safari never fires beforeinstallprompt, so iPhone users would never see an install hint —
+// yet install is what unlocks notifications and reliable storage there. Show a manual nudge.
+(() => {
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  if (!isIOS || standalone) return;
+  let dismissed = false; try { dismissed = localStorage.getItem("unstuck-install-dismissed") === "1"; } catch (e) {}
+  if (dismissed) return;
+  $("installTxt").textContent = "On iPhone: tap Share, then “Add to Home Screen.” That unlocks alerts and keeps your lists safe.";
+  $("installBtn").hidden = true;
+  $("install").classList.add("on");
+})();
 
 // ---------- Supabase sync (only if config.js has keys) ----------
 const sync = (() => {
