@@ -19,6 +19,9 @@ try {
   // Sandbox has no outbound internet: ignore CDN/font fetch failures and the no-gesture vibrate notice.
   page.on("console", m => { const t = m.text(); if (m.type() === "error" && !/net::ERR_|Failed to load resource|navigator\.vibrate|backup kept in unstuck-v1-corrupt/.test(t)) errors.push(t); });
 
+  // The repo's config.js now carries real sync keys; the main run still tests blank-config
+  // behavior, so stub it empty here (the sync-specific section re-routes with mock keys later).
+  await page.route("**/config.js", r => r.fulfill({ contentType: "application/javascript", body: 'window.UNSTUCK_CONFIG={supabaseUrl:"",supabaseAnonKey:""};' }));
   await page.goto("http://127.0.0.1:8765/", { waitUntil: "networkidle" });
   const manifest = await page.evaluate(() => fetch(document.querySelector('link[rel=manifest]').href).then(r => r.json()));
   check(manifest.name === "Unstuck" && manifest.display === "standalone" && manifest.icons.length === 4, "manifest loads with 4 icons + standalone");

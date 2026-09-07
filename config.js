@@ -1,8 +1,8 @@
 /* Unstuck — Supabase config.
-   Leave both empty and the app runs device-local only (no sign-in UI, nothing leaves the phone).
-   Fill them in from Supabase → Project Settings → API. The anon key is safe to ship in a browser
-   because Row Level Security (see supabase/schema.sql) is what protects the data. */
+   Filled in = sync available (magic-link sign-in, cross-device). Blank = device-local only.
+   This is the PUBLISHABLE key — safe to ship in a browser by design; Row Level Security
+   (see supabase/schema.sql) is what protects the data. Never put a secret/service key here. */
 window.UNSTUCK_CONFIG = {
-  supabaseUrl: "",      // e.g. "https://abcdefghijklmnop.supabase.co"
-  supabaseAnonKey: ""   // e.g. "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  supabaseUrl: "https://naacdjiposemwggashen.supabase.co",
+  supabaseAnonKey: "sb_publishable_QOZCHZ-3eTEKjksYUYLOoA_qXu06Rm-"
 };
