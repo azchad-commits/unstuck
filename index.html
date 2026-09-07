@@ -70,7 +70,12 @@ main{padding:14px 12px 120px;max-width:560px;margin:0 auto}
 .min:active,.min:hover{background:var(--amber);border-color:var(--amber);color:var(--amber-ink)}.task.on .min{opacity:.35;pointer-events:none}
 .mv,.rep{flex:none;border:1px solid var(--line);background:var(--field);color:var(--accent);border-radius:99px;padding:6px 10px;font-size:13px;font-weight:700;cursor:pointer;min-height:36px;display:none;align-items:center;white-space:nowrap}
 .rep[aria-pressed="true"]{background:var(--accent);color:var(--card);border-color:var(--accent)}
+.mins{display:none;border:1px solid var(--line);background:var(--field);color:var(--accent);border-radius:99px;padding:6px 8px;font-size:13px;font-weight:700;min-height:36px}
+.day.editing .task{flex-wrap:wrap;row-gap:8px}
+.day.editing .task .txt{flex:0 0 calc(100% - 38px)}
+.day.editing .task .mins{display:inline-block}
 .day.editing .task .mv,.day.editing .task .rep{display:inline-flex}
+.day.editing .task .del{margin-left:auto}
 .day.editing .task .star,.day.editing .task .min{display:none}
 .del{flex:none;border:0;background:none;color:var(--muted);font-size:22px;min-width:40px;min-height:40px;padding:0 4px;cursor:pointer;line-height:1;display:none;align-items:center;justify-content:center}
 .day.editing .task .del{display:inline-flex}
@@ -126,18 +131,24 @@ main{padding:14px 12px 120px;max-width:560px;margin:0 auto}
 .install.on{display:flex}.install span{flex:1}.install button{border:0;border-radius:8px;padding:8px 12px;font-weight:700;background:var(--btn);color:#fff}.install .x{background:none;color:var(--muted)}
 .banner{display:none;max-width:560px;margin:0 auto 10px;background:var(--tint);border:1px solid var(--tint-line);border-radius:12px;padding:10px 14px;font-size:14px}.banner.on{display:block}.banner.err{background:var(--err-bg);border-color:var(--red)}
 .toast{display:none;position:fixed;left:14px;right:14px;bottom:calc(80px + env(safe-area-inset-bottom));background:#1B2733;color:#fff;border-radius:12px;padding:12px 14px;font-size:14px;z-index:9;align-items:center;gap:10px;box-shadow:0 6px 18px rgba(0,0,0,.25);max-width:532px;margin:0 auto}.toast.on{display:flex}.toast span{flex:1}.toast button{border:1px solid rgba(255,255,255,.5);background:none;color:#fff;border-radius:8px;padding:6px 12px;font-weight:700}
-@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+#flash{position:fixed;inset:0;background:var(--green);opacity:0;pointer-events:none;z-index:40}
+#flash.go{animation:flashp 1.8s ease-out}
+@keyframes flashp{0%,28%,62%{opacity:0}14%,45%{opacity:.55}80%{opacity:.45}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}
+#flash.go{animation:flashfade 1.2s ease-out}}
+@keyframes flashfade{0%{opacity:.4}100%{opacity:0}}
 </style>
 </head>
 <body>
 <div class="top">
   <div class="row"><div class="big" id="big">–</div><div class="lbl" id="lbl"></div><button class="plansel" id="planBtn" hidden aria-haspopup="dialog" aria-label="Switch countdown"><span id="planName"></span><span aria-hidden="true"> ▾</span></button></div>
   <div class="views"><button data-v="day" class="on" aria-pressed="true">Today</button><button data-v="week" aria-pressed="false">Week</button><button data-v="month" aria-pressed="false">Month</button><button class="sync" id="syncBtn" hidden aria-label="Sync settings"><i id="syncDot"></i><span id="syncTxt">Sync</span></button><button class="sync" id="menuBtn" aria-label="Menu">⋯</button></div>
-  <div class="timer" id="timer"><div class="trow"><div><div class="t" id="tt">00:00</div><div class="n" id="tn"></div></div><button id="tstop">Stop</button></div><div class="tbarw"><i id="tbar"></i></div></div>
+  <div class="timer" id="timer"><div class="trow"><div><div class="t" id="tt">00:00</div><div class="n" id="tn"></div></div><button id="tsound" aria-label="Ticking sound while the timer runs" aria-pressed="false">🔇</button><button id="tstop">Stop</button></div><div class="tbarw"><i id="tbar"></i></div></div>
 </div>
 <div class="install" id="install"><span>Add Unstuck to your home screen so it opens full-screen.</span><button id="installBtn">Add</button><button class="x" id="installX" aria-label="dismiss">×</button></div>
 <div class="install" id="alerts"><span>Get a nudge when a timer ends — even if you switch apps.</span><button id="alertsBtn">Enable</button><button class="x" id="alertsX" aria-label="dismiss">×</button></div>
 <div class="sr" id="announce" role="status" aria-live="polite"></div>
+<div id="flash" aria-hidden="true"></div>
 <div class="banner" id="banner" role="alert"></div>
 <main id="main"></main>
 <div class="toast" id="toast" role="status"><span id="toastTxt"></span><button id="undo">Undo</button></div>

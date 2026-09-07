@@ -53,10 +53,19 @@ try {
   await page.click("#undo"); check(await page.locator(".task").count() === 2, "undo restores the task");
   await page.locator(".task").nth(1).locator(".del").click(); await page.waitForTimeout(100);
   check(await page.locator("#stuck").getAttribute("role") === null && await page.locator('#stuck [role="dialog"]').count() === 1, "sheets are dialogs");
+  // Edit mode: change a task's minutes in place
+  await page.locator(".task").first().locator(".mins").selectOption("15");
+  const newMin = await page.evaluate(() => { const p = JSON.parse(localStorage.getItem("unstuck-v1")).plans[0]; return Object.values(p.tasks)[0][0].min; });
+  check(newMin === 15, "edit mode changes a task's minutes in place");
+  await page.locator(".task").first().locator(".mins").selectOption("45"); // restore for the timer checks
   await page.click(".day .editbtn"); // leave edit mode (min chips are hidden while editing)
   await page.click(".task .min");
   check(await page.locator("#timer.on").isVisible(), "tapping chip starts timer");
   check(/^4[45]:\d\d$/.test(await page.textContent("#tt")), "timer counts from 45:00");
+  check(await page.locator("#tsound").isVisible() && await page.locator("#flash").count() === 1, "tick toggle and flash layer present");
+  await page.click("#tsound");
+  check((await page.getAttribute("#tsound", "aria-pressed")) === "true", "tick toggle arms and remembers");
+  await page.click("#tsound");
   check(((await page.getAttribute("#tbar", "style")) || "").includes("width"), "timer paints the time-as-space bar");
   check((await page.title()).includes("· Unstuck"), "tab title shows the countdown");
 
@@ -139,6 +148,19 @@ try {
   });
   check(carried.tomorrow.includes("Old thing"), "checked task moved to the chosen day");
   check(carried.all.includes("Older thing"), "unchecked task stays put for tomorrow's prompt");
+
+  // Future day → pull a task back to today from edit mode
+  await page.click('.views button[data-v="week"]');
+  await page.locator(".day").nth(1).locator(".hdmain").click();
+  await page.locator(".day").nth(1).locator(".editbtn").click();
+  await page.locator(".day").nth(1).locator(".task .mv").click();
+  const pulled = await page.evaluate(() => {
+    const p = JSON.parse(localStorage.getItem("unstuck-v1")).plans.find(x => !x.deleted);
+    const d = new Date(); const ds = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    return JSON.stringify(p.tasks[ds] || []);
+  });
+  check(pulled.includes("Old thing"), "future task pulls back to today");
+  await page.click('.views button[data-v="day"]');
 
   // Timer end → permission to stop
   await page.evaluate(() => { localStorage.setItem("unstuck-timer", JSON.stringify({ end: Date.now() + 1200, name: "x" })); });

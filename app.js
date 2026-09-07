@@ -201,8 +201,10 @@ function heroHTML(p, ds, star) {
 
 function taskRowHTML(p, ds, t, ctx) {
   const daily = isDailyTask(p, t);
-  const mvLabel = !t.done && (ctx.isPast ? "→ Today" : (ctx.isToday && ctx.canTomorrow ? "→ Tmrw" : null));
-  return `<div class="task ${t.done ? "on" : ""}" data-id="${t.id}"><button class="chk ${t.done ? "on" : ""}" aria-pressed="${t.done}" aria-label="${t.done ? "Mark not done" : "Mark done"}: ${esc(t.title)}"></button><div class="txt">${esc(t.title)}${daily ? '<span class="repmark" aria-hidden="true">↻</span>' : ""}</div><button class="star ${t.star ? "on" : ""}" aria-pressed="${t.star}" aria-label="${t.star ? "This is the one thing" : "Make this the one thing"}: ${esc(t.title)}">${t.star ? "★" : "☆"}</button>${t.min ? `<button class="min" aria-label="Start ${t.min} minute timer: ${esc(t.title)}">${t.min} min</button>` : ""}${mvLabel ? `<button class="mv" aria-label="Move to ${ctx.isPast ? "today" : "tomorrow"}: ${esc(t.title)}">${mvLabel}</button>` : ""}<button class="rep" aria-pressed="${daily}" aria-label="${daily ? "Stop repeating daily" : "Repeat every day"}: ${esc(t.title)}">↻</button><button class="del" aria-label="Delete: ${esc(t.title)}">×</button></div>`;
+  const pull = ctx.isPast || (!ctx.isPast && !ctx.isToday); // past and future both offer "→ Today"
+  const mvLabel = !t.done && (pull ? "→ Today" : (ctx.isToday && ctx.canTomorrow ? "→ Tmrw" : null));
+  const mins = `<select class="mins" aria-label="Minutes for: ${esc(t.title)}">${MINS.map(m => `<option value="${m}" ${t.min === m ? "selected" : ""}>${m}m</option>`).join("")}<option value="0" ${!t.min ? "selected" : ""}>no timer</option></select>`;
+  return `<div class="task ${t.done ? "on" : ""}" data-id="${t.id}"><button class="chk ${t.done ? "on" : ""}" aria-pressed="${t.done}" aria-label="${t.done ? "Mark not done" : "Mark done"}: ${esc(t.title)}"></button><div class="txt">${esc(t.title)}${daily ? '<span class="repmark" aria-hidden="true">↻</span>' : ""}</div><button class="star ${t.star ? "on" : ""}" aria-pressed="${t.star}" aria-label="${t.star ? "This is the one thing" : "Make this the one thing"}: ${esc(t.title)}">${t.star ? "★" : "☆"}</button>${t.min ? `<button class="min" aria-label="Start ${t.min} minute timer: ${esc(t.title)}">${t.min} min</button>` : ""}${mins}${mvLabel ? `<button class="mv" aria-label="Move to ${pull ? "today" : "tomorrow"}: ${esc(t.title)}">${mvLabel}</button>` : ""}<button class="rep" aria-pressed="${daily}" aria-label="${daily ? "Stop repeating daily" : "Repeat every day"}: ${esc(t.title)}">↻</button><button class="del" aria-label="Delete: ${esc(t.title)}">×</button></div>`;
 }
 
 function wireTasks(el, p, ds, tasks, ctx) {
@@ -219,10 +221,12 @@ function wireTasks(el, p, ds, tasks, ctx) {
       toast(`Deleted "${t.title}"`, () => { const list = (p.tasks[ds] = p.tasks[ds] || []); list.splice(Math.min(idx, list.length), 0, t); p.tombstones = p.tombstones.filter(id => id !== t.id); save(p); render(); });
     };
     const m = row.querySelector(".min"); if (m) m.onclick = () => startTimer(t.min, t.title, { pid: p.id, ds, tid: t.id });
+    const ms = row.querySelector(".mins"); if (ms) ms.onchange = () => { t.min = +ms.value; save(p); render(); };
     const mv = row.querySelector(".mv"); if (mv) mv.onclick = () => {
-      const toDs = ctx.isPast ? iso(today()) : iso(addDays(today(), 1));
+      const pull = ctx.isPast || (!ctx.isPast && !ctx.isToday);
+      const toDs = pull ? iso(today()) : iso(addDays(today(), 1));
       moveTaskCore(p, ds, t, toDs); save(p); render();
-      toast(ctx.isPast ? `"${t.title}" moved to today` : `"${t.title}" moved to tomorrow`, null);
+      toast(pull ? `"${t.title}" moved to today` : `"${t.title}" moved to tomorrow`, null);
     };
     const rp = row.querySelector(".rep"); if (rp) rp.onclick = () => toggleDaily(p, t);
   });
@@ -332,6 +336,8 @@ function startTimer(min, name, ref) {
   stopTimer(); // credits any timer that was still running
   tEnd = Date.now() + min * 60000; tStart = Date.now(); tPlan = min * 60; tRef = ref || null; tCredited = false; timerTaskName = name;
   saveTimer();
+  ensureAudio(); // unlock the audio channel inside this tap, so the alarm can actually play later (iOS)
+  if (tickPref) startTick();
   showTimer(name, true); announce(`${min} minute timer started: ${name}`);
   maybeAskAlerts();
   render(); // reflect the running timer on the hero card immediately
@@ -343,7 +349,7 @@ function showTimer(name, fresh) {
   const s = secondsLeft();
   cuesFired = new Set(); for (const c of cueList()) if (s <= c.at) cuesFired.add(c.at); // don't replay cues on resume
   paint(s);
-  if (s > 0) { tInt = setInterval(tick, 500); acquireLock(); }
+  if (s > 0) { tInt = setInterval(tick, 500); acquireLock(); if (!fresh && tickPref && !tickSrc) startTick(); }
   else finish(!fresh); // already over when resumed: show "allowed to stop", don't buzz twice
 }
 // Time-as-space cues: interval nudges so the remaining time stays felt, not just displayed.
@@ -382,10 +388,12 @@ function credit(sec) {
 function finish(quiet) {
   clearInterval(tInt); tInt = null; releaseLock();
   if (tStart && tPlan) credit(Math.min(tPlan, Math.round((Math.min(Date.now(), tEnd) - tStart) / 1000)));
+  stopTickSound(); // silence itself is part of the signal
   timerEl.classList.add("done");
   $("tn").textContent = "Time's up. You're allowed to stop."; $("tstop").textContent = "Done";
   document.title = "Unstuck";
-  announce("Time's up. You're allowed to stop."); if (!quiet) beep();
+  announce("Time's up. You're allowed to stop.");
+  if (!quiet) { beep(); flash(); }
   notifyEnd();
   render(); // let the hero card swap to "Mark done"
 }
@@ -393,7 +401,7 @@ function stopTimer() {
   if (timerEl.classList.contains("on") && !timerEl.classList.contains("done") && tStart && tPlan) {
     credit(Math.max(0, Math.min(tPlan, Math.round((Math.min(Date.now(), tEnd) - tStart) / 1000))));
   }
-  clearInterval(tInt); tInt = null; timerTaskName = null; tRef = null; tStart = 0; tPlan = 0; tCredited = false; releaseLock();
+  clearInterval(tInt); tInt = null; timerTaskName = null; tRef = null; tStart = 0; tPlan = 0; tCredited = false; releaseLock(); stopTickSound();
   timerEl.classList.remove("on", "done"); document.title = "Unstuck";
   try { localStorage.removeItem(TKEY); } catch (e) {}
 }
@@ -406,18 +414,66 @@ function resumeTimer() {
     showTimer(t.name, false);
   } else stopTimer();
 }
+// One shared AudioContext, created/resumed inside a user tap (startTimer). A context created at
+// finish time is suspended on iOS — the old alarm never played there. This one is already unlocked.
+let audioCtx = null, tickSrc = null;
+let tickPref = false; try { tickPref = localStorage.getItem("unstuck-tick") === "1"; } catch (e) {}
+function ensureAudio() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+  } catch (e) {}
+  return audioCtx;
+}
+// Optional once-a-second tick while a timer runs. It makes passing time audible (time-as-sound),
+// keeps the audio session alive in the background so the finish alarm can play, and its silence
+// at zero is itself the signal. A looped 1s buffer needs no JS timers, so throttling can't kill it.
+function tickBuffer(a) {
+  const sr = a.sampleRate, buf = a.createBuffer(1, sr, sr), d = buf.getChannelData(0);
+  for (let i = 0; i < sr * 0.03; i++) d[i] = Math.sin(i / sr * 2 * Math.PI * 1000) * Math.exp(-i / (sr * 0.006)) * 0.5;
+  return buf;
+}
+function startTick() {
+  const a = ensureAudio(); if (!a) return;
+  stopTickSound();
+  try {
+    tickSrc = a.createBufferSource(); tickSrc.buffer = tickBuffer(a); tickSrc.loop = true;
+    const g = a.createGain(); g.gain.value = 0.12;
+    tickSrc.connect(g); g.connect(a.destination); tickSrc.start();
+  } catch (e) { tickSrc = null; }
+}
+function stopTickSound() { try { if (tickSrc) tickSrc.stop(); } catch (e) {} tickSrc = null; }
+function updateTickBtn() { const b = $("tsound"); b.setAttribute("aria-pressed", String(tickPref)); b.textContent = tickPref ? "🔊" : "🔇"; }
+$("tsound").onclick = () => {
+  tickPref = !tickPref; try { localStorage.setItem("unstuck-tick", tickPref ? "1" : "0"); } catch (e) {}
+  updateTickBtn();
+  if (timerEl.classList.contains("on") && !timerEl.classList.contains("done")) { if (tickPref) startTick(); else stopTickSound(); }
+};
+updateTickBtn();
+// The alarm: six alternating tones over ~2 seconds, plus a long vibration pattern.
 function beep() {
   try {
-    if (navigator.vibrate) navigator.vibrate([300, 150, 300, 150, 600]);
-    const a = new (window.AudioContext || window.webkitAudioContext)();
-    [0, .35, .7].forEach(t => { const o = a.createOscillator(), g = a.createGain(); o.frequency.value = 880; o.connect(g); g.connect(a.destination); g.gain.setValueAtTime(.25, a.currentTime + t); g.gain.exponentialRampToValueAtTime(.001, a.currentTime + t + .3); o.start(a.currentTime + t); o.stop(a.currentTime + t + .3); });
+    if (navigator.vibrate) navigator.vibrate([400, 150, 400, 150, 800]);
+    const a = ensureAudio(); if (!a) return;
+    [0, .3, .6, 1.1, 1.4, 1.7].forEach((t, i) => {
+      const o = a.createOscillator(), g = a.createGain(); o.frequency.value = i % 2 ? 660 : 880;
+      o.connect(g); g.connect(a.destination);
+      g.gain.setValueAtTime(.3, a.currentTime + t); g.gain.exponentialRampToValueAtTime(.001, a.currentTime + t + .28);
+      o.start(a.currentTime + t); o.stop(a.currentTime + t + .3);
+    });
   } catch (e) { console.warn("beep unavailable", e); }
+}
+// Full-screen green pulse at zero — visible from across the room. Three slow pulses (~1.7Hz,
+// far below photosensitivity thresholds); reduced-motion gets one gentle fade instead.
+function flash() {
+  const f = $("flash"); f.classList.remove("go"); void f.offsetWidth; f.classList.add("go");
+  f.addEventListener("animationend", () => f.classList.remove("go"), { once: true });
 }
 // One soft blip for interval cues — a nudge, not an alarm.
 function blip() {
   try {
     if (navigator.vibrate) navigator.vibrate(120);
-    const a = new (window.AudioContext || window.webkitAudioContext)();
+    const a = ensureAudio(); if (!a) return;
     const o = a.createOscillator(), g = a.createGain(); o.frequency.value = 660; o.connect(g); g.connect(a.destination);
     g.gain.setValueAtTime(.12, a.currentTime); g.gain.exponentialRampToValueAtTime(.001, a.currentTime + .2);
     o.start(); o.stop(a.currentTime + .2);
