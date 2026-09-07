@@ -225,12 +225,21 @@ try {
   await ctx.setOffline(false);
 
   // Sync button appears when config has keys (no network call is made until sign-in)
-  await page.addInitScript(() => { window.addEventListener("DOMContentLoaded", () => {}); });
+  // Stub the sync library (SRI blocks serving a fake from the CDN route) so the send flow runs offline.
+  await page.addInitScript(() => {
+    window.supabase = { createClient: () => ({
+      auth: { signInWithOtp: async () => ({ error: null }), onAuthStateChange: () => {}, getSession: async () => ({ data: { session: null } }) }
+    }) };
+  });
   await page.route("**/config.js", r => r.fulfill({ contentType: "application/javascript", body: 'window.UNSTUCK_CONFIG={supabaseUrl:"https://example.supabase.co",supabaseAnonKey:"anon"};' }));
   await page.evaluate(async () => { const rs = await navigator.serviceWorker.getRegistrations(); for (const r of rs) await r.unregister(); const ks = await caches.keys(); for (const k of ks) await caches.delete(k); });
   await page.reload({ waitUntil: "networkidle" });
   check(await page.locator("#syncBtn").isVisible(), "sync button shows when config has keys");
   await page.click("#syncBtn"); check(await page.locator("#syncSheet.on").isVisible(), "sync sheet opens with email form");
+  await page.fill("#semail", "test@example.com");
+  await page.click("#ssend");
+  await page.waitForTimeout(400);
+  check(await page.locator("#ssent").isVisible() && (await page.textContent("#sentTo")) === "test@example.com" && await page.locator("#sform").isHidden(), "magic-link send swaps to an unmissable confirmation");
 
   // iOS Safari never fires beforeinstallprompt — the manual add-to-home-screen nudge covers it
   const ios = await browser.newContext({ viewport: { width: 390, height: 780 }, hasTouch: true, isMobile: true, userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1" });

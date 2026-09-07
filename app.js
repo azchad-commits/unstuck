@@ -910,16 +910,21 @@ const sync = (() => {
     try { dirty = new Set(JSON.parse(localStorage.getItem("unstuck-dirty") || "[]")); } catch (e) {}
 
     // Handlers are wired up front so the sheet works (and can retry) even if the library failed to load.
-    $("syncBtn").onclick = async () => { msg(""); openSheet("syncSheet", $("syncBtn")); if (!sb) await connect(); };
+    $("syncBtn").onclick = async () => { msg(""); $("sform").hidden = false; $("ssent").hidden = true; openSheet("syncSheet", $("syncBtn")); if (!sb) await connect(); };
     $("ssend").onclick = async () => {
       const email = $("semail").value.trim(); if (!email) { msg("Enter your email first.", true); return; }
       if (!sb && !(await connect())) return;
-      $("ssend").disabled = true; msg("Sending…");
+      $("ssend").disabled = true; $("ssend").textContent = "Sending…";
       try {
         const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.origin + location.pathname } });
-        if (error) msg(error.message, true); else msg("Check your email and tap the link. It opens Unstuck signed in.");
+        if (error) {
+          msg(/rate limit/i.test(error.message || "") ? "Email limit reached for now — the free tier only sends a few sign-in links per hour. Wait a bit and try once." : error.message, true);
+        } else {
+          // Swap to an unmissable confirmation instead of a small grey line under the field.
+          $("sentTo").textContent = email; $("sform").hidden = true; $("ssent").hidden = false;
+        }
       } catch (e) { msg(e.message || "Couldn't send the link.", true); }
-      $("ssend").disabled = false;
+      $("ssend").disabled = false; $("ssend").textContent = "Send sign-in link";
     };
     $("semail").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("ssend").click(); } });
     $("ssyncnow").onclick = async () => { msg("Syncing…"); try { await pull(); msg(dirty.size ? "Some changes still waiting — are you online?" : "Up to date."); } catch (e) { fail(e); } };
