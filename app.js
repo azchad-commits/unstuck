@@ -813,7 +813,7 @@ const sync = (() => {
   const enabled = !!(cfg.supabaseUrl && cfg.supabaseAnonKey);
   // Pinned version + Subresource Integrity: a tampered CDN file will refuse to run instead of running with your session.
   const LIB = { src: "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.115.0/dist/umd/supabase.js", integrity: "sha384-CLZeq1dk8+Uzrs7TVvBUdlFoV5F0DMqgRoeHa8g5wJcuPe5SkVfEvdxB0ZuzlnBQ" };
-  let sb = null, user = null, dirty = new Set(), pushTimer = null, channel = null, loading = null, lastPull = null;
+  let sb = null, user = null, plus = true, dirty = new Set(), pushTimer = null, channel = null, loading = null, lastPull = null;
   const dot = $("syncDot"), txt = $("syncTxt");
   function status(state, label) { dot.className = state; txt.textContent = label; }
   function msg(text, err) { const m = $("syncIn").hidden ? $("smsg") : $("smsg2"); m.textContent = text || ""; m.classList.toggle("err", !!err); }
@@ -836,8 +836,26 @@ const sync = (() => {
     db.plans[i] = merged; return true;
   }
 
+  // Dayfall Plus: once config.js names a checkout link, sync is a Plus feature. Blank = free
+  // for everyone (the pre-launch default). Founding accounts are grandfathered in profiles.plus.
+  // Fails open — a network blip must never lock a paying user out of sync.
+  async function checkPlus() {
+    if (!cfg.plusUrl) { plus = true; updatePlusUI(); return; }
+    try {
+      const { data } = await sb.from("profiles").select("plus").eq("user_id", user.id).maybeSingle();
+      plus = !!(data && data.plus);
+    } catch (e) { plus = true; }
+    updatePlusUI();
+  }
+  function updatePlusUI() {
+    $("plusBox").hidden = plus;
+    $("ssyncnow").hidden = !plus;
+    $("syncH2").textContent = plus ? "Synced" : "Signed in";
+    if (user && !plus) status("", "Plus");
+  }
+
   async function push() {
-    if (!user || !navigator.onLine || dirty.size === 0) return;
+    if (!user || !plus || !navigator.onLine || dirty.size === 0) return;
     const ids = [...dirty]; const rows = db.plans.filter(p => ids.includes(p.id)).map(toRow);
     if (!rows.length) { dirty.clear(); saveDirty(); return; }
     status("busy", "Saving…");
@@ -848,7 +866,7 @@ const sync = (() => {
   }
 
   async function pull() {
-    if (!user || !navigator.onLine) return;
+    if (!user || !plus || !navigator.onLine) return;
     status("busy", "Syncing…");
     // Incremental after the first pull (5-minute overlap absorbs clock differences).
     let q = sb.from("plans").select("*");
@@ -876,8 +894,13 @@ const sync = (() => {
   function setUser(u) {
     user = u;
     $("syncOut").hidden = !!u; $("syncIn").hidden = !u;
-    if (u) { $("swho").textContent = u.email || ""; try { lastPull = localStorage.getItem("unstuck-lastpull-" + u.id); } catch (e) {} status("ok", "Synced"); subscribe(); pull().catch(fail); }
-    else { lastPull = null; if (channel) { sb.removeChannel(channel); channel = null; } status("", "Sync"); }
+    if (u) {
+      $("swho").textContent = u.email || "";
+      try { lastPull = localStorage.getItem("unstuck-lastpull-" + u.id); } catch (e) {}
+      checkPlus().then(() => {
+        if (plus) { status("ok", "Synced"); subscribe(); pull().catch(fail); }
+      });
+    } else { plus = true; lastPull = null; if (channel) { sb.removeChannel(channel); channel = null; } status("", "Sync"); updatePlusUI(); }
   }
 
   function loadLib() {
@@ -928,6 +951,13 @@ const sync = (() => {
     };
     $("semail").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("ssend").click(); } });
     $("ssyncnow").onclick = async () => { msg("Syncing…"); try { await pull(); msg(dirty.size ? "Some changes still waiting — are you online?" : "Up to date."); } catch (e) { fail(e); } };
+    $("plusGo").href = cfg.plusUrl || "#";
+    $("plusRefresh").onclick = async () => {
+      msg("Checking…");
+      await checkPlus();
+      if (plus) { msg("Plus is active. Syncing…"); status("ok", "Synced"); subscribe(); pull().catch(fail); }
+      else msg("Not active yet — payments can take a minute. Make sure you paid with this same email.", true);
+    };
     $("sout").onclick = async () => { try { await sb.auth.signOut(); } catch (e) {} closeSheet($("syncSheet")); };
     window.addEventListener("online", async () => { if (!sb) await connect(); if (user) pull().catch(fail); });
     document.addEventListener("visibilitychange", () => { if (!document.hidden && user) pull().catch(fail); });

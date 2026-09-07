@@ -241,6 +241,23 @@ try {
   await page.waitForTimeout(400);
   check(await page.locator("#ssent").isVisible() && (await page.textContent("#sentTo")) === "test@example.com" && await page.locator("#sform").isHidden(), "magic-link send swaps to an unmissable confirmation");
 
+  // Dayfall Plus: with a checkout link configured, a signed-in non-Plus account sees the
+  // upgrade card instead of sync (stubbed session + profiles row)
+  await page.addInitScript(() => {
+    window.supabase = { createClient: () => ({
+      auth: { signInWithOtp: async () => ({ error: null }), onAuthStateChange: () => {}, getSession: async () => ({ data: { session: { user: { id: "u1", email: "plus@test.dev" } } } }) },
+      from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { plus: false } }) }) }) }),
+      channel: () => ({ on() { return this; }, subscribe() {} }), removeChannel() {}
+    }) };
+  });
+  await page.route("**/config.js", r => r.fulfill({ contentType: "application/javascript", body: 'window.UNSTUCK_CONFIG={supabaseUrl:"https://example.supabase.co",supabaseAnonKey:"anon",plusUrl:"https://buy.stripe.com/test_dayfall"};' }));
+  // The re-registered service worker fetches config.js itself, bypassing page.route — clear it again.
+  await page.evaluate(async () => { const rs = await navigator.serviceWorker.getRegistrations(); for (const r of rs) await r.unregister(); const ks = await caches.keys(); for (const k of ks) await caches.delete(k); });
+  await page.reload({ waitUntil: "networkidle" });
+  await page.click("#syncBtn"); await page.waitForTimeout(500);
+  check(await page.locator("#plusBox").isVisible() && (await page.getAttribute("#plusGo", "href")).includes("stripe"), "non-Plus account sees the upgrade card instead of sync");
+  check(await page.locator("#ssyncnow").isHidden() && (await page.textContent("#syncTxt")) === "Plus", "sync controls pause while un-upgraded");
+
   // iOS Safari never fires beforeinstallprompt — the manual add-to-home-screen nudge covers it
   const ios = await browser.newContext({ viewport: { width: 390, height: 780 }, hasTouch: true, isMobile: true, userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1" });
   const ipage = await ios.newPage();

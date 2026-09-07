@@ -1,4 +1,5 @@
-"""Generate Dayfall PWA icons: navy square, amber countdown ring, white check-free dial."""
+"""Generate Dayfall PWA icons: navy square, amber countdown ring, and the Dayfall mark —
+a grain of "today" falling onto the pile of days already done."""
 from PIL import Image, ImageDraw, ImageFont
 import os, math
 
@@ -26,14 +27,20 @@ def draw(size, maskable=False):
         a = math.radians(ang)
         px, py = cx + rad * math.cos(a), cy + rad * math.sin(a)
         d.ellipse([px - r, py - r, px + r, py + r], fill=AMBER)
-    # Center: a bold "U" as the wordmark-lite
-    try:
-        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", int(W * 0.42))
-    except Exception:
-        font = ImageFont.load_default()
-    tw = d.textbbox((0, 0), "U", font=font)
-    txt_w, txt_h = tw[2] - tw[0], tw[3] - tw[1]
-    d.text((cx - txt_w / 2 - tw[0], cy - txt_h / 2 - tw[1]), "U", font=font, fill=WHITE)
+    # Center: the Dayfall mark — a white grain (today) falling onto the amber pile (days done),
+    # with a dimming trail above it. Maskable icons shrink the motif into the safe zone.
+    def blend(c1, c2, t):
+        return tuple(round(a * (1 - t) + b * t) for a, b in zip(c1, c2))
+    k = 0.72 if maskable else 1.0
+    mound_w, mound_h = W * 0.32 * k, W * 0.115 * k
+    mound_top = cy + W * 0.115 * k
+    d.ellipse([cx - mound_w / 2, mound_top, cx + mound_w / 2, mound_top + mound_h], fill=AMBER)
+    for dy, r, t in ((-0.235, 0.028, 0.30), (-0.115, 0.040, 0.55)):
+        rr = W * r * k
+        d.ellipse([cx - rr, cy + W * dy * k - rr, cx + rr, cy + W * dy * k + rr], fill=blend(NAVY, AMBER, t))
+    rr = W * 0.056 * k
+    gy = cy + W * 0.02 * k
+    d.ellipse([cx - rr, gy - rr, cx + rr, gy + rr], fill=WHITE)
     return img.resize((size, size), Image.LANCZOS)
 
 for s in (192, 512):

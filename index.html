@@ -119,6 +119,7 @@ main{padding:14px 12px 120px;max-width:560px;margin:0 auto}
 .sheet .btn.ghost{background:var(--tint);color:var(--ink)}.sheet .btn:disabled{opacity:.5}
 .sheet .msg{font-size:14px;color:var(--muted);margin-top:10px;min-height:1.4em}.sheet .msg.err{color:var(--red)}
 .sentbig{font-size:19px;font-weight:700;margin:6px 0 2px}
+.sheet a.btn{display:block;text-align:center;text-decoration:none;box-sizing:border-box}
 .sheet .citem{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-weight:700;font-size:17px;color:var(--ink);margin-top:0;cursor:pointer}
 .sheet .citem input{width:22px;height:22px;accent-color:var(--accent);margin-top:1px;flex:none}
 .sheet .citem .ct{flex:1}
@@ -236,6 +237,12 @@ main{padding:14px 12px 120px;max-width:560px;margin:0 auto}
   <div id="syncIn" hidden>
     <h2 id="syncH2">Synced</h2>
     <p>Signed in as <b id="swho"></b>. Changes save here first, then sync when you're online.</p>
+    <div id="plusBox" hidden>
+      <p class="sentbig">⭐ Dayfall Plus</p>
+      <p>Syncing across devices is a Plus feature — <b>$19/year</b>. Everything else stays free, and your lists keep working fully on this device.</p>
+      <a class="btn" id="plusGo" target="_blank" rel="noopener">Get Dayfall Plus</a>
+      <button class="btn ghost" id="plusRefresh">I've upgraded — check again</button>
+    </div>
     <div class="msg" id="smsg2"></div>
     <button class="btn" id="ssyncnow">Sync now</button><button class="btn ghost" id="sout">Sign out</button><button class="btn ghost" data-close>Close</button>
   </div>

@@ -52,6 +52,23 @@ Then in the app: tap **Sync** → enter your email → tap the link in the email
 
 Free-tier magic-link emails are rate-limited (a handful per hour) and come from Supabase's shared sender. When you're ready for real users, set up custom SMTP under *Authentication → SMTP Settings* so links come from your own domain and don't land in spam.
 
+## Dayfall Plus (paid sync)
+
+Sync is free while `plusUrl` in `config.js` is blank. To charge for it ($19/yr):
+
+1. **Stripe account** at stripe.com (human step: identity + bank details).
+2. **Payment Link**: Stripe → Payment Links → new product "Dayfall Plus", $19/year recurring → copy the `https://buy.stripe.com/...` link.
+3. **Webhook**: Stripe → Developers → Webhooks → Add endpoint → URL `https://<project-ref>.supabase.co/functions/v1/stripe-webhook`, event `checkout.session.completed` → copy its signing secret.
+4. **Deploy the function** (needs the Supabase CLI, `brew install supabase/tap/supabase`):
+   ```
+   supabase link --project-ref <project-ref>
+   supabase secrets set STRIPE_SECRET_KEY=sk_live_... STRIPE_WEBHOOK_SECRET=whsec_...
+   supabase functions deploy stripe-webhook --no-verify-jwt
+   ```
+5. **Flip the switch**: put the Payment Link into `plusUrl` in `config.js`, commit, push.
+
+Mechanics: every account gets a `profiles` row (`plus` defaults false; accounts created before the schema's grandfather insert ran are `plus = true` forever). A signed-in non-Plus user sees the upgrade card in the Sync sheet instead of syncing; the app stays fully functional device-locally. Payment (matched by email) flips `plus` via the webhook; "I've upgraded — check again" in the sheet re-checks. The check fails open — network trouble never locks a payer out.
+
 ## How sync works
 
 - **Local first.** Every change is written to `localStorage` immediately. The app never waits on the network.
