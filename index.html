@@ -6,7 +6,7 @@
 <title>Unstuck</title>
 <meta name="description" content="A countdown planner for ADHD and time blindness. Every task has a time; tapping the time starts a timer.">
 <meta name="theme-color" content="#0F2A44">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -16,10 +16,15 @@
 <meta name="apple-mobile-web-app-title" content="Unstuck">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#0F2A44;--ink:#1B2733;--muted:#4F5B68;--paper:#E9EEF3;--card:#fff;--amber:#E8A33D;--amber-ink:#5A3A00;--green:#3C8D5A;--red:#C4462F;--line:#D4DCE5;--urgent:#B8561F;--urgent-hi:#FFB26B;--info:#6C93BE;--tint:#E7EDF3;--tint-line:#B9C6D3}
+:root{--navy:#0F2A44;--ink:#1B2733;--muted:#4F5B68;--paper:#E9EEF3;--card:#fff;--amber:#E8A33D;--amber-ink:#5A3A00;--green:#3C8D5A;--red:#C4462F;--line:#D4DCE5;--urgent:#B8561F;--urgent-hi:#FFB26B;--info:#6C93BE;--tint:#E7EDF3;--tint-line:#B9C6D3;
+--accent:#0F2A44;--btn:#0F2A44;--field:#fff;--sheet:#fff;--past-bg:#F4F6F9;--past-ink:#3D4854;--err-bg:#FBE9E5}
+@media(prefers-color-scheme:dark){:root{
+--ink:#E7EDF3;--muted:#9BA9B7;--paper:#0F1722;--card:#1A2431;--line:#2C3947;--tint:#1F2D3D;--tint-line:#3A4E63;
+--urgent:#F09763;--green:#57B27C;--red:#E57F66;
+--accent:#8FB6DF;--btn:#2E5F92;--field:#111B26;--sheet:#1A2431;--past-bg:#141D28;--past-ink:#B9C6D3;--err-bg:#3A2019}}
 *{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,sans-serif;font-size:17px;line-height:1.35;-webkit-tap-highlight-color:transparent}
 button,input,select{font:inherit}[hidden]{display:none!important}
-:focus-visible{outline:3px solid var(--navy);outline-offset:2px}.top :focus-visible,.stuck:focus-visible,.timer :focus-visible{outline-color:#fff}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}.top :focus-visible,.stuck:focus-visible,.timer :focus-visible{outline-color:#fff}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .top{position:sticky;top:0;z-index:10;background:var(--navy);color:#fff;padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top))}
 .top .row{display:flex;align-items:flex-end;gap:12px}
@@ -29,79 +34,101 @@ button,input,select{font:inherit}[hidden]{display:none!important}
 .views{display:flex;gap:6px;margin-top:12px}
 .views button{flex:1;border:0;border-radius:8px;padding:8px;background:rgba(255,255,255,.12);color:#fff;font-weight:700}
 .views button.on{background:#fff;color:var(--navy)}
-.sync{border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:8px 10px;font-size:13px;display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.sync{border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:8px 10px;font-size:13px;display:flex;align-items:center;gap:6px;flex:0 0 auto;min-width:40px;justify-content:center}
 .sync i{width:8px;height:8px;border-radius:99px;background:#9AA7B4;display:inline-block}.sync i.ok{background:#7DD39A}.sync i.busy{background:var(--info)}.sync i.err{background:#FF8A73}
-.timer{display:none;margin-top:12px;background:var(--amber);color:var(--amber-ink);border-radius:12px;padding:10px 14px;align-items:center;gap:12px}
-.timer.on{display:flex}.timer .t{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}.timer .n{font-size:14px}.timer>div{flex:1}
+.timer{display:none;margin-top:12px;background:var(--amber);color:var(--amber-ink);border-radius:12px;padding:10px 14px}
+.timer.on{display:block}
+.timer .trow{display:flex;align-items:center;gap:12px}.timer .trow>div{flex:1}
+.timer .t{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}.timer .n{font-size:14px}
 .timer button{border:0;background:var(--amber-ink);color:#fff;border-radius:8px;padding:8px 12px;font-weight:700}
-.timer.done{background:var(--green);color:#fff}.timer.done button{background:#fff;color:var(--green)}
+.timer .tbarw{height:6px;border-radius:99px;background:rgba(90,58,0,.25);overflow:hidden;margin-top:8px}
+.timer .tbarw i{display:block;height:100%;width:100%;background:var(--amber-ink);transition:width .5s linear}
+.timer.done{background:var(--green);color:#fff}.timer.done button{background:#fff;color:var(--green)}.timer.done .tbarw{display:none}
 main{padding:14px 12px 120px;max-width:560px;margin:0 auto}
 .day{background:var(--card);border-radius:14px;margin-bottom:10px;border:1px solid var(--line);overflow:hidden}
-.day.today{border:2px solid var(--navy)}.day.past{background:#F4F6F9}.day.past .hd .d{color:#3D4854}
+.day.today{border:2px solid var(--accent)}.day.past{background:var(--past-bg)}.day.past .hd .d{color:var(--past-ink)}
+.day.other{border-style:dashed}
 .hd{display:flex;align-items:center;gap:8px;padding:13px 16px}
 .hdmain{width:100%;text-align:left;background:none;border:0;padding:0;display:flex;align-items:center;gap:10px;color:inherit;cursor:pointer;flex:1;font:inherit}
 .hd .d{font-weight:700;font-size:18px;flex:1}.hd .d small{display:block;font-weight:400;font-size:14px;color:var(--muted)}
 .hd .left{font-weight:700;font-size:15px;color:var(--muted);white-space:nowrap}.hd .left.urgent{color:var(--urgent)}
-.tag{background:var(--navy);color:#fff;font-size:12px;font-weight:700;padding:3px 8px;border-radius:99px}
-.editbtn{flex:none;border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;min-height:40px}
-.editbtn[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.tag{background:var(--btn);color:#fff;font-size:12px;font-weight:700;padding:3px 8px;border-radius:99px}
+.editbtn{flex:none;border:1px solid var(--line);background:var(--field);color:var(--accent);border-radius:8px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;min-height:40px}
+.editbtn[aria-pressed="true"]{background:var(--accent);color:var(--card);border-color:var(--accent)}
 .body{padding:0 16px 12px}
 .task{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
-.chk{flex:none;width:28px;height:28px;border:2px solid var(--navy);border-radius:8px;background:#fff;cursor:pointer;display:grid;place-items:center;padding:0}
+.chk{flex:none;width:28px;height:28px;border:2px solid var(--accent);border-radius:8px;background:var(--field);cursor:pointer;display:grid;place-items:center;padding:0}
 .chk.on{background:var(--green);border-color:var(--green)}.chk.on::after{content:"";width:8px;height:14px;border-right:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(45deg) translate(-1px,-2px)}
 .txt{flex:1;padding-top:1px}.task.on .txt{text-decoration:line-through;color:var(--muted)}
-.star{flex:none;border:0;background:none;color:var(--muted);opacity:.6;font-size:16px;min-width:28px;min-height:28px;padding:0 2px;cursor:pointer;line-height:1}.star.on{color:var(--navy);opacity:1}
-.min{flex:none;border:1.5px solid var(--navy);color:var(--navy);background:#fff;border-radius:99px;padding:8px 14px;font-size:15px;font-weight:700;cursor:pointer;min-height:40px;min-width:40px;display:inline-flex;align-items:center;justify-content:center}
+.repmark{color:var(--muted);font-size:13px;margin-left:6px}
+.star{flex:none;border:0;background:none;color:var(--muted);opacity:.6;font-size:16px;min-width:28px;min-height:28px;padding:0 2px;cursor:pointer;line-height:1}.star.on{color:var(--accent);opacity:1}
+.min{flex:none;border:1.5px solid var(--accent);color:var(--accent);background:var(--field);border-radius:99px;padding:8px 14px;font-size:15px;font-weight:700;cursor:pointer;min-height:40px;min-width:40px;display:inline-flex;align-items:center;justify-content:center}
 .min:active,.min:hover{background:var(--amber);border-color:var(--amber);color:var(--amber-ink)}.task.on .min{opacity:.35;pointer-events:none}
+.mv,.rep{flex:none;border:1px solid var(--line);background:var(--field);color:var(--accent);border-radius:99px;padding:6px 10px;font-size:13px;font-weight:700;cursor:pointer;min-height:36px;display:none;align-items:center;white-space:nowrap}
+.rep[aria-pressed="true"]{background:var(--accent);color:var(--card);border-color:var(--accent)}
+.day.editing .task .mv,.day.editing .task .rep{display:inline-flex}
+.day.editing .task .star,.day.editing .task .min{display:none}
 .del{flex:none;border:0;background:none;color:var(--muted);font-size:22px;min-width:40px;min-height:40px;padding:0 4px;cursor:pointer;line-height:1;display:none;align-items:center;justify-content:center}
 .day.editing .task .del{display:inline-flex}
 .add{display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
-.add input{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
-.add select{border:1px solid var(--line);border-radius:8px;padding:8px 6px}
-.add button{border:0;background:var(--navy);color:#fff;border-radius:8px;padding:8px 12px;font-weight:700}
+.add input{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--field);color:var(--ink)}
+.add select{border:1px solid var(--line);border-radius:8px;padding:8px 6px;background:var(--field);color:var(--ink)}
+.add button{border:0;background:var(--btn);color:#fff;border-radius:8px;padding:8px 12px;font-weight:700}
 .hero{margin:8px 0 4px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px}
 .hero .htitle{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
 .hero .hname{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:10px}
 .hero .hbtn{display:block;width:100%;border:0;border-radius:10px;padding:14px;font-weight:700;font-size:17px;cursor:pointer;min-height:40px}
 .hero .hbtn.amber{background:var(--amber);color:var(--amber-ink)}
 .hero .hbtn.amber:hover{background:#DC9A34}
-.hero .hbtn.navy{background:var(--navy);color:#fff}
+.hero .hbtn.navy{background:var(--btn);color:#fff}
 .hero .hbtn.quiet{background:var(--paper);color:var(--muted);cursor:default}
 .hero .hbtn:disabled{opacity:1}
+.hero .hbtn2{display:block;width:100%;border:1px solid var(--line);background:var(--tint);color:var(--ink);border-radius:10px;padding:10px;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px}
 .hero.done{display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:700;font-size:15px;padding:12px 16px}
 .hero.done .hcheck{color:var(--green);font-size:18px}
+.cele{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px;margin-bottom:10px;text-align:center}
+.cele .ctitle{font-size:22px;font-weight:700;margin-bottom:6px}
+.cele p{color:var(--muted);margin:0 0 12px}
+.cele button{display:block;width:100%;border:0;border-radius:10px;padding:13px;font-weight:700;font-size:16px;cursor:pointer;margin-top:8px}
+.cele .primary{background:var(--btn);color:#fff}.cele .quiet2{background:var(--tint);color:var(--ink)}
+.recap{font-size:14px;color:var(--muted);text-align:center;margin:14px 0 0;font-weight:700}
 .month{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .month .cell{background:var(--card);border:1px solid var(--line);border-radius:8px;min-height:58px;padding:5px;font-size:12px;white-space:nowrap;overflow:hidden;position:relative;cursor:pointer;text-align:left;color:inherit;font-family:inherit}
-.month .cell.today{border:2px solid var(--navy);padding:4px}.month .cell.out{opacity:.35}.month .cell.empty{background:transparent;border:0}
+.month .cell.today{border:2px solid var(--accent);padding:4px}.month .cell.out{opacity:.35}.month .cell.empty{background:transparent;border:0}
 .month .cell .n{font-weight:700;font-size:14px}.month .cell .l{color:var(--muted);font-size:11px}.month .cell .l.urgent{color:var(--urgent)}
 .prog{position:absolute;left:5px;right:5px;bottom:5px;height:4px;border-radius:99px;background:var(--line);overflow:hidden}.prog i{display:block;height:100%;background:var(--green)}
 .mh{display:grid;grid-template-columns:repeat(7,1fr);font-size:11px;color:var(--muted);text-align:center;margin-bottom:4px}
-.stuckbar{position:fixed;left:0;right:0;bottom:0;z-index:9;background:#fff;border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:center;box-shadow:0 -4px 14px rgba(0,0,0,.06)}
+.stuckbar{position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--card);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:center;box-shadow:0 -4px 14px rgba(0,0,0,.06)}
 .stuck{background:var(--amber);color:var(--amber-ink);border:0;border-radius:99px;padding:13px 18px;font-weight:700;min-height:44px;cursor:pointer;width:100%;max-width:360px}
 .sheet{display:none;position:fixed;inset:0;background:rgba(15,42,68,.6);z-index:20;align-items:flex-end}.sheet.on{display:flex}
-.sheet>div{background:#fff;width:100%;border-radius:18px 18px 0 0;padding:22px 20px calc(24px + env(safe-area-inset-bottom));max-height:85vh;overflow:auto}
-.sheet h2{margin:0 0 10px;font-size:22px}.sheet p{margin:10px 0}
+.sheet>div{background:var(--sheet);width:100%;border-radius:18px 18px 0 0;padding:22px 20px calc(24px + env(safe-area-inset-bottom));max-height:85vh;overflow:auto}
+.sheet h2{margin:0 0 10px;font-size:22px}.sheet h3{margin:16px 0 4px;font-size:15px;color:var(--muted)}.sheet p{margin:10px 0}
 .sheet label{display:block;font-size:14px;color:var(--muted);margin-top:12px}
-.sheet input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:4px}
-.sheet .btn{width:100%;margin-top:14px;border:0;background:var(--navy);color:#fff;border-radius:12px;padding:14px;font-weight:700;font-size:17px}
-.sheet .btn.ghost{background:#eee;color:var(--ink)}.sheet .btn:disabled{opacity:.5}
+.sheet input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:4px;background:var(--field);color:var(--ink)}
+.sheet .btn{width:100%;margin-top:14px;border:0;background:var(--btn);color:#fff;border-radius:12px;padding:14px;font-weight:700;font-size:17px}
+.sheet .btn.ghost{background:var(--tint);color:var(--ink)}.sheet .btn:disabled{opacity:.5}
 .sheet .msg{font-size:14px;color:var(--muted);margin-top:10px;min-height:1.4em}.sheet .msg.err{color:var(--red)}
-.empty{text-align:center;color:var(--muted);padding:40px 20px}.empty button{margin-top:14px;border:0;background:var(--navy);color:#fff;border-radius:12px;padding:14px 20px;font-weight:700}
+.citem{padding:8px 0;border-bottom:1px solid var(--line);font-weight:700}
+.citem small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.arow{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.arow button{border:1px solid var(--line);background:var(--field);color:var(--accent);border-radius:8px;padding:7px 11px;font-weight:700;cursor:pointer}
+.empty{text-align:center;color:var(--muted);padding:40px 20px}.empty button{margin-top:14px;border:0;background:var(--btn);color:#fff;border-radius:12px;padding:14px 20px;font-weight:700}
 .note{font-size:13px;color:var(--muted);text-align:center;margin:16px 0 4px}
 .install{display:none;margin:0 12px 10px;max-width:560px;margin-inline:auto;background:var(--tint);border:1px solid var(--tint-line);border-radius:12px;padding:10px 14px;font-size:14px;align-items:center;gap:10px}
-.install.on{display:flex}.install span{flex:1}.install button{border:0;border-radius:8px;padding:8px 12px;font-weight:700;background:var(--navy);color:#fff}.install .x{background:none;color:var(--muted)}
-.banner{display:none;max-width:560px;margin:0 auto 10px;background:var(--tint);border:1px solid var(--tint-line);border-radius:12px;padding:10px 14px;font-size:14px}.banner.on{display:block}.banner.err{background:#FBE9E5;border-color:var(--red)}
-.toast{display:none;position:fixed;left:14px;right:14px;bottom:calc(80px + env(safe-area-inset-bottom));background:var(--ink);color:#fff;border-radius:12px;padding:12px 14px;font-size:14px;z-index:9;align-items:center;gap:10px;box-shadow:0 6px 18px rgba(0,0,0,.25);max-width:532px;margin:0 auto}.toast.on{display:flex}.toast span{flex:1}.toast button{border:1px solid rgba(255,255,255,.5);background:none;color:#fff;border-radius:8px;padding:6px 12px;font-weight:700}
+.install.on{display:flex}.install span{flex:1}.install button{border:0;border-radius:8px;padding:8px 12px;font-weight:700;background:var(--btn);color:#fff}.install .x{background:none;color:var(--muted)}
+.banner{display:none;max-width:560px;margin:0 auto 10px;background:var(--tint);border:1px solid var(--tint-line);border-radius:12px;padding:10px 14px;font-size:14px}.banner.on{display:block}.banner.err{background:var(--err-bg);border-color:var(--red)}
+.toast{display:none;position:fixed;left:14px;right:14px;bottom:calc(80px + env(safe-area-inset-bottom));background:#1B2733;color:#fff;border-radius:12px;padding:12px 14px;font-size:14px;z-index:9;align-items:center;gap:10px;box-shadow:0 6px 18px rgba(0,0,0,.25);max-width:532px;margin:0 auto}.toast.on{display:flex}.toast span{flex:1}.toast button{border:1px solid rgba(255,255,255,.5);background:none;color:#fff;border-radius:8px;padding:6px 12px;font-weight:700}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 <div class="top">
   <div class="row"><div class="big" id="big">–</div><div class="lbl" id="lbl"></div><select class="plansel" id="plansel" aria-label="Countdown"></select></div>
-  <div class="views"><button data-v="day" class="on" aria-pressed="true">Today</button><button data-v="week" aria-pressed="false">Week</button><button data-v="month" aria-pressed="false">Month</button><button class="sync" id="syncBtn" hidden aria-label="Sync settings"><i id="syncDot"></i><span id="syncTxt">Sync</span></button></div>
-  <div class="timer" id="timer"><div><div class="t" id="tt">00:00</div><div class="n" id="tn"></div></div><button id="tstop">Stop</button></div>
+  <div class="views"><button data-v="day" class="on" aria-pressed="true">Today</button><button data-v="week" aria-pressed="false">Week</button><button data-v="month" aria-pressed="false">Month</button><button class="sync" id="syncBtn" hidden aria-label="Sync settings"><i id="syncDot"></i><span id="syncTxt">Sync</span></button><button class="sync" id="menuBtn" aria-label="Menu">⋯</button></div>
+  <div class="timer" id="timer"><div class="trow"><div><div class="t" id="tt">00:00</div><div class="n" id="tn"></div></div><button id="tstop">Stop</button></div><div class="tbarw"><i id="tbar"></i></div></div>
 </div>
 <div class="install" id="install"><span>Add Unstuck to your home screen so it opens full-screen.</span><button id="installBtn">Add</button><button class="x" id="installX" aria-label="dismiss">×</button></div>
+<div class="install" id="alerts"><span>Get a nudge when a timer ends — even if you switch apps.</span><button id="alertsBtn">Enable</button><button class="x" id="alertsX" aria-label="dismiss">×</button></div>
 <div class="sr" id="announce" role="status" aria-live="polite"></div>
 <div class="banner" id="banner" role="alert"></div>
 <main id="main"></main>
@@ -123,6 +150,25 @@ main{padding:14px 12px 120px;max-width:560px;margin:0 auto}
   <label>End date (the deadline)<input id="pend" type="date"></label>
   <div class="msg err" id="pmsg"></div>
   <button class="btn" id="pcreate">Create</button><button class="btn ghost" data-close>Cancel</button>
+</div></div>
+
+<div class="sheet" id="carry"><div role="dialog" aria-modal="true" aria-labelledby="carryH">
+  <h2 id="carryH">From earlier days</h2>
+  <p>These didn't get done. That's fine — pick one:</p>
+  <div id="carryList"></div>
+  <button class="btn" id="carryMove">Move to today</button>
+  <button class="btn ghost" id="carryDrop">Let them go</button>
+</div></div>
+
+<div class="sheet" id="menuSheet"><div role="dialog" aria-modal="true" aria-labelledby="menuH">
+  <h2 id="menuH">Menu</h2>
+  <p>Your countdowns live on this device. Keep a backup, or move them to another device.</p>
+  <button class="btn" id="mexport">Download my data</button>
+  <button class="btn ghost" id="mimport">Import a backup</button>
+  <input type="file" id="mimportfile" accept="application/json,.json" hidden>
+  <div id="marchived"></div>
+  <div class="msg" id="mmsg"></div>
+  <button class="btn ghost" data-close>Close</button>
 </div></div>
 
 <div class="sheet" id="syncSheet"><div role="dialog" aria-modal="true" aria-labelledby="syncH">

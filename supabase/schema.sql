@@ -10,11 +10,15 @@ create table if not exists public.plans (
   end_date    date not null,
   tasks       jsonb not null default '{}'::jsonb,       -- { "2026-09-07": [ {id,title,min,done,star}, ... ] }
   tombstones  jsonb not null default '[]'::jsonb,       -- ids of deleted tasks so a delete on one device sticks everywhere
+  daily       jsonb not null default '[]'::jsonb,       -- repeating tasks: [ {id,title,min}, ... ] (materialized per-day client-side)
   updated_at  timestamptz not null default now(),
   deleted     boolean not null default false,
+  archived    boolean not null default false,           -- countdown finished and tucked away (still restorable)
   created_at  timestamptz not null default now()
 );
 alter table public.plans add column if not exists tombstones jsonb not null default '[]'::jsonb;
+alter table public.plans add column if not exists daily jsonb not null default '[]'::jsonb;
+alter table public.plans add column if not exists archived boolean not null default false;
 
 create index if not exists plans_user_idx on public.plans (user_id, updated_at desc);
 

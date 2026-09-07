@@ -53,9 +53,12 @@ try {
   await page.click("#undo"); check(await page.locator(".task").count() === 2, "undo restores the task");
   await page.locator(".task").nth(1).locator(".del").click(); await page.waitForTimeout(100);
   check(await page.locator("#stuck").getAttribute("role") === null && await page.locator('#stuck [role="dialog"]').count() === 1, "sheets are dialogs");
+  await page.click(".day .editbtn"); // leave edit mode (min chips are hidden while editing)
   await page.click(".task .min");
   check(await page.locator("#timer.on").isVisible(), "tapping chip starts timer");
   check(/^4[45]:\d\d$/.test(await page.textContent("#tt")), "timer counts from 45:00");
+  check(((await page.getAttribute("#tbar", "style")) || "").includes("width"), "timer paints the time-as-space bar");
+  check((await page.title()).includes("· Unstuck"), "tab title shows the countdown");
 
   // Timer survives reload
   await page.reload({ waitUntil: "networkidle" });
@@ -71,12 +74,42 @@ try {
   await page.click('.views button[data-v="week"]'); check(await page.locator(".day").count() === 7, "week view shows 7 days");
   await page.click('.views button[data-v="month"]'); check(await page.locator(".month .cell:not(.empty)").count() >= 28, "month view renders grid");
 
+  // Second countdown via the Enter key; merged today shows the other plan's tasks
+  await page.selectOption("#plansel", "__new");
+  await page.fill("#pname", "Second thing");
+  await page.press("#pname", "Enter");
+  check(await page.locator("#newplan.on").count() === 0, "Enter submits the new-countdown sheet");
+  check(await page.locator(".day.other").count() === 1 && (await page.locator(".day.other").textContent()).includes("Move out"), "today view shows the other countdown's tasks");
+
+  // Menu: export downloads a backup file
+  await page.click("#menuBtn");
+  check(await page.locator("#menuSheet.on").isVisible(), "menu sheet opens");
+  const dlPromise = page.waitForEvent("download");
+  await page.click("#mexport");
+  check((await dlPromise).suggestedFilename().startsWith("unstuck-backup-"), "export downloads a backup file");
+  await page.keyboard.press("Escape");
+
   // Corrupted state is backed up, not wiped
   await page.evaluate(() => { localStorage.setItem("unstuck-v1", "{not json"); });
   await page.reload({ waitUntil: "networkidle" });
   check(await page.locator("#banner.on").isVisible() && (await page.evaluate(() => localStorage.getItem("unstuck-v1-corrupt"))) === "{not json", "corrupted state → banner + backup kept");
   await page.evaluate(() => { localStorage.removeItem("unstuck-v1-corrupt"); });
   await page.click("#first"); await page.click("#pcreate"); await page.reload({ waitUntil: "networkidle" });
+
+  // Carry-over: unfinished tasks from earlier days prompt once per day
+  await page.evaluate(() => {
+    const raw = JSON.parse(localStorage.getItem("unstuck-v1"));
+    const p = raw.plans.find(x => !x.deleted);
+    const d = new Date(); d.setDate(d.getDate() - 1);
+    const ds = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    p.tasks[ds] = [{ id: "carry1", title: "Old thing", done: false }];
+    localStorage.setItem("unstuck-v1", JSON.stringify(raw));
+    localStorage.removeItem("unstuck-carry");
+  });
+  await page.reload({ waitUntil: "networkidle" });
+  check(await page.locator("#carry.on").isVisible(), "carry-over sheet offers yesterday's unfinished tasks");
+  await page.click("#carryMove");
+  check((await page.locator(".day.today").textContent()).includes("Old thing"), "carry-over moves the task to today");
 
   // Timer end → permission to stop
   await page.evaluate(() => { localStorage.setItem("unstuck-timer", JSON.stringify({ end: Date.now() + 1200, name: "x" })); });

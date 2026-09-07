@@ -4,6 +4,8 @@ A countdown planner for people with ADHD and time blindness. Every task carries 
 
 This is a plain static PWA — no build step, no framework. Open `index.html` over HTTPS (or `localhost`) and it works. Add Supabase keys and it syncs across devices.
 
+Beyond the core loop (deadline → days numbered backward → one thing today → tap-to-timer → "you're allowed to stop"), the app now has: timer-end notifications + a days-left icon badge (installed PWAs), a shrinking time bar with tab-title countdown, interval cues and a screen wake lock while a timer runs, a once-a-day carry-over prompt for unfinished tasks ("Move to today / Let them go"), a "Just the first 5" ramp on the one thing, per-task move to today/tomorrow and daily repeats (edit mode), planned-vs-spent minutes after timed tasks, a no-guilt daily recap, JSON backup export/import (menu ⋯), a deadline-passed celebration with archive/restore, a merged today view across countdowns, and automatic dark mode.
+
 ```
 index.html              app shell + styles
 app.js                  all logic (local-first storage, timer, views, sync)
@@ -89,7 +91,7 @@ python3 tools/make-icons.py
 
 ## Scope
 
-See `unstuck-spec.md` in the project. This build covers all of **P0** (plan + tasks + tap-to-timer + check-off + D/W/M + star + I'm stuck + PWA) and pulls **accounts + sync** forward from Phase 2. Templates, helper lists, and reminders are still P1.
+See `unstuck-spec.md` in the project. This build covers all of **P0** (plan + tasks + tap-to-timer + check-off + D/W/M + star + I'm stuck + PWA), pulls **accounts + sync** forward from Phase 2, and now includes daily repeats, timer notifications/badging, carry-over, backup export/import, and dark mode. Plan templates and helper lists remain P1. Notification caveat: on iOS the app must be installed to the home screen (16.4+) for notifications; a timer that ends while the app is fully closed can't fire one without a push server — the notification covers backgrounded tabs/apps, and reopening always lands on "You're allowed to stop."
 
 ## Review log
 

@@ -1,8 +1,8 @@
 // Unit test for the per-task merge: extracts mergePlans from app.js and runs conflict scenarios.
 import fs from "node:fs";
 const src = fs.readFileSync(new URL("../app.js", import.meta.url), "utf8");
-const body = src.slice(src.indexOf("function mergePlans"), src.indexOf("const same ="));
-const norm = "function normalize(p){return {updated_at:new Date(0).toISOString(),deleted:false,tombstones:[],tasks:{},...p};}";
+const body = src.slice(src.indexOf("function mergePlans"), src.indexOf("const samePlan ="));
+const norm = "function normalize(p){return {updated_at:new Date(0).toISOString(),deleted:false,archived:false,tombstones:[],daily:[],tasks:{},...p};}";
 const mergePlans = new Function(norm + body + "; return mergePlans;")();
 let fails = 0; const check = (ok, n) => { console.log((ok ? "PASS " : "FAIL ") + n); if (!ok) fails++; };
 const base = { id: "p", name: "Move", start: "2026-09-06", end: "2026-09-27", tasks: {}, tombstones: [] };
