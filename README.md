@@ -1,5 +1,7 @@
 # Dayfall
 
+**Live at [dayfall.day](https://dayfall.day/)** (GitHub Pages + Cloudflare DNS; the old `azchad-commits.github.io/unstuck/` URLs 301-redirect here).
+
 A countdown planner for people with ADHD and time blindness. Every task carries a time; tapping the time starts a timer that ends with *"You're allowed to stop."*
 
 This is a plain static PWA — no build step, no framework. Open `index.html` over HTTPS (or `localhost`) and it works. Add Supabase keys and it syncs across devices.
