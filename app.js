@@ -494,7 +494,19 @@ $("plansel").onchange = e => { if (e.target.value === "__new") { openNew($("plan
 document.querySelectorAll(".views button[data-v]").forEach(b => b.onclick = () => { view = b.dataset.v; openDay = null; render(); });
 
 // ---------- carry-over: yesterday's unfinished tasks, once per day ----------
+// Everything is checked by default so the fast path stays two taps; unchecking a row means
+// "decide later" — it stays put and comes back in tomorrow's prompt. The day picker sends
+// the checked items to today, tomorrow, or any day this week.
 let carryItems = [];
+const carryChecked = () => [...$("carryList").querySelectorAll("input:checked")].map(x => carryItems[+x.dataset.i]);
+function carryLabels() {
+  const n = carryChecked().length;
+  const opt = $("carryDest").selectedOptions[0];
+  const short = opt ? opt.dataset.short : "today";
+  $("carryMove").textContent = n ? `Move ${n} to ${short}` : "Move to " + short;
+  $("carryDrop").textContent = n ? `Let ${n} go` : "Let them go";
+  $("carryMove").disabled = !n; $("carryDrop").disabled = !n;
+}
 function checkCarry() {
   const tds = iso(today());
   let mark = null; try { mark = localStorage.getItem("unstuck-carry"); } catch (e) {}
@@ -506,22 +518,39 @@ function checkCarry() {
   }
   if (!carryItems.length) return;
   try { localStorage.setItem("unstuck-carry", tds); } catch (e) {}
-  $("carryList").innerHTML = carryItems.slice(0, 8).map(c => `<div class="citem">${esc(c.t.title)}<small>${esc(c.p.name)} · ${fmt(pd(c.ds))}</small></div>`).join("")
-    + (carryItems.length > 8 ? `<div class="citem">…and ${carryItems.length - 8} more</div>` : "");
+  $("carryList").innerHTML = carryItems.map((c, i) =>
+    `<label class="citem"><input type="checkbox" checked data-i="${i}"><span class="ct">${esc(c.t.title)}<small>${esc(c.p.name)} · ${fmt(pd(c.ds))}</small></span></label>`).join("");
+  const T = today();
+  $("carryDest").innerHTML = [0, 1, 2, 3, 4, 5, 6].map(n => {
+    const d = addDays(T, n);
+    const label = n === 0 ? `Today — ${fmt(d)}` : n === 1 ? `Tomorrow — ${fmt(d)}` : fmt(d);
+    const short = n === 0 ? "today" : n === 1 ? "tomorrow" : d.toLocaleDateString("en-US", { weekday: "short" });
+    return `<option value="${iso(d)}" data-short="${short}">${label}</option>`;
+  }).join("");
+  $("carryList").querySelectorAll("input").forEach(x => x.onchange = carryLabels);
+  $("carryDest").onchange = carryLabels;
+  carryLabels();
   openSheet("carry", $("stuckBtn"));
 }
 $("carryMove").onclick = () => {
-  const tds = iso(today()); const touched = new Set();
-  for (const c of carryItems) { moveTaskCore(c.p, c.ds, c.t, tds); touched.add(c.p); }
+  const sel = carryChecked(); if (!sel.length) return;
+  const destDs = $("carryDest").value || iso(today());
+  const short = ($("carryDest").selectedOptions[0] || {}).dataset ? $("carryDest").selectedOptions[0].dataset.short : "today";
+  const touched = new Set();
+  for (const c of sel) { moveTaskCore(c.p, c.ds, c.t, destDs); touched.add(c.p); }
   touched.forEach(p => save(p));
-  const n = carryItems.length; carryItems = [];
-  closeSheet($("carry")); render(); toast(`Moved ${n} to today`, null);
+  closeSheet($("carry")); render();
+  toast(`Moved ${sel.length} to ${short}`, null);
+  carryItems = [];
 };
 $("carryDrop").onclick = () => {
+  const sel = carryChecked(); if (!sel.length) return;
   const touched = new Set();
-  for (const c of carryItems) { c.t.dropped = true; touched.add(c.p); }
-  touched.forEach(p => save(p)); carryItems = [];
-  closeSheet($("carry")); render(); toast("Let go. Clean slate.", null);
+  for (const c of sel) { c.t.dropped = true; touched.add(c.p); }
+  touched.forEach(p => save(p));
+  closeSheet($("carry")); render();
+  toast(sel.length === carryItems.length ? "Let go. Clean slate." : `Let ${sel.length} go`, null);
+  carryItems = [];
 };
 
 // ---------- menu: backup, import, archived ----------

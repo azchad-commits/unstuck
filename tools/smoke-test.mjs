@@ -96,20 +96,30 @@ try {
   await page.evaluate(() => { localStorage.removeItem("unstuck-v1-corrupt"); });
   await page.click("#first"); await page.click("#pcreate"); await page.reload({ waitUntil: "networkidle" });
 
-  // Carry-over: unfinished tasks from earlier days prompt once per day
+  // Carry-over: unfinished past tasks prompt once per day, per-item checkboxes + day picker
   await page.evaluate(() => {
     const raw = JSON.parse(localStorage.getItem("unstuck-v1"));
     const p = raw.plans.find(x => !x.deleted);
-    const d = new Date(); d.setDate(d.getDate() - 1);
-    const ds = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-    p.tasks[ds] = [{ id: "carry1", title: "Old thing", done: false }];
+    const f = n => { const d = new Date(); d.setDate(d.getDate() - n); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+    p.tasks[f(1)] = [{ id: "carry1", title: "Old thing", done: false }];
+    p.tasks[f(2)] = [{ id: "carry2", title: "Older thing", done: false }];
     localStorage.setItem("unstuck-v1", JSON.stringify(raw));
     localStorage.removeItem("unstuck-carry");
   });
   await page.reload({ waitUntil: "networkidle" });
-  check(await page.locator("#carry.on").isVisible(), "carry-over sheet offers yesterday's unfinished tasks");
+  check(await page.locator("#carry.on").isVisible() && await page.locator("#carryList input").count() === 2, "carry-over sheet lists past unfinished tasks with checkboxes");
+  await page.locator("#carryList input").nth(1).uncheck();
+  check((await page.textContent("#carryMove")).includes("1"), "carry buttons show the checked count");
+  await page.selectOption("#carryDest", { index: 1 }); // tomorrow
+  check((await page.textContent("#carryMove")).includes("tomorrow"), "day picker changes the move destination");
   await page.click("#carryMove");
-  check((await page.locator(".day.today").textContent()).includes("Old thing"), "carry-over moves the task to today");
+  const carried = await page.evaluate(() => {
+    const p = JSON.parse(localStorage.getItem("unstuck-v1")).plans.find(x => !x.deleted);
+    const f = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+    return { tomorrow: JSON.stringify(p.tasks[f(1)] || []), all: JSON.stringify(p.tasks) };
+  });
+  check(carried.tomorrow.includes("Old thing"), "checked task moved to the chosen day");
+  check(carried.all.includes("Older thing"), "unchecked task stays put for tomorrow's prompt");
 
   // Timer end → permission to stop
   await page.evaluate(() => { localStorage.setItem("unstuck-timer", JSON.stringify({ end: Date.now() + 1200, name: "x" })); });
