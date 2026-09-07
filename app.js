@@ -1,4 +1,4 @@
-/* Unstuck — countdown planner for ADHD + time blindness.
+/* Dayfall — countdown planner for ADHD + time blindness.
    Local-first: everything lives in localStorage. If config.js has Supabase keys, plans also sync
    (magic-link sign-in; per-task merge with tombstones; server clamps clock skew). */
 (() => {
@@ -386,7 +386,7 @@ function paint(s) {
   const txt = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
   $("tt").textContent = txt;
   const bar = $("tbar"); if (bar) bar.style.width = (tPlan > 0 ? Math.max(0, Math.min(100, s / tPlan * 100)) : 0) + "%";
-  document.title = timerEl.classList.contains("on") && s > 0 ? txt + " · Unstuck" : "Unstuck";
+  document.title = timerEl.classList.contains("on") && s > 0 ? txt + " · Dayfall" : "Dayfall";
 }
 function tick() {
   const s = secondsLeft(); paint(s);
@@ -413,7 +413,7 @@ function finish(quiet) {
   stopTickSound(); // silence itself is part of the signal
   timerEl.classList.add("done");
   $("tn").textContent = "Time's up. You're allowed to stop."; $("tstop").textContent = "Done";
-  document.title = "Unstuck";
+  document.title = "Dayfall";
   announce("Time's up. You're allowed to stop.");
   if (!quiet) { beep(); flash(); }
   notifyEnd();
@@ -424,7 +424,7 @@ function stopTimer() {
     credit(Math.max(0, Math.min(tPlan, Math.round((Math.min(Date.now(), tEnd) - tStart) / 1000))));
   }
   clearInterval(tInt); tInt = null; timerTaskName = null; tRef = null; tStart = 0; tPlan = 0; tCredited = false; releaseLock(); stopTickSound();
-  timerEl.classList.remove("on", "done"); document.title = "Unstuck";
+  timerEl.classList.remove("on", "done"); document.title = "Dayfall";
   try { localStorage.removeItem(TKEY); } catch (e) {}
 }
 $("tstop").onclick = () => { stopTimer(); render(); };
@@ -708,8 +708,8 @@ function renderMenu() {
   updateSoundUI();
 }
 $("mexport").onclick = () => {
-  const blob = new Blob([JSON.stringify({ app: "unstuck", version: 1, exported: new Date().toISOString(), db }, null, 1)], { type: "application/json" });
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `unstuck-backup-${iso(today())}.json`;
+  const blob = new Blob([JSON.stringify({ app: "dayfall", version: 1, exported: new Date().toISOString(), db }, null, 1)], { type: "application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `dayfall-backup-${iso(today())}.json`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 10000);
   $("mmsg").textContent = "Backup saved. Keep the file somewhere safe.";
@@ -722,24 +722,24 @@ $("mics").onclick = () => {
   if (!p) { $("mmsg").textContent = "Start a countdown first."; $("mmsg").classList.add("err"); return; }
   const T = today();
   const stamp = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
-  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Unstuck//EN", "CALSCALE:GREGORIAN"];
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Dayfall//EN", "CALSCALE:GREGORIAN"];
   for (let d = new Date(Math.max(+T, +pd(p.start))); iso(d) <= p.end; d = addDays(d, 1)) {
     const ds = iso(d); ensureDaily(p, ds);
     const left = daysLeft(p, d);
     const tasks = p.tasks[ds] || []; const star = tasks.find(t => t.star);
-    const what = star ? star.title : tasks.length ? tasks.length + " tasks" : "open Unstuck";
+    const what = star ? star.title : tasks.length ? tasks.length + " tasks" : "open Dayfall";
     const dt = ds.replace(/-/g, "");
     lines.push("BEGIN:VEVENT", `UID:unstuck-${p.id}-${ds}`, `DTSTAMP:${stamp}`,
       `DTSTART:${dt}T080000`, `DTEND:${dt}T083000`,
       `SUMMARY:${icsEscape(`${left === 0 ? "Day 0" : left + " left"} — ${what}`)}`,
       `DESCRIPTION:${icsEscape(tasks.length ? tasks.map(t => "• " + t.title + (t.min ? ` (${t.min}m)` : "")).join("\n") : "You're allowed to just start.")}`,
-      "BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${icsEscape("Unstuck — " + what)}`, "TRIGGER:PT0S", "END:VALARM",
+      "BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${icsEscape("Dayfall — " + what)}`, "TRIGGER:PT0S", "END:VALARM",
       "END:VEVENT");
   }
   lines.push("END:VCALENDAR");
   const blob = new Blob([lines.join("\r\n")], { type: "text/calendar" });
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-  a.download = `unstuck-${(p.name.replace(/[^\w-]+/g, "-").toLowerCase() || "countdown")}.ics`;
+  a.download = `dayfall-${(p.name.replace(/[^\w-]+/g, "-").toLowerCase() || "countdown")}.ics`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 10000);
   $("mmsg").textContent = "Calendar file saved. Open it and your calendar takes over the morning reminders."; $("mmsg").classList.remove("err");
@@ -748,7 +748,7 @@ $("mimport").onclick = () => $("mimportfile").click();
 // Merge a backup object ({db:{plans,stats}} or bare {plans}) into local state. Returns how many plans landed.
 function importBackup(d) {
   const src = d && d.db && Array.isArray(d.db.plans) ? d.db : (d && Array.isArray(d.plans) ? d : null);
-  if (!src) throw new Error("That file doesn't look like an Unstuck backup.");
+  if (!src) throw new Error("That file doesn't look like a Dayfall backup.");
   let n = 0;
   for (const raw of src.plans) {
     if (!raw || !raw.id || !raw.start || !raw.end) continue;

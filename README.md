@@ -1,4 +1,4 @@
-# Unstuck
+# Dayfall
 
 A countdown planner for people with ADHD and time blindness. Every task carries a time; tapping the time starts a timer that ends with *"You're allowed to stop."*
 
@@ -46,7 +46,7 @@ Without keys the app is fully functional and device-local — the Sync button do
    The anon key is designed to be public; RLS is what protects the data. Never put the `service_role` key in the app.
 5. Commit and push. Installed copies pick up new code (including `config.js`) on their next online open — the service worker is network-first for code. Still bump `CACHE` in `sw.js` when you ship so old cache entries get evicted.
 
-Then in the app: tap **Sync** → enter your email → tap the link in the email. It opens Unstuck signed in. Do the same on a second device and both stay in step.
+Then in the app: tap **Sync** → enter your email → tap the link in the email. It opens Dayfall signed in. Do the same on a second device and both stay in step.
 
 Free-tier magic-link emails are rate-limited (a handful per hour) and come from Supabase's shared sender. When you're ready for real users, set up custom SMTP under *Authentication → SMTP Settings* so links come from your own domain and don't land in spam.
 

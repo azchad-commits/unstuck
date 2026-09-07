@@ -24,7 +24,7 @@ try {
   await page.route("**/config.js", r => r.fulfill({ contentType: "application/javascript", body: 'window.UNSTUCK_CONFIG={supabaseUrl:"",supabaseAnonKey:""};' }));
   await page.goto("http://127.0.0.1:8765/", { waitUntil: "networkidle" });
   const manifest = await page.evaluate(() => fetch(document.querySelector('link[rel=manifest]').href).then(r => r.json()));
-  check(manifest.name === "Unstuck" && manifest.display === "standalone" && manifest.icons.length === 4, "manifest loads with 4 icons + standalone");
+  check(manifest.name === "Dayfall" && manifest.display === "standalone" && manifest.icons.length === 4, "manifest loads with 4 icons + standalone");
   for (const i of manifest.icons) { const s = await page.evaluate(u => fetch(u).then(r => r.status), i.src); check(s === 200, "icon reachable: " + i.src); }
   const sw = await page.evaluate(async () => { const r = await navigator.serviceWorker.ready; return !!r.active; });
   check(sw, "service worker registered and active");
@@ -72,7 +72,7 @@ try {
   check((await page.getAttribute("#tsound", "data-mode")) === "hum", "sound toggle cycles to silent keep-alive");
   await page.click("#tsound"); // back to off
   check(((await page.getAttribute("#tbar", "style")) || "").includes("width"), "timer paints the time-as-space bar");
-  check((await page.title()).includes("· Unstuck"), "tab title shows the countdown");
+  check((await page.title()).includes("· Dayfall"), "tab title shows the countdown");
 
   // Timer survives reload
   await page.reload({ waitUntil: "networkidle" });
@@ -124,7 +124,7 @@ try {
   await page.locator("#mcues").uncheck(); await page.locator("#mcues").check();
   const dlPromise = page.waitForEvent("download");
   await page.click("#mexport");
-  check((await dlPromise).suggestedFilename().startsWith("unstuck-backup-"), "export downloads a backup file");
+  check((await dlPromise).suggestedFilename().startsWith("dayfall-backup-"), "export downloads a backup file");
   const icsPromise = page.waitForEvent("download");
   await page.click("#mics");
   const icsDl = await icsPromise;
@@ -249,7 +249,7 @@ try {
   await ios.close();
 
   check(errors.length === 0, "no console/page errors" + (errors.length ? " → " + errors.join(" | ") : ""));
-  await page.screenshot({ path: path.join(root, "..", "unstuck-screenshot.png") });
+  await page.screenshot({ path: path.join(root, "..", "dayfall-screenshot.png") });
   await browser.close();
 } finally { server.kill(); }
 console.log(fails.length ? `\n${fails.length} FAILED` : "\nALL PASSED");

@@ -1,6 +1,6 @@
 {
-  "name": "Unstuck",
-  "short_name": "Unstuck",
+  "name": "Dayfall",
+  "short_name": "Dayfall",
   "description": "A countdown planner for ADHD and time blindness. Every task has a time; tapping the time starts a timer.",
   "id": "./",
   "start_url": "./",

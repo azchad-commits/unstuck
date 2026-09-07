@@ -1,4 +1,4 @@
-"""Generate Unstuck PWA icons: navy square, amber countdown ring, white check-free dial."""
+"""Generate Dayfall PWA icons: navy square, amber countdown ring, white check-free dial."""
 from PIL import Image, ImageDraw, ImageFont
 import os, math
 

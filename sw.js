@@ -1,11 +1,11 @@
-/* Unstuck service worker.
+/* Dayfall service worker.
    - Code (index.html, app.js, config.js, manifest): NETWORK-FIRST, cache as offline fallback.
      So a fix — or Supabase keys added to config.js later — reaches installed users on their next online open
      without anyone remembering to bump a version string.
    - Icons and cross-origin assets (fonts, supabase-js): cache-first / stale-while-revalidate.
    - Supabase API calls: never touched.
    Bump CACHE anyway when you ship, so stale entries from old shells get evicted. */
-const CACHE = "unstuck-v10";
+const CACHE = "dayfall-v1";
 const SHELL = [
   "./", "./index.html", "./app.js", "./config.js", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/maskable-192.png", "./icons/maskable-512.png",
