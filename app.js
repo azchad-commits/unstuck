@@ -337,7 +337,7 @@ function startTimer(min, name, ref) {
   tEnd = Date.now() + min * 60000; tStart = Date.now(); tPlan = min * 60; tRef = ref || null; tCredited = false; timerTaskName = name;
   saveTimer();
   ensureAudio(); // unlock the audio channel inside this tap, so the alarm can actually play later (iOS)
-  if (tickPref) startTick();
+  startKeepalive();
   showTimer(name, true); announce(`${min} minute timer started: ${name}`);
   maybeAskAlerts();
   render(); // reflect the running timer on the hero card immediately
@@ -349,7 +349,7 @@ function showTimer(name, fresh) {
   const s = secondsLeft();
   cuesFired = new Set(); for (const c of cueList()) if (s <= c.at) cuesFired.add(c.at); // don't replay cues on resume
   paint(s);
-  if (s > 0) { tInt = setInterval(tick, 500); acquireLock(); if (!fresh && tickPref && !tickSrc) startTick(); }
+  if (s > 0) { tInt = setInterval(tick, 500); acquireLock(); if (!fresh && !tickSrc) startKeepalive(); }
   else finish(!fresh); // already over when resumed: show "allowed to stop", don't buzz twice
 }
 // Time-as-space cues: interval nudges so the remaining time stays felt, not just displayed.
@@ -368,7 +368,7 @@ function paint(s) {
 }
 function tick() {
   const s = secondsLeft(); paint(s);
-  for (const c of cueList()) if (s > 0 && s <= c.at && !cuesFired.has(c.at)) { cuesFired.add(c.at); announce(c.label); blip(); }
+  for (const c of cueList()) if (s > 0 && s <= c.at && !cuesFired.has(c.at)) { cuesFired.add(c.at); if (cuesPref) { announce(c.label); blip(); } }
   if (s === 0) finish(false);
 }
 // Credit elapsed timer seconds to the task (synced) and to today's stats (device-local). Once per run.
@@ -417,7 +417,23 @@ function resumeTimer() {
 // One shared AudioContext, created/resumed inside a user tap (startTimer). A context created at
 // finish time is suspended on iOS — the old alarm never played there. This one is already unlocked.
 let audioCtx = null, tickSrc = null;
-let tickPref = false; try { tickPref = localStorage.getItem("unstuck-tick") === "1"; } catch (e) {}
+// Sound while a timer runs: "off" (silent), "tick" (soft once-a-second tick), or "hum"
+// (a sub-audible 40Hz loop — nothing to hear, but the live audio session lets the finish
+// alarm play even in the background). Cues (halfway / 5-min nudges) toggle independently.
+// The finish alarm itself is never muted.
+const SOUND_MODES = ["off", "tick", "hum"];
+const SOUND_LABELS = {
+  off: ["🔇", "Timer sound: silent. The alarm still plays while the app is open."],
+  tick: ["🔊", "Timer sound: soft tick. Passing time you can hear — and the alarm works even in the background."],
+  hum: ["🤫", "Timer sound: silent keep-alive. Nothing to hear, but the alarm works even in the background."]
+};
+let soundMode = "off", cuesPref = true;
+try {
+  soundMode = localStorage.getItem("unstuck-sound") || (localStorage.getItem("unstuck-tick") === "1" ? "tick" : "off");
+  if (!SOUND_MODES.includes(soundMode)) soundMode = "off";
+  cuesPref = localStorage.getItem("unstuck-cues") !== "0";
+} catch (e) {}
+function saveSoundPrefs() { try { localStorage.setItem("unstuck-sound", soundMode); localStorage.setItem("unstuck-cues", cuesPref ? "1" : "0"); } catch (e) {} }
 function ensureAudio() {
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -425,31 +441,45 @@ function ensureAudio() {
   } catch (e) {}
   return audioCtx;
 }
-// Optional once-a-second tick while a timer runs. It makes passing time audible (time-as-sound),
-// keeps the audio session alive in the background so the finish alarm can play, and its silence
-// at zero is itself the signal. A looped 1s buffer needs no JS timers, so throttling can't kill it.
+// Looped 1s buffers need no JS timers, so background throttling can't kill them.
 function tickBuffer(a) {
   const sr = a.sampleRate, buf = a.createBuffer(1, sr, sr), d = buf.getChannelData(0);
   for (let i = 0; i < sr * 0.03; i++) d[i] = Math.sin(i / sr * 2 * Math.PI * 1000) * Math.exp(-i / (sr * 0.006)) * 0.5;
   return buf;
 }
-function startTick() {
-  const a = ensureAudio(); if (!a) return;
+function humBuffer(a) {
+  const sr = a.sampleRate, buf = a.createBuffer(1, sr, sr), d = buf.getChannelData(0);
+  for (let i = 0; i < sr; i++) d[i] = Math.sin(i / sr * 2 * Math.PI * 40); // 40Hz: below what phone speakers reproduce
+  return buf;
+}
+function startKeepalive() {
   stopTickSound();
+  if (soundMode === "off") return;
+  const a = ensureAudio(); if (!a) return;
   try {
-    tickSrc = a.createBufferSource(); tickSrc.buffer = tickBuffer(a); tickSrc.loop = true;
-    const g = a.createGain(); g.gain.value = 0.12;
-    tickSrc.connect(g); g.connect(a.destination); tickSrc.start();
+    tickSrc = a.createBufferSource();
+    const g = a.createGain();
+    if (soundMode === "tick") { tickSrc.buffer = tickBuffer(a); g.gain.value = 0.12; }
+    else { tickSrc.buffer = humBuffer(a); g.gain.value = 0.012; }
+    tickSrc.loop = true; tickSrc.connect(g); g.connect(a.destination); tickSrc.start();
   } catch (e) { tickSrc = null; }
 }
 function stopTickSound() { try { if (tickSrc) tickSrc.stop(); } catch (e) {} tickSrc = null; }
-function updateTickBtn() { const b = $("tsound"); b.setAttribute("aria-pressed", String(tickPref)); b.textContent = tickPref ? "🔊" : "🔇"; }
-$("tsound").onclick = () => {
-  tickPref = !tickPref; try { localStorage.setItem("unstuck-tick", tickPref ? "1" : "0"); } catch (e) {}
-  updateTickBtn();
-  if (timerEl.classList.contains("on") && !timerEl.classList.contains("done")) { if (tickPref) startTick(); else stopTickSound(); }
-};
-updateTickBtn();
+function updateSoundUI() {
+  const [icon, label] = SOUND_LABELS[soundMode];
+  const b = $("tsound"); b.textContent = icon; b.dataset.mode = soundMode; b.setAttribute("aria-label", label);
+  document.querySelectorAll("#msound button").forEach(x => x.setAttribute("aria-checked", String(x.dataset.mode === soundMode)));
+  $("mcues").checked = cuesPref;
+}
+function setSoundMode(m) {
+  soundMode = m; saveSoundPrefs(); updateSoundUI();
+  if (timerEl.classList.contains("on") && !timerEl.classList.contains("done")) startKeepalive();
+  toast(SOUND_LABELS[m][1], null); announce(SOUND_LABELS[m][1]);
+}
+$("tsound").onclick = () => setSoundMode(SOUND_MODES[(SOUND_MODES.indexOf(soundMode) + 1) % SOUND_MODES.length]);
+document.querySelectorAll("#msound button").forEach(b => b.onclick = () => setSoundMode(b.dataset.mode));
+$("mcues").onchange = e => { cuesPref = e.target.checked; saveSoundPrefs(); announce(cuesPref ? "Halfway and 5-minute nudges on." : "Nudges off. The end alarm still plays."); };
+updateSoundUI();
 // The alarm: six alternating tones over ~2 seconds, plus a long vibration pattern.
 function beep() {
   try {
@@ -652,6 +682,7 @@ function renderMenu() {
     if (p) { p.archived = false; save(p); db.current = p.id; persist(); renderMenu(); render(); }
   });
   $("mmsg").textContent = ""; $("mmsg").classList.remove("err");
+  updateSoundUI();
 }
 $("mexport").onclick = () => {
   const blob = new Blob([JSON.stringify({ app: "unstuck", version: 1, exported: new Date().toISOString(), db }, null, 1)], { type: "application/json" });

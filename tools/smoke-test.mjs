@@ -62,10 +62,12 @@ try {
   await page.click(".task .min");
   check(await page.locator("#timer.on").isVisible(), "tapping chip starts timer");
   check(/^4[45]:\d\d$/.test(await page.textContent("#tt")), "timer counts from 45:00");
-  check(await page.locator("#tsound").isVisible() && await page.locator("#flash").count() === 1, "tick toggle and flash layer present");
+  check(await page.locator("#tsound").isVisible() && await page.locator("#flash").count() === 1, "sound toggle and flash layer present");
   await page.click("#tsound");
-  check((await page.getAttribute("#tsound", "aria-pressed")) === "true", "tick toggle arms and remembers");
+  check((await page.getAttribute("#tsound", "data-mode")) === "tick", "sound toggle cycles to soft tick");
   await page.click("#tsound");
+  check((await page.getAttribute("#tsound", "data-mode")) === "hum", "sound toggle cycles to silent keep-alive");
+  await page.click("#tsound"); // back to off
   check(((await page.getAttribute("#tbar", "style")) || "").includes("width"), "timer paints the time-as-space bar");
   check((await page.title()).includes("· Unstuck"), "tab title shows the countdown");
 
@@ -112,6 +114,11 @@ try {
   // Menu: export downloads a backup file
   await page.click("#menuBtn");
   check(await page.locator("#menuSheet.on").isVisible(), "menu sheet opens");
+  check(await page.locator("#msound button").count() === 3 && await page.locator("#mcues").count() === 1, "menu has timer-sound modes and cues toggle");
+  await page.click('#msound button[data-mode="hum"]');
+  check((await page.getAttribute("#tsound", "data-mode")) === "hum", "menu radio drives the timer toggle");
+  await page.click('#msound button[data-mode="off"]');
+  await page.locator("#mcues").uncheck(); await page.locator("#mcues").check();
   const dlPromise = page.waitForEvent("download");
   await page.click("#mexport");
   check((await dlPromise).suggestedFilename().startsWith("unstuck-backup-"), "export downloads a backup file");
