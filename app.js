@@ -468,6 +468,8 @@ function beep() {
 function flash() {
   const f = $("flash"); f.classList.remove("go"); void f.offsetWidth; f.classList.add("go");
   f.addEventListener("animationend", () => f.classList.remove("go"), { once: true });
+  // Hidden tabs pause CSS animations, so animationend may never fire there; clear regardless.
+  setTimeout(() => f.classList.remove("go"), 4000);
 }
 // One soft blip for interval cues — a nudge, not an alarm.
 function blip() {
