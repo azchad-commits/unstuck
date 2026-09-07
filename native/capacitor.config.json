@@ -1,0 +1,9 @@
+{
+  "appId": "day.dayfall.app",
+  "appName": "Dayfall",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "automatic",
+    "backgroundColor": "#0F2A44"
+  }
+}

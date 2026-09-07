@@ -69,6 +69,24 @@ Sync is free while `plusUrl` in `config.js` is blank. To charge for it ($19/yr):
 
 Mechanics: every account gets a `profiles` row (`plus` defaults false; accounts created before the schema's grandfather insert ran are `plus = true` forever). A signed-in non-Plus user sees the upgrade card in the Sync sheet instead of syncing; the app stays fully functional device-locally. Payment (matched by email) flips `plus` via the webhook; "I've upgraded — check again" in the sheet re-checks. The check fails open — network trouble never locks a payer out.
 
+## Native app (App Store)
+
+`native/` wraps the PWA with Capacitor 6 for the App Store ($2.99 one-time, the Goblin Tools model). Web assets ship bundled (Apple rejects thin remote wrappers); sync still talks to Supabase. The wrapper's real upgrade: the timer's end alert is scheduled with iOS via `@capacitor/local-notifications`, so "You're allowed to stop" fires **even when the app is fully closed** — impossible on the web.
+
+Build & run locally:
+```
+./native/sync-www.sh                  # copy the PWA into native/www
+cd native && npx cap sync ios         # push into the Xcode project
+npx cap open ios                      # or: xcodebuild … -scheme App
+```
+Ship it (human steps, needs the Apple Developer account):
+1. Open `native/ios/App/App.xcworkspace` in Xcode → target App → Signing & Capabilities → pick your Team (bundle id `day.dayfall.app`).
+2. App Store Connect → New App → Dayfall, bundle `day.dayfall.app`, price $2.99, category Productivity.
+3. Xcode → Product → Archive → Distribute → App Store Connect. Screenshots: run in the iPhone 16/17 Pro Max simulator, ⌘S saves PNGs.
+4. Review notes: mention it's a fully functional offline countdown planner; notifications are local-only; account (email magic link) is optional.
+
+Icon/splash sources regenerate via `python3 tools/make-icons.py` → `native/assets/`, then `cd native && npx @capacitor/assets generate --ios`.
+
 ## How sync works
 
 - **Local first.** Every change is written to `localStorage` immediately. The app never waits on the network.

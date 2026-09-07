@@ -49,3 +49,13 @@ for s in (192, 512):
 draw(180).save(os.path.join(OUT, "apple-touch-icon.png"))
 draw(32).save(os.path.join(OUT, "favicon-32.png"))
 print("icons written to", os.path.abspath(OUT))
+
+# Sources for the native (Capacitor) wrapper: @capacitor/assets generates every iOS size
+# and the splash screen from these. Only written when native/ exists.
+NATIVE = os.path.join(os.path.dirname(__file__), "..", "native", "assets")
+if os.path.isdir(os.path.dirname(NATIVE)):
+    os.makedirs(NATIVE, exist_ok=True)
+    big = draw(1024)
+    big.save(os.path.join(NATIVE, "icon-only.png"))
+    big.save(os.path.join(NATIVE, "logo.png"))
+    print("native assets written to", os.path.abspath(NATIVE))

@@ -358,6 +358,7 @@ function startTimer(min, name, ref) {
   stopTimer(); // credits any timer that was still running
   tEnd = Date.now() + min * 60000; tStart = Date.now(); tPlan = min * 60; tRef = ref || null; tCredited = false; timerTaskName = name;
   saveTimer();
+  nativeScheduleEnd(); // wrapper builds: the OS delivers the end alert even if the app is closed
   ensureAudio(); // unlock the audio channel inside this tap, so the alarm can actually play later (iOS)
   startKeepalive();
   showTimer(name, true); announce(`${min} minute timer started: ${name}`);
@@ -423,6 +424,7 @@ function stopTimer() {
   if (timerEl.classList.contains("on") && !timerEl.classList.contains("done") && tStart && tPlan) {
     credit(Math.max(0, Math.min(tPlan, Math.round((Math.min(Date.now(), tEnd) - tStart) / 1000))));
   }
+  nativeCancelEnd();
   clearInterval(tInt); tInt = null; timerTaskName = null; tRef = null; tStart = 0; tPlan = 0; tCredited = false; releaseLock(); stopTickSound();
   timerEl.classList.remove("on", "done"); document.title = "Dayfall";
   try { localStorage.removeItem(TKEY); } catch (e) {}
@@ -545,14 +547,40 @@ function notifyEnd() {
     }).catch(() => {});
   } catch (e) {}
 }
+// Native wrapper (Capacitor): the end alert is scheduled with the OS itself, so it fires
+// even when the app is fully closed — the one thing the web Notification API can't do.
+const isNative = () => !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+function nativeScheduleEnd() {
+  if (!isNative()) return;
+  try {
+    window.Capacitor.Plugins.LocalNotifications.schedule({
+      notifications: [{ id: 1, title: "You're allowed to stop.", body: timerTaskName || "Timer done", schedule: { at: new Date(tEnd) }, sound: "default" }]
+    });
+  } catch (e) {}
+}
+function nativeCancelEnd() {
+  if (!isNative()) return;
+  try { window.Capacitor.Plugins.LocalNotifications.cancel({ notifications: [{ id: 1 }] }); } catch (e) {}
+}
 // Ask for notification permission contextually — first timer, never on load.
 function maybeAskAlerts() {
-  if (!("Notification" in window) || Notification.permission !== "default") return;
   let dismissed = false; try { dismissed = localStorage.getItem("unstuck-alerts-dismissed") === "1"; } catch (e) {}
-  if (!dismissed) $("alerts").classList.add("on");
+  if (dismissed) return;
+  if (isNative()) {
+    let asked = false; try { asked = localStorage.getItem("unstuck-nperm") === "1"; } catch (e) {}
+    if (!asked) $("alerts").classList.add("on");
+    return;
+  }
+  if (!("Notification" in window) || Notification.permission !== "default") return;
+  $("alerts").classList.add("on");
 }
 $("alertsBtn").onclick = async () => {
   $("alerts").classList.remove("on");
+  if (isNative()) {
+    try { localStorage.setItem("unstuck-nperm", "1"); } catch (e) {}
+    try { const s = await window.Capacitor.Plugins.LocalNotifications.requestPermissions(); if (s.display === "granted") announce("Alerts on."); } catch (e) {}
+    return;
+  }
   try { const r = await Notification.requestPermission(); if (r === "granted") announce("Alerts on."); } catch (e) {}
 };
 $("alertsX").onclick = () => { $("alerts").classList.remove("on"); try { localStorage.setItem("unstuck-alerts-dismissed", "1"); } catch (e) {} };
@@ -797,6 +825,7 @@ window.addEventListener("appinstalled", () => $("install").classList.remove("on"
 // iOS Safari never fires beforeinstallprompt, so iPhone users would never see an install hint —
 // yet install is what unlocks notifications and reliable storage there. Show a manual nudge.
 (() => {
+  if (isNative()) return; // the wrapper IS installed — no home-screen nudge
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
   if (!isIOS || standalone) return;
