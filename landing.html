@@ -37,6 +37,8 @@ a{color:inherit}
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;text-decoration:none}
 .brand svg{width:30px;height:30px}
 .nav a.open{background:var(--amber);color:var(--amber-ink);text-decoration:none;font-weight:700;padding:10px 16px;border-radius:99px}
+.navr{display:flex;align-items:center;gap:20px}
+.nav a.shop{color:var(--hero-fg);text-decoration:none;font-weight:600}.nav a.shop:hover{opacity:.8}
 
 /* ---- hero ---- */
 .hero{background:var(--navy);color:var(--hero-fg);padding:0 0 56px}
@@ -139,7 +141,7 @@ footer{padding:28px 0;font-size:15px;color:var(--muted);display:flex;justify-con
         <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="6"/><path d="M32 8a24 24 0 1 1-24 24" fill="none" stroke="#E8A33D" stroke-width="6" stroke-linecap="round"/><ellipse cx="32" cy="41" rx="10" ry="4.5" fill="#E8A33D"/><circle cx="32" cy="30.5" r="3.6" fill="#fff"/><circle cx="32" cy="22.5" r="2.6" fill="rgba(232,163,61,.65)"/><circle cx="32" cy="16.5" r="1.8" fill="rgba(232,163,61,.4)"/></svg>
         Dayfall
       </a>
-      <a class="open" href="./">Open the app</a>
+      <span class="navr"><a class="shop" href="packs.html">Shop</a><a class="open" href="./">Open the app</a></span>
     </nav>
 
     <div class="hero-grid" id="top">
