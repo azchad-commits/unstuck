@@ -87,8 +87,11 @@ section{padding:72px 0}
 .badday .sec-h p{color:var(--hero-fg-2)}
 .rules{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 40px;max-width:900px}
 .rule{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;padding:16px 0;border-top:1px solid rgba(255,255,255,.14)}
-.rule .mark{width:34px;height:34px;border-radius:99px;display:grid;place-items:center;background:rgba(255,255,255,.1);font-size:16px;flex:none}
-.rule b{display:block;font-size:19px;margin-bottom:3px}.rule p{color:var(--hero-fg-2);font-size:16px}
+.rule .mark{width:36px;height:36px;border-radius:99px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);flex:none}
+.rule .mark svg{width:18px;height:18px;fill:none;stroke:var(--amber);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rule .mark svg .fill{fill:var(--amber);stroke:none}
+.rule>div>b{display:block;font-size:19px;margin-bottom:3px}.rule p{color:var(--hero-fg-2);font-size:16px}
+.rule p b{color:var(--hero-fg);font-weight:600}
 
 .shots{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:start}
 .shot{display:flex;flex-direction:column;gap:12px;margin:0}
@@ -190,15 +193,15 @@ footer{padding:28px 0;font-size:15px;color:var(--muted);display:flex;justify-con
       <p>Most tools are designed for your best day. These are the rules Dayfall follows for your worst one.</p>
     </div>
     <div class="rules">
-      <div class="rule"><span class="mark" aria-hidden="true">1</span><div><b>One screen, one day.</b><p>It opens on today. Nothing else competes for your attention.</p></div></div>
-      <div class="rule"><span class="mark" aria-hidden="true">★</span><div><b>One thing today.</b><p>Every day has a starred task with its own big Start button. Do that one and you're done. Really.</p></div></div>
-      <div class="rule"><span class="mark" aria-hidden="true">!</span><div><b>An "I'm stuck" button that's always there.</b><p>Three plain steps — water, sit down, smallest visible thing — and a 10-minute timer. No decisions.</p></div></div>
-      <div class="rule"><span class="mark" aria-hidden="true">·</span><div><b>Missed days don't shout.</b><p>No red badges, no guilt copy. Once a day it shows yesterday's leftovers: keep what still matters, send it to <b>today or any day this week</b>, or <b>let it go</b>. Every answer is right.</p></div></div>
-      <div class="rule"><span class="mark" aria-hidden="true">0</span><div><b>No streaks, no points.</b><p>Streaks punish bad days; this app forgives them on purpose. The only tally it keeps is what you <em>did</em> today — never what you missed.</p></div></div>
-      <div class="rule"><span class="mark" aria-hidden="true">↺</span><div><b>Undo, not "are you sure?"</b><p>Delete something by accident and there's an Undo. No confirmation dialogs standing between you and starting.</p></div></div>
-      <div class="rule"><span class="mark" aria-hidden="true">5</span><div><b>"Just the first 5."</b><p>Every big task's Start button has a smaller one under it: five minutes, nothing more. Starting is the whole battle, so the first step is tiny.</p></div></div>
-      <div class="rule"><span class="mark" aria-hidden="true">▮</span><div><b>Time you can see.</b><p>The timer is a shrinking bar, not just digits — with a nudge at halfway and at five minutes left. The screen stays awake, the tab counts down, and the app icon wears the days-left number.</p></div></div>
-      <div class="rule"><span class="mark" aria-hidden="true">↻</span><div><b>Routines without re-typing.</b><p>Mark a task as repeating — meds, laundry, watering the plants — and it's on every day through the deadline. Check it off or don't; tomorrow it's simply there again.</p></div></div>
+      <div class="rule"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><line x1="4" y1="9" x2="20" y2="9"/></svg></span><div><b>One screen, one day.</b><p>It opens on today. Nothing else competes for your attention.</p></div></div>
+      <div class="rule"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon class="fill" points="12 3 14.6 8.6 20.6 9.4 16.1 13.4 17.3 19.4 12 16.3 6.7 19.4 7.9 13.4 3.4 9.4 9.4 8.6"/></svg></span><div><b>One thing today.</b><p>Every day has a starred task with its own big Start button. Do that one and you're done. Really.</p></div></div>
+      <div class="rule"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><line x1="5.6" y1="5.6" x2="9.5" y2="9.5"/><line x1="14.5" y1="14.5" x2="18.4" y2="18.4"/><line x1="14.5" y1="9.5" x2="18.4" y2="5.6"/><line x1="5.6" y1="18.4" x2="9.5" y2="14.5"/></svg></span><div><b>An "I'm stuck" button that's always there.</b><p>Three plain steps — water, sit down, smallest visible thing — and a 10-minute timer. No decisions.</p></div></div>
+      <div class="rule"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.7 21a2 2 0 0 1-3.4 0"/><path d="M18.6 13A17.9 17.9 0 0 1 18 8"/><path d="M6.3 6.3A5.9 5.9 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 0 0-9.3-5"/><line x1="2" y1="2" x2="22" y2="22"/></svg></span><div><b>Missed days don't shout.</b><p>No red badges, no guilt-tripping. Once a day it shows yesterday's leftovers: keep what still matters, send it to <b>today or any day this week</b>, or <b>let it go</b>. Every answer is the right one.</p></div></div>
+      <div class="rule"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="5.6" y1="5.6" x2="18.4" y2="18.4"/></svg></span><div><b>No streaks, no points.</b><p>Streaks punish bad days; this app forgives them on purpose. The only tally it keeps is what you <em>did</em> today — never what you missed.</p></div></div>
+      <div class="rule"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="3 5 3 11 9 11"/><path d="M5.5 15a8 8 0 1 0 1.9-8.3L3 11"/></svg></span><div><b>Undo, not "are you sure?"</b><p>Delete something by accident and there's an Undo. No confirmation dialogs standing between you and starting.</p></div></div>
+      <div class="rule"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg></span><div><b>"Just the first 5."</b><p>Every big task's Start button has a smaller one under it: five minutes, nothing more. Starting is the whole battle, so the first step is tiny.</p></div></div>
+      <div class="rule"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="9.5" width="18" height="5" rx="2.5"/><rect class="fill" x="3" y="9.5" width="8.5" height="5" rx="2.5"/></svg></span><div><b>Time you can see.</b><p>The timer is a shrinking bar, not just digits — with a nudge at the halfway mark and at five minutes left. The screen stays awake, the tab counts down, and the app icon shows the days-left number.</p></div></div>
+      <div class="rule"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="17 2 21 6 17 10"/><path d="M3 12V9a4 4 0 0 1 4-4h14"/><polyline points="7 22 3 18 7 14"/><path d="M21 12v3a4 4 0 0 1-4 4H3"/></svg></span><div><b>Routines without retyping.</b><p>Mark a task as repeating — meds, laundry, watering the plants — and it appears every day through the deadline. Check it off or don't; tomorrow it's simply there again.</p></div></div>
     </div>
   </div>
 </section>
