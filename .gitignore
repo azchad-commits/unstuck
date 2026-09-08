@@ -5,3 +5,4 @@ native/ios/App/Pods
 native/ios/App/build
 native/ios/App/App/public
 native/ios/App/App/capacitor.config.json
+.thumbs/

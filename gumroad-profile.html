@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dayfall — Countdown plans that get you moving</title>
+<style>
+:root{
+  --navy:#0F2A44; --ink:#1B2733; --muted:#4F5B68; --paper:#E9EEF3; --card:#fff;
+  --amber:#E8A33D; --amber-ink:#5A3A00; --line:#D4DCE5; --accent:#0F2A44; --btn:#0F2A44; --ring:#344C64;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#E7EDF3; --muted:#9BA9B7; --paper:#0F1722; --card:#1A2431; --line:#2C3947;
+    --accent:#8FB6DF; --btn:#2E5F92; --ring:#2C3947;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:"Lexend",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.wrap{max-width:1040px; margin:0 auto; padding:0 20px}
+
+/* Hero */
+.hero{background:var(--navy); color:#fff; padding:64px 0 72px; position:relative; overflow:hidden}
+.hero .wrap{position:relative; z-index:1}
+.brand{display:flex; align-items:center; gap:14px; margin-bottom:30px}
+.brand svg{width:48px; height:48px; flex:none}
+.brand b{font-size:24px; font-weight:700; letter-spacing:-.01em}
+.hero h1{font-size:clamp(30px,5.2vw,52px); line-height:1.08; margin:0 0 16px; font-weight:700; letter-spacing:-.02em; max-width:16ch}
+.hero p.lede{font-size:clamp(17px,2.2vw,21px); opacity:.9; max-width:56ch; margin:0 0 28px}
+.hero .cta{display:flex; flex-wrap:wrap; gap:12px}
+.btn{display:inline-flex; align-items:center; justify-content:center; text-decoration:none; font-weight:700; border-radius:12px; padding:14px 22px; font-size:16px}
+.btn.amber{background:var(--amber); color:var(--amber-ink)}
+.btn.amber:hover{background:#DC9A34}
+.btn.ghost{background:rgba(255,255,255,.12); color:#fff}
+.btn.ghost:hover{background:rgba(255,255,255,.2)}
+.dots{position:absolute; right:-60px; top:-40px; width:380px; height:380px; opacity:.14}
+
+/* Sections */
+section{padding:56px 0}
+.sec-h{margin-bottom:26px}
+.eyebrow{font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--amber-ink); background:var(--amber); display:inline-block; padding:4px 10px; border-radius:99px; margin-bottom:12px}
+@media (prefers-color-scheme: dark){ .eyebrow{color:#0F1722} }
+.sec-h h2{font-size:clamp(24px,3.4vw,34px); margin:0 0 8px; font-weight:700; letter-spacing:-.01em}
+.sec-h p{color:var(--muted); margin:0; max-width:64ch; font-size:17px}
+
+/* How it works */
+.steps{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px}
+.step{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px}
+.step .n{display:inline-grid; place-items:center; width:34px; height:34px; border-radius:99px; background:var(--btn); color:#fff; font-weight:700; margin-bottom:12px}
+.step h3{margin:0 0 6px; font-size:18px}
+.step p{margin:0; color:var(--muted); font-size:15px}
+
+/* Free packs */
+.free-band{background:var(--card); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+.chips{display:flex; flex-wrap:wrap; gap:10px; margin-top:6px}
+.chip{display:inline-flex; align-items:center; gap:8px; text-decoration:none; background:var(--paper); border:1px solid var(--line); border-radius:99px; padding:10px 16px; font-weight:700; font-size:15px; color:var(--ink)}
+.chip:hover{border-color:var(--accent)}
+.chip small{font-weight:400; color:var(--muted)}
+
+/* Pack grid */
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px}
+.pack{display:flex; flex-direction:column; text-decoration:none; color:inherit; background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; transition:transform .12s ease, box-shadow .12s ease}
+.pack:hover{transform:translateY(-3px); box-shadow:0 12px 30px rgba(15,42,68,.14)}
+.pack .top{background:var(--navy); padding:22px 18px 16px; text-align:center}
+.pack .top svg{width:76px; height:76px}
+.pack .top .name{color:#fff; font-weight:700; font-size:17px; margin-top:6px}
+.pack .top .kicker{color:var(--amber); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-top:4px}
+.pack .body{padding:16px 18px; display:flex; flex-direction:column; flex:1}
+.pack .meta{font-size:13px; color:var(--muted); margin-bottom:6px}
+.pack .desc{font-size:14px; color:var(--muted); flex:1; margin:0 0 14px}
+.pack .buy{align-self:flex-start; background:var(--amber); color:var(--amber-ink); font-weight:700; border-radius:10px; padding:9px 16px; font-size:14px}
+
+/* Follow */
+.follow{background:var(--navy); color:#fff}
+.follow h2{font-size:clamp(24px,3.4vw,32px); margin:0 0 8px}
+.follow p{opacity:.9; margin:0 0 20px; max-width:56ch}
+form[data-gumroad-follow]{display:flex; flex-wrap:wrap; gap:10px; max-width:520px}
+form[data-gumroad-follow] input{flex:1; min-width:220px; border:0; border-radius:12px; padding:15px 16px; font:inherit; font-size:16px; color:var(--ink); background:#fff}
+form[data-gumroad-follow] button{border:0; border-radius:12px; padding:15px 24px; font:inherit; font-weight:700; font-size:16px; background:var(--amber); color:var(--amber-ink); cursor:pointer}
+[data-gumroad-follow-message]{margin-top:12px; font-size:15px; opacity:.92; min-height:1.4em}
+
+footer{padding:30px 0 48px; color:var(--muted); font-size:14px; text-align:center}
+footer a{color:inherit}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg class="dots" viewBox="0 0 64 64" aria-hidden="true">
+    <circle cx="32" cy="32" r="24" fill="none" stroke="#fff" stroke-width="5"/>
+    <path d="M32 8a24 24 0 1 1-24 24" fill="none" stroke="#E8A33D" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <div class="wrap">
+    <div class="brand">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="6"/>
+        <path d="M32 8a24 24 0 1 1-24 24" fill="none" stroke="#E8A33D" stroke-width="6" stroke-linecap="round"/>
+        <ellipse cx="32" cy="41" rx="10" ry="4.5" fill="#E8A33D"/>
+        <circle cx="32" cy="30.5" r="3.6" fill="#fff"/>
+        <circle cx="32" cy="22.5" r="2.6" fill="rgba(232,163,61,.65)"/>
+        <circle cx="32" cy="16.5" r="1.8" fill="rgba(232,163,61,.4)"/>
+      </svg>
+      <b>Dayfall</b>
+    </div>
+    <h1>Countdown plans that get you moving.</h1>
+    <p class="lede">Dayfall is a countdown planner for ADHD and time blindness — days numbered backward from your deadline, every task small and timed, and a finish that says <em>you're allowed to stop.</em> These plan packs drop a complete, expert-written countdown into the app in one tap.</p>
+    <div class="cta">
+      <a class="btn amber" href="https://dayfall.day/?import=packs/reset-week.json">Try a free pack</a>
+      <a class="btn ghost" href="https://dayfall.day/">Open the free app</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap">
+    <div class="sec-h">
+      <span class="eyebrow">How packs work</span>
+      <h2>Don't plan the plan. Load it.</h2>
+      <p>Every pack is a full countdown written in advance — each day already broken into small, timed tasks, with rest days built in. Day 0 is the day you load it.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><h3>Get the pack</h3><p>Buy here on Gumroad and download a small file — or grab a free one in a single tap.</p></div>
+      <div class="step"><span class="n">2</span><h3>Load it into Dayfall</h3><p>Open the free app, tap the ⋯ menu, Import a backup, pick the file.</p></div>
+      <div class="step"><span class="n">3</span><h3>Follow one day at a time</h3><p>The app shows today, the one thing that matters, and a timer that ends with permission to stop.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="free-band">
+  <div class="wrap">
+    <div class="sec-h">
+      <span class="eyebrow">Free · one tap</span>
+      <h2>Start with a free pack</h2>
+      <p>These load straight into the app — no account, no checkout. Loading twice never duplicates anything you've done.</p>
+    </div>
+    <div class="chips">
+      <a class="chip" href="https://dayfall.day/?import=packs/reset-week.json">Reset Week <small>7 days</small></a>
+      <a class="chip" href="https://dayfall.day/?import=packs/doom-pile-weekend.json">Doom Pile Weekend <small>3 days</small></a>
+      <a class="chip" href="https://dayfall.day/?import=packs/unpack-week.json">Unpack Week <small>7 days</small></a>
+      <a class="chip" href="https://dayfall.day/?import=packs/exam-cram.json">Exam Cram <small>5 days</small></a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-h">
+      <span class="eyebrow">Plan packs · $9 each</span>
+      <h2>The full countdowns</h2>
+      <p>Bigger deadlines, done one small day at a time. Each is delivered as a file you import into Dayfall.</p>
+    </div>
+    <div class="grid">
+      <a class="pack" href="https://chadventure2112.gumroad.com/l/tvjlk">
+        <div class="top">DAYMARK<div class="name">Move Out in 24 Days</div><div class="kicker">24 days · ~50 tasks</div></div>
+        <div class="body"><div class="meta">Moving out</div><p class="desc">Tag, sell, pack, purge, hand back the keys — with deposit-protection steps baked in. Tested on a real move.</p><span class="buy">Get it — $9</span></div>
+      </a>
+      <a class="pack" href="https://chadventure2112.gumroad.com/l/grjcr">
+        <div class="top">DAYMARK<div class="name">Finals Week</div><div class="kicker">10 days · every exam</div></div>
+        <div class="body"><div class="meta">Studying</div><p class="desc">Hardest topics first, past papers, one-page cheat sheets from memory, and sleep treated as a graded task.</p><span class="buy">Get it — $9</span></div>
+      </a>
+      <a class="pack" href="https://chadventure2112.gumroad.com/l/edszmt">
+        <div class="top">DAYMARK<div class="name">Launch in 30</div><div class="kicker">30 days · for makers</div></div>
+        <div class="body"><div class="meta">Shipping a thing</div><p class="desc">From "almost done" to actually launched: scope cuts, a feature freeze that means it, dress rehearsals, rest days.</p><span class="buy">Get it — $9</span></div>
+      </a>
+      <a class="pack" href="https://chadventure2112.gumroad.com/l/aapym">
+        <div class="top">DAYMARK<div class="name">Job Hunt Sprint</div><div class="kicker">14 days · momentum</div></div>
+        <div class="body"><div class="meta">Finding work</div><p class="desc">A one-page resume aimed at the target, three tailored applications at a time, humans messaged, stories rehearsed.</p><span class="buy">Get it — $9</span></div>
+      </a>
+      <a class="pack" href="https://chadventure2112.gumroad.com/l/rtdiz">
+        <div class="top">DAYMARK<div class="name">Wedding Countdown</div><div class="kicker">30 days · final month</div></div>
+        <div class="body"><div class="meta">Getting married</div><p class="desc">Vendors confirmed, vows in two drafts, the seating chart, tips in labeled envelopes — and no-wedding-talk nights.</p><span class="buy">Get it — $9</span></div>
+      </a>
+      <a class="pack" href="https://chadventure2112.gumroad.com/l/bzrju">
+        <div class="top">DAYMARK<div class="name">Estate Cleanout</div><div class="kicker">21 days · written gently</div></div>
+        <div class="body"><div class="meta">Clearing a home</div><p class="desc">Paperwork first, keep-forever boxes, family claim deadlines, rest days — because grief is work too.</p><span class="buy">Get it — $9</span></div>
+      </a>
+      <a class="pack" href="https://chadventure2112.gumroad.com/l/fuyupr">
+        <div class="top">DAYMARK<div class="name">Tax Crunch</div><div class="kicker">10 days · shoebox to filed</div></div>
+        <div class="body"><div class="meta">Doing taxes</div><p class="desc">One folder, document hunts with a timer, the return in small sections, a confirmation screenshot at the end.</p><span class="buy">Get it — $9</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="follow">
+  <div class="wrap">
+    <h2>New packs, now and then.</h2>
+    <p>Leave your email and I'll tell you when a new Dayfall pack lands — finals, moves, launches, and whatever people ask for next. No spam, no schedule.</p>
+    <form data-gumroad-follow>
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <button type="submit">Follow Dayfall</button>
+    </form>
+    <div data-gumroad-follow-message>Thanks — you're on the list. Check your email to confirm.</div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    Dayfall — a countdown planner for ADHD and time blindness · <a href="https://dayfall.day/">dayfall.day</a>
+  </div>
+</footer>
+
+</body>
+</html>
