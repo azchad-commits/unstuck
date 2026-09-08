@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dayfall Plan Packs</title>
+<meta name="description" content="Expert countdown plans for Dayfall — load a complete, ADHD-friendly plan in one tap.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0F2A44">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0F2A44;--ink:#1B2733;--muted:#4F5B68;--paper:#E9EEF3;--card:#fff;--amber:#E8A33D;--amber-ink:#5A3A00;--line:#D4DCE5;--green:#3C8D5A;--btn:#0F2A44}
+@media(prefers-color-scheme:dark){:root{--ink:#E7EDF3;--muted:#9BA9B7;--paper:#0F1722;--card:#1A2431;--line:#2C3947;--btn:#2E5F92}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Lexend",system-ui,sans-serif;font-size:16px;line-height:1.5}
+.top{background:var(--navy);color:#fff;padding:26px 20px 22px;padding-top:calc(26px + env(safe-area-inset-top))}
+.top .crumb{font-size:14px;opacity:.8;margin-bottom:6px}.top .crumb a{color:#fff}
+.top h1{margin:0 0 6px;font-size:clamp(26px,6vw,36px);line-height:1.15}
+.top p{margin:0;opacity:.85;font-size:17px;max-width:560px}
+main{max-width:640px;margin:0 auto;padding:18px 16px calc(48px + env(safe-area-inset-bottom))}
+.how{font-size:15px;color:var(--muted);margin:6px 0 16px}
+.pack{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+.pack .tagline{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:99px;padding:4px 10px;margin-bottom:8px}
+.free .tagline{background:var(--green);color:#fff}
+.paid .tagline{background:var(--amber);color:var(--amber-ink)}
+.pack h2{margin:0 0 6px;font-size:24px}
+.pack .price{font-weight:700}
+.pack p{color:var(--muted);margin:8px 0}
+.pack ul{color:var(--muted);font-size:15px;margin:10px 0;padding-left:20px}
+.pack li{margin:4px 0}
+.go{display:block;text-align:center;background:var(--amber);color:var(--amber-ink);text-decoration:none;font-weight:700;font-size:18px;border-radius:12px;padding:15px;margin-top:12px}
+.go.navy{background:var(--btn);color:#fff}
+.note{font-size:13px;color:var(--muted);margin-top:10px}
+.steps{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:12px 16px;font-size:14px;color:var(--muted);margin-top:12px}
+footer{max-width:640px;margin:0 auto;padding:0 16px 30px;font-size:14px;color:var(--muted)}
+footer a{color:inherit}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="crumb"><a href="landing.html">Dayfall</a> / Plan packs</div>
+  <h1>Don't plan the plan. Load it.</h1>
+  <p>Plan packs are complete, ADHD-friendly countdowns written in advance — every day already broken into small, timed tasks. Day 0 is the day you load one.</p>
+</div>
+<main>
+  <p class="how">Packs open in <a href="./">Dayfall</a> — free, no account needed, works on your phone.</p>
+
+  <div class="pack free">
+    <span class="tagline">Free</span>
+    <h2>Reset Week</h2>
+    <p>Seven gentle days to get back on top of life — one theme a day (surfaces, inbox, body, money, space, people), nothing over 20 minutes, and day 7 ends with doing nothing on purpose.</p>
+    <a class="go" href="./?import=packs/reset-week.json">Load Reset Week — free</a>
+    <p class="note">One tap adds it to your Dayfall, starting today. Loading it twice won't duplicate anything you've done.</p>
+  </div>
+
+  <div class="pack paid">
+    <span class="tagline">Pack</span>
+    <h2>Move Out in 24 Days <span class="price">· $9</span></h2>
+    <p>The complete move-out countdown, tested on a real move: tag every room keep/sell/donate/trash, sell before you pack, one early garage hour at a time, hard deadlines for the sell-off, donation pickup and junk haul — through to photographing empty rooms and handing back the keys.</p>
+    <ul>
+      <li>24 days, ~50 tasks, every one timed and starred</li>
+      <li>Built-in rest day and porch-pickup rhythm</li>
+      <li>Deposit-protection steps baked in</li>
+    </ul>
+    <a class="go navy" id="buy" href="#">Get the pack — $9</a>
+    <div class="steps"><b>After purchase:</b> you'll download a small file. Open Dayfall → <b>⋯ menu</b> → <b>Import a backup</b> → pick the file. Your 24-day countdown starts today.</div>
+  </div>
+
+  <p class="note">More packs are coming — finals week, launch month, estate cleanout. Want one first? Say so: <a href="mailto:hello@dayfall.day">hello@dayfall.day</a></p>
+</main>
+<footer>
+  <a href="landing.html">About Dayfall</a> · <a href="./">Open the app</a>
+</footer>
+</body>
+</html>

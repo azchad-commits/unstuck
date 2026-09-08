@@ -773,8 +773,19 @@ $("mics").onclick = () => {
   $("mmsg").textContent = "Calendar file saved. Open it and your calendar takes over the morning reminders."; $("mmsg").classList.remove("err");
 };
 $("mimport").onclick = () => $("mimportfile").click();
-// Merge a backup object ({db:{plans,stats}} or bare {plans}) into local state. Returns how many plans landed.
+// Plan packs: relative-day templates ({pack:1, name, tasks:{"0":[{title,min,star?}],...}}).
+// Day 0 is the day you load it — a pack bought any day starts that day, ends at the last offset.
+function packToBackup(p) {
+  const T = today(); const tasks = {}; let maxOff = 0;
+  for (const [off, list] of Object.entries(p.tasks)) {
+    const n = Math.max(0, +off || 0); maxOff = Math.max(maxOff, n);
+    tasks[iso(addDays(T, n))] = (list || []).map((t, i) => ({ id: uid(), title: t.title, min: +t.min || 0, done: false, star: t.star !== undefined ? !!t.star : i === 0 }));
+  }
+  return { db: { plans: [normalize({ id: uid(), name: p.name || "Plan", start: iso(T), end: iso(addDays(T, maxOff)), tasks })] } };
+}
+// Merge a backup object ({db:{plans,stats}}, bare {plans}, or a pack) into local state. Returns how many plans landed.
 function importBackup(d) {
+  if (d && d.pack === 1 && d.tasks) d = packToBackup(d);
   const src = d && d.db && Array.isArray(d.db.plans) ? d.db : (d && Array.isArray(d.plans) ? d : null);
   if (!src) throw new Error("That file doesn't look like a Dayfall backup.");
   let n = 0;

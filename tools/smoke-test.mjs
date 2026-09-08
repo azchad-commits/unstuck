@@ -218,6 +218,16 @@ try {
   await page.keyboard.press("Escape");
   check(!page.url().includes("import="), "?import= cleans itself out of the URL");
 
+  // Plan packs: relative-day template materializes from today
+  await page.goto("http://127.0.0.1:8765/?import=packs/reset-week.json"); await page.waitForTimeout(600);
+  const packState = await page.evaluate(() => {
+    const p = JSON.parse(localStorage.getItem("unstuck-v1")).plans.find(x => x.name === "Reset Week");
+    if (!p) return null;
+    const f = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+    return { startsToday: p.start === f(0), endsDay6: p.end === f(6), todayTasks: (p.tasks[f(0)] || []).length, starred: (p.tasks[f(0)] || []).some(t => t.star) };
+  });
+  check(!!packState && packState.startsToday && packState.endsDay6 && packState.todayTasks === 3 && packState.starred, "plan pack loads relative to today with starred tasks");
+
   // Offline: shell served from SW cache
   await ctx.setOffline(true);
   await page.reload();

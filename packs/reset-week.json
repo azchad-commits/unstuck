@@ -1,0 +1,38 @@
+{
+ "app": "dayfall",
+ "pack": 1,
+ "name": "Reset Week",
+ "description": "Seven gentle days to get back on top of life — one theme a day, nothing over 20 minutes.",
+ "tasks": {
+  "0": [
+   { "title": "Clear one surface. Just one.", "min": 10, "star": true },
+   { "title": "Water, meds, and a real meal check", "min": 5 },
+   { "title": "Write tomorrow's one thing on day 2", "min": 5 }
+  ],
+  "1": [
+   { "title": "15-minute inbox sweep — archive freely", "min": 15, "star": true },
+   { "title": "Reply to the one message you're avoiding", "min": 10 }
+  ],
+  "2": [
+   { "title": "20-minute walk, headphones optional", "min": 20, "star": true },
+   { "title": "Book or confirm one appointment you've been delaying", "min": 10 }
+  ],
+  "3": [
+   { "title": "Open the bills. Just look. Looking counts.", "min": 10, "star": true },
+   { "title": "Pay or schedule one of them", "min": 10 }
+  ],
+  "4": [
+   { "title": "One drawer or one shelf — not the whole room", "min": 15, "star": true },
+   { "title": "Trash-bag walk-through of one room", "min": 10 }
+  ],
+  "5": [
+   { "title": "Message someone you miss", "min": 5, "star": true },
+   { "title": "Say no to one thing this week", "min": 5 }
+  ],
+  "6": [
+   { "title": "Restock list: what ran out this week?", "min": 10, "star": true },
+   { "title": "Pick next week's one thing", "min": 10 },
+   { "title": "You made it. Do nothing. That's the task.", "min": 0 }
+  ]
+ }
+}

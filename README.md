@@ -87,6 +87,12 @@ Ship it (human steps, needs the Apple Developer account):
 
 Icon/splash sources regenerate via `python3 tools/make-icons.py` → `native/assets/`, then `cd native && npx @capacitor/assets generate --ios`.
 
+## Plan packs
+
+Packs are pre-written countdowns as relative-day JSON (`{pack:1, name, tasks:{"0":[{title,min,star}],…}}`); day 0 = the day it loads, deadline = the last offset. The app accepts them anywhere backups import: one-tap `?import=packs/<name>.json` (same-origin), or file import from the ⋯ menu (how paid packs arrive). Storefront: `packs.html` — free "Reset Week" lives in `packs/`; **paid packs stay out of this public repo** and are delivered by Gumroad as files.
+
+To sell "Move Out in 24 Days" ($9, human steps): create a Gumroad account → New product → digital product, $9 → upload `dayfall-pack-move-out-24.json` (kept outside the repo) → copy the product URL into the `#buy` link in `packs.html`. Gumroad handles checkout, delivery, and VAT.
+
 ## How sync works
 
 - **Local first.** Every change is written to `localStorage` immediately. The app never waits on the network.
