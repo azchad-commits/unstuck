@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How to use Dayfall</title>
+<meta name="description" content="The complete guide to Dayfall — countdowns, the one thing, timers, I'm stuck, missed days, sharing a countdown with a helper, sync, backups, plan packs, reminders, and settings.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0F2A44">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0F2A44;--ink:#1B2733;--muted:#4F5B68;--paper:#E9EEF3;--card:#fff;--amber:#E8A33D;--amber-ink:#5A3A00;--line:#D4DCE5;--green:#3C8D5A;--soft:#F3F6F9}
+@media(prefers-color-scheme:dark){:root{--ink:#E7EDF3;--muted:#9BA9B7;--paper:#0F1722;--card:#1A2431;--line:#2C3947;--soft:#141E2B}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Lexend",system-ui,sans-serif;font-size:17px;line-height:1.5}
+a{color:inherit}
+.top{background:var(--navy);color:#fff;padding:26px 20px 24px;padding-top:calc(26px + env(safe-area-inset-top))}
+.top .crumb{font-size:14px;opacity:.8;margin-bottom:8px}.top .crumb a{color:#fff}
+.top h1{margin:0 0 8px;font-size:clamp(27px,6.5vw,38px);line-height:1.12}
+.top p{margin:0;opacity:.85;font-size:17px;max-width:60ch}
+main{max-width:720px;margin:0 auto;padding:18px 16px calc(48px + env(safe-area-inset-bottom))}
+.toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:18px}
+.toc b{display:block;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.toc ol{margin:0;padding-left:22px;columns:2;column-gap:20px;font-size:15px}.toc li{margin:3px 0;break-inside:avoid}
+.toc a{text-decoration:none;color:var(--ink)}.toc a:hover{text-decoration:underline}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;scroll-margin-top:12px}
+.k{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:99px;background:var(--navy);color:#fff;font-weight:700;margin-bottom:8px;font-size:14px}
+section h2{margin:0 0 8px;font-size:21px}
+section h3{margin:16px 0 6px;font-size:16.5px}
+section p,section li{color:var(--muted);font-size:16px;margin:6px 0}
+section ol,section ul{margin:6px 0 0;padding-left:22px}
+section b{color:var(--ink)}
+kbd{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-family:inherit;font-size:14px;color:var(--ink);white-space:nowrap}
+.say{color:var(--green);font-weight:700}
+.tip{background:var(--soft);border-left:3px solid var(--amber);border-radius:8px;padding:10px 12px;margin:10px 0;font-size:15px;color:var(--muted)}
+.tip b{color:var(--ink)}
+.warn{background:var(--soft);border-left:3px solid var(--muted);border-radius:8px;padding:10px 12px;margin:10px 0;font-size:15px;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:8px 0}
+th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--muted)}
+th{color:var(--ink);font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+.tablewrap{overflow-x:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+.way{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.way h4{margin:0 0 4px;font-size:16px}.way p,.way li{font-size:14.5px}
+.go{display:inline-block;text-align:center;background:var(--amber);color:var(--amber-ink);text-decoration:none;font-weight:700;font-size:16px;border-radius:12px;padding:12px 18px;margin-top:8px}
+.quick{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:15px}
+.quick dt{font-weight:700;color:var(--ink)}.quick dd{margin:0;color:var(--muted)}
+footer{max-width:720px;margin:0 auto;padding:0 16px 30px;font-size:14px;color:var(--muted)}footer a{color:inherit}
+@media(max-width:560px){.toc ol{columns:1}.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="crumb"><a href="landing.html">Dayfall</a> / Help</div>
+  <h1>How to use Dayfall</h1>
+  <p>Everything the app can do, in the order you'll meet it — including exactly how to share a countdown with a helper. Open it on your phone and follow along.</p>
+</div>
+<main>
+
+<nav class="toc" aria-label="Contents"><b>Contents</b><ol>
+  <li><a href="#idea">The idea in 30 seconds</a></li>
+  <li><a href="#install">Put it on your phone</a></li>
+  <li><a href="#start">Start a countdown</a></li>
+  <li><a href="#views">Today, Week, Month</a></li>
+  <li><a href="#tasks">Tasks &amp; the one thing</a></li>
+  <li><a href="#timer">Timers</a></li>
+  <li><a href="#stuck">The I'm stuck button</a></li>
+  <li><a href="#missed">Missed days</a></li>
+  <li><a href="#deadline">Deadline day &amp; after</a></li>
+  <li><a href="#multi">More than one countdown</a></li>
+  <li><a href="#share">Sharing with a helper</a></li>
+  <li><a href="#sync">Sync across devices</a></li>
+  <li><a href="#backup">Backup &amp; restore</a></li>
+  <li><a href="#packs">Plan packs</a></li>
+  <li><a href="#calendar">Calendar reminders</a></li>
+  <li><a href="#settings">Settings</a></li>
+  <li><a href="#shortcuts">Shortcuts &amp; accessibility</a></li>
+  <li><a href="#trouble">Troubleshooting</a></li>
+  <li><a href="#quick">Quick reference</a></li>
+</ol></nav>
+
+<section id="idea"><span class="k">1</span><h2>The idea in 30 seconds</h2>
+  <p>Dayfall is a countdown planner for ADHD and time-blindness. You pick a <b>deadline</b>; the app numbers every day <b>backward</b> from it, so the big number at the top always tells you where you are in time. Each day holds a few small tasks, each with a set number of minutes.</p>
+  <ul>
+    <li><b>★ The one thing.</b> Every day has one starred task with its own big Start button. Do just that and the day counts.</li>
+    <li><b>Tap the minutes, the timer starts.</b> No deciding when to begin.</li>
+    <li><b>At zero:</b> <span class="say">"Time's up. You're allowed to stop."</span> It means it. There are no streaks, no points, no red badges.</li>
+    <li><b>Stuck?</b> The <kbd>I'm stuck</kbd> button is always at the bottom. It never judges.</li>
+  </ul>
+</section>
+
+<section id="install"><span class="k">2</span><h2>Put it on your phone</h2>
+  <p>Dayfall is a website that installs like an app: it opens full-screen, works offline, and keeps your lists. On iPhone this also <b>unlocks alerts</b> — timer notifications only work once it's on the Home Screen.</p>
+  <ol>
+    <li><b>iPhone / iPad:</b> open dayfall.day in <b>Safari</b> → tap <kbd>Share</kbd> (the square with the arrow) → <kbd>Add to Home Screen</kbd> → <kbd>Add</kbd>.</li>
+    <li><b>Android:</b> open it in <b>Chrome</b> → tap <kbd>Add</kbd> on the banner, or <kbd>⋮</kbd> → <kbd>Install app</kbd>.</li>
+  </ol>
+  <p>Once installed, the app icon shows your <b>days-left number</b> (where your phone supports badges), and a long-press on the icon offers an <b>I'm stuck</b> shortcut that opens straight to the reset script.</p>
+  <div class="tip"><b>Offline is fine.</b> Everything saves on your device first. You only need a connection for Sync, buying packs, and sending a sign-in link.</div>
+</section>
+
+<section id="start"><span class="k">3</span><h2>Start a countdown</h2>
+  <ol>
+    <li>Tap <kbd>Start a countdown</kbd> (first run), or the countdown name at the top → <kbd>+ New countdown</kbd>.</li>
+    <li><b>What is it?</b> — name it (<i>Move out, launch, finals week…</i>). Leave it blank and it's called "Countdown".</li>
+    <li><b>Start date</b> — defaults to today.</li>
+    <li><b>End date (the deadline)</b> — defaults to three weeks out. Tap <kbd>Create</kbd> (or press Enter).</li>
+  </ol>
+  <h3>What the numbers mean</h3>
+  <ul>
+    <li><b>Days left</b> = whole calendar days from today to the deadline. It turns <b>amber</b> when you're inside the last week.</li>
+    <li><b>Day 0</b> is deadline day itself. After it passes, the label reads <b>done</b>.</li>
+    <li>A day with every task checked shows <b>✓ done</b>.</li>
+  </ul>
+  <div class="warn">Right now a countdown's name and dates can't be edited after creation — start a new one if you need different dates. (Archive the old one; nothing is lost.)</div>
+</section>
+
+<section id="views"><span class="k">4</span><h2>Today, Week, Month</h2>
+  <p>The three buttons under the big number switch views.</p>
+  <ul>
+    <li><b>Today</b> — one expanded card for today: the starred task's hero button, the task list, and an "add a task" row. If you have other countdowns with tasks today, they appear beneath as compact cards you can check off right there (see <a href="#multi">More than one countdown</a>).</li>
+    <li><b>Week</b> — seven day cards; use <kbd>‹</kbd> <kbd>›</kbd> to move a week at a time. Tap a day's header to expand it. Past days are greyed.</li>
+    <li><b>Month</b> — a calendar. Each day shows its <b>days-left</b> number and a small green bar for how much of that day is done. <b>Tap any date</b> to jump to that week with the day open — that's how you plan ahead.</li>
+  </ul>
+</section>
+
+<section id="tasks"><span class="k">5</span><h2>Tasks &amp; the one thing</h2>
+  <h3>Add a task</h3>
+  <p>At the bottom of any open day: type in <kbd>Add a task…</kbd>, pick minutes, tap <kbd>Add</kbd> (or press Enter).</p>
+  <p><b>Minutes are a fixed menu:</b> 5 · 10 · 15 · 30 · 45 · 60 · 90 · <i>no timer</i>. Choosing from a short list takes a second; estimating from scratch is the decision that stops people starting.</p>
+  <h3>The star ★</h3>
+  <p>Tap <kbd>☆</kbd> on a task to make it the day's <b>one thing</b> — only one per day. The first task you add to an empty day is starred automatically. The starred task gets a hero card at the top with a big <kbd>Start 45 min</kbd> button; once it's done the card reads <b>✓ Done for today</b>.</p>
+  <p><b>Just the first 5.</b> Under the Start button (for tasks of 10+ minutes) there's a smaller button that starts a <b>5-minute</b> timer on the same task. Starting is the whole battle, so the first step is tiny.</p>
+  <h3>Check it off</h3>
+  <p>Tap the square on the left. If you'd timed it, you'll see how it compared: <i>"Planned 30m · spent 45m. Done is done."</i></p>
+  <h3>Edit a task (change minutes, move it, repeat it, delete it)</h3>
+  <p>Open a day that has tasks and tap <kbd>Edit</kbd> in its header. Each task row now shows:</p>
+  <ul>
+    <li><b>Minutes dropdown</b> — change how long it gets; saves instantly.</li>
+    <li><kbd>→ Today</kbd> (on past or future days) / <kbd>→ Tmrw</kbd> (on today) — moves the task, un-done, to that day.</li>
+    <li><kbd>↻</kbd> — <b>repeat every day</b> through the deadline (meds, laundry, watering plants). Check it off or don't; tomorrow it's simply there again. Tap again to stop repeating.</li>
+    <li><kbd>×</kbd> — delete.</li>
+  </ul>
+  <p>Tap <kbd>Done</kbd> to leave edit mode. Every move and delete shows a toast with <kbd>Undo</kbd> for seven seconds — there are no "are you sure?" dialogs.</p>
+  <div class="tip"><b>The app learns your estimates.</b> After a handful of timed tasks, if things usually run long it'll quietly suggest picking the next size up.</div>
+</section>
+
+<section id="timer"><span class="k">6</span><h2>Timers</h2>
+  <h3>Start one</h3>
+  <p>Tap the <b>minutes chip</b> on any task, the hero <kbd>Start 45 min</kbd>, <kbd>Just the first 5</kbd>, or <kbd>Start 10 minutes</kbd> in the I'm stuck sheet. An amber strip appears under the view buttons: the countdown, the task name, a sound button, <kbd>Stop</kbd>, and a <b>shrinking bar</b> so you can see time passing, not just read it. The browser tab counts down too, and the screen stays awake.</p>
+  <h3>At zero</h3>
+  <p>The strip turns green: <span class="say">"Time's up. You're allowed to stop."</span> — a short alarm, a buzz, and a soft full-screen pulse. Tap <kbd>Done</kbd>. The alarm is <b>never muted</b>, whatever sound mode you're in.</p>
+  <h3>Nudges</h3>
+  <p>Longer timers get a gentle <b>halfway</b> blip (20 min and up) and a <b>5-minutes-left</b> blip (10 min and up). Turn them off in the menu: <kbd>Halfway &amp; 5-minutes-left nudges</kbd>. The end alarm still plays.</p>
+  <h3>Sound while a timer runs — pick one</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Mode</th><th>What you hear</th><th>Alarm if you switch apps?</th></tr>
+    <tr><td><b>Silent</b> 🔇</td><td>Nothing</td><td>Only while Dayfall is open</td></tr>
+    <tr><td><b>Soft tick</b> 🔊</td><td>A quiet tick once a second</td><td><b>Yes</b> — the tick keeps the sound channel alive</td></tr>
+    <tr><td><b>Keep-alive</b> 🤫</td><td>Nothing you can hear</td><td><b>Yes</b> — an inaudible hum keeps the alarm working in the background</td></tr>
+  </table></div>
+  <p>Set it in the ⋯ menu under <b>While a timer runs</b>, or tap the 🔇/🔊/🤫 button on the timer strip to cycle. <b>Keep-alive</b> is the one to use if you switch apps a lot.</p>
+  <h3>Switching apps or closing the tab</h3>
+  <p>The timer runs on the clock, not the screen — come back and it shows the right time. If it ended while you were away (within the last 15 minutes) you land straight on "You're allowed to stop." without it re-buzzing.</p>
+  <h3>Notifications</h3>
+  <p>The first time you start a timer you'll see <i>"Get a nudge when a timer ends — even if you switch apps."</i> Tap <kbd>Enable</kbd>. The end notification is titled <b>"You're allowed to stop."</b> and only fires when you're <i>not</i> looking at the app.</p>
+  <div class="warn"><b>iPhone:</b> notifications require the app to be on your <b>Home Screen</b> (iOS 16.4+) — see <a href="#install">Put it on your phone</a>. And if the app is fully closed (not just in the background) a web app can't ring; reopen it and it'll be waiting on "You're allowed to stop."</div>
+</section>
+
+<section id="stuck"><span class="k">7</span><h2>The I'm stuck button</h2>
+  <p>Always at the bottom of the screen. Tap it and you get three plain steps — no decisions:</p>
+  <ol>
+    <li>Drink water. Sit down for a second.</li>
+    <li>Start a 10-minute timer. Do the smallest visible thing.</li>
+    <li>You don't have to finish today. Tomorrow is already written.</li>
+  </ol>
+  <p>Tap <kbd>Start 10 minutes</kbd>. If today has a starred task that isn't done, the button says <i>Start 10 minutes on: &lt;that task&gt;</i> and the time counts toward it. On your Home Screen, long-press the app icon for a direct <b>I'm stuck</b> shortcut.</p>
+</section>
+
+<section id="missed"><span class="k">8</span><h2>Missed days</h2>
+  <p>Missed days don't shout. <b>Once a day</b>, when you open the app, anything unfinished from earlier days is gathered into one sheet — <i>"From earlier days — These didn't get done. That's fine — check what still matters."</i></p>
+  <ul>
+    <li>Every leftover is listed with a checkbox (all checked to start). <b>Uncheck</b> anything you don't want to deal with today — it'll simply be offered again tomorrow.</li>
+    <li>Pick where the checked ones go: <b>Today</b>, <b>Tomorrow</b>, or any day this week. Then <kbd>Move 3 to today</kbd>.</li>
+    <li>Or <kbd>Let them go</kbd> — they're marked let-go, not deleted, and stop nagging.</li>
+    <li><kbd>Not now — ask me tomorrow</kbd> leaves everything where it is.</li>
+  </ul>
+  <p>Every answer is the right one. Moves and let-gos can be undone from the toast.</p>
+</section>
+
+<section id="deadline"><span class="k">9</span><h2>Deadline day &amp; after</h2>
+  <p><b>Day 0</b> is the deadline. The day after, Today shows a recap card: <span class="say">"You made it."</span> with how many tasks you finished and how many timer minutes you put in. <i>That counts.</i></p>
+  <ul>
+    <li><kbd>Archive this countdown</kbd> tucks it away (nothing is deleted) and switches you to your next live countdown.</li>
+    <li><kbd>Start a new countdown</kbd> opens the new-countdown sheet.</li>
+    <li><b>Bring one back:</b> ⋯ menu → the <b>Archived</b> section near the bottom → <kbd>Restore</kbd>.</li>
+  </ul>
+</section>
+
+<section id="multi"><span class="k">10</span><h2>More than one countdown</h2>
+  <p>You can run several at once — a move-out, a launch, and a helper's list, say.</p>
+  <ul>
+    <li><b>Add another:</b> tap the countdown name (top right) → <kbd>+ New countdown</kbd>.</li>
+    <li><b>Switch:</b> tap the name → pick from the list (each shows <i>21 left · 2/5 today</i>).</li>
+    <li><b>Today merges them.</b> In Today view, every other countdown that has tasks today appears beneath the main card as a compact, dashed card — you can check off, star, and start timers right there, and tap its header to switch to it.</li>
+    <li>The recap line at the bottom (<i>Today: 3 of 5 done · 45 timer min</i>) counts across all of them.</li>
+  </ul>
+</section>
+
+<section id="share"><span class="k">11</span><h2>Sharing a countdown with a helper</h2>
+  <p>A partner, roommate, family member, or friend who wants to help — without having to ask you what to do. There are <b>two ways today</b>, and they behave very differently. Pick by one question: <i>do you want to see each other's checkmarks?</i></p>
+  <div class="two">
+    <div class="way">
+      <h4>Way 1 — One shared list (live)</h4>
+      <p>Both phones sign in to the <b>same Dayfall account</b>. You see the same countdowns, and check-offs appear on both phones in real time.</p>
+      <ol>
+        <li>On your phone: tap <kbd>Sync</kbd> → enter your email → <kbd>Send sign-in link</kbd> → tap the link in your email.</li>
+        <li>On the helper's phone: open dayfall.day → <kbd>Sync</kbd> → enter <b>the same email</b> → they tap the link on <b>their</b> phone.</li>
+        <li>Done. Both phones now hold the same countdowns and stay in step.</li>
+      </ol>
+      <p><b>Give the helper their own list:</b> create a second countdown (e.g. "Sam's list") with the same deadline. Their tasks and check-offs live there; yours live in yours; Today view shows both. That's how "your list, their list" works right now.</p>
+    </div>
+    <div class="way">
+      <h4>Way 2 — Their own copy (independent)</h4>
+      <p>The helper gets the list on <b>their</b> phone, and their checkmarks are <b>separate</b> from yours. Nothing syncs between you. Best when someone's helping with their own chunk and you don't need to watch it.</p>
+      <ol>
+        <li>Set up the countdown you want to hand over (a separate one just for them is cleanest).</li>
+        <li>⋯ menu → <b>Backup</b> → <kbd>Download my data</kbd>. Send them the file (text, email, AirDrop).</li>
+        <li>They open Dayfall → ⋯ menu → <kbd>Import a backup</kbd> → pick the file. It merges in; loading it twice never duplicates.</li>
+      </ol>
+      <p>From then on, their copy is theirs. <i>"Check things off freely — my copy is separate."</i></p>
+    </div>
+  </div>
+  <div class="tablewrap"><table>
+    <tr><th></th><th>Shared account</th><th>Their own copy</th></tr>
+    <tr><td>See each other's check-offs</td><td><b>Yes</b>, live</td><td>No</td></tr>
+    <tr><td>Setup</td><td>Both phones sign in with one email</td><td>Send a file; they import it</td></tr>
+    <tr><td>Keeps updating as you add tasks</td><td>Yes</td><td>No — send a new file</td></tr>
+    <tr><td>Good for</td><td>Partners, a move you're doing together</td><td>A friend with one job, a kid, "here's your part"</td></tr>
+  </table></div>
+  <div class="warn"><b>What's not here yet:</b> invite links, separate helper accounts on one countdown, and per-person permissions. Those are on the roadmap. Today it's exactly the two ways above — a shared account, or an independent copy.</div>
+  <div class="tip"><b>Sharing your whole backup shares everything.</b> Download my data exports <i>all</i> your countdowns. If you only want to hand over one, create it as its own countdown and archive the others first — or just tell the helper to ignore the rest.</div>
+</section>
+
+<section id="sync"><span class="k">12</span><h2>Sync across devices</h2>
+  <p>Sync keeps your countdowns the same on every device you sign in to — your phone, a tablet, a laptop. It's <b>optional</b>; without it, everything stays on the one device.</p>
+  <h3>Sign in (no password)</h3>
+  <ol>
+    <li>Tap <kbd>Sync</kbd> in the view row. Enter your email → <kbd>Send sign-in link</kbd>.</li>
+    <li>Open your email <b>on that same device</b> and tap the link. It opens Dayfall signed in. First time? Check spam.</li>
+  </ol>
+  <p>Repeat on each device with the <b>same email</b>. If a device already had countdowns on it, they're added to the account, not overwritten.</p>
+  <h3>How it behaves</h3>
+  <ul>
+    <li><b>Local first.</b> Every change saves on the device instantly, then syncs when you're online. Offline edits catch up later.</li>
+    <li><b>Live.</b> A second device that's open updates without a refresh.</li>
+    <li><b>Per-task merging.</b> Tasks added on two devices are both kept; a task deleted anywhere stays deleted; the same task edited in two places keeps the newer edit.</li>
+    <li><b>What syncs:</b> countdown names and dates, all tasks (title, minutes, done, star, time spent), repeats, archived status.</li>
+    <li><b>What stays on each device:</b> which countdown is selected, the running timer, timer-minute totals in the recap, sound mode, and the nudges setting.</li>
+    <li>The Sync button shows status: <i>Saving… · Syncing… · Synced · Retry · Offline</i>. Tap it anytime for <kbd>Sync now</kbd>.</li>
+    <li><kbd>Sign out</kbd> keeps the local copy — nothing is deleted from your device.</li>
+  </ul>
+  <p>Your data is private to your account; no one else can read it. Sync is free right now.</p>
+</section>
+
+<section id="backup"><span class="k">13</span><h2>Backup &amp; restore</h2>
+  <p>⋯ menu → <b>Backup</b>.</p>
+  <ul>
+    <li><kbd>Download my data</kbd> saves a small file (<i>dayfall-backup-2026-09-06.json</i>) with every countdown. Keep it somewhere safe — cloud drive, notes, email to yourself.</li>
+    <li><kbd>Import a backup</kbd> loads a backup, a plan pack, or a file someone sent you. It <b>merges</b> — importing the same file twice never duplicates; existing countdowns are updated, new ones added.</li>
+  </ul>
+  <div class="tip"><b>Moving to a new phone?</b> Either sign in to Sync on both, or Download my data on the old one and Import it on the new one.</div>
+</section>
+
+<section id="packs"><span class="k">14</span><h2>Plan packs</h2>
+  <p>A plan pack is a complete countdown written in advance — every day already broken into small, timed tasks, rest days included. <b>Day 0 is the day you load it.</b> Find them at ⋯ menu → <b>Plan packs</b> → <kbd>Browse plan packs</kbd>, or at <a href="packs.html">dayfall.day/packs.html</a>.</p>
+  <ul>
+    <li><b>Free packs</b> load in one tap from the packs page — tap and it's in your Dayfall, starting today.</li>
+    <li><b>Premium packs</b> ($9) are bought on Gumroad and delivered as a file: open Dayfall → ⋯ menu → <kbd>Import a backup</kbd> → pick the file.</li>
+    <li><b>Deals:</b> add any 5 packs and use code <b>HIGH5</b> at checkout to get two free; an <b>All-Access Pass</b> with every pack is on the way.</li>
+    <li>Want to see a pack before buying? <a href="pack-previews.html">Peek inside every pack</a>.</li>
+  </ul>
+</section>
+
+<section id="calendar"><span class="k">15</span><h2>Calendar reminders</h2>
+  <p>Let your phone's calendar do the nagging. ⋯ menu → <b>Reminders</b> → <kbd>Add this countdown to your calendar</kbd>.</p>
+  <ul>
+    <li>It saves a calendar file with <b>one 8:00 AM event per remaining day</b>: the days-left number and that day's one thing (<i>"21 left — Pack kitchen"</i>), each with an alert.</li>
+    <li>Open the file and tap <b>Add All</b>. Export again later and the events <b>update</b> rather than duplicate.</li>
+  </ul>
+</section>
+
+<section id="settings"><span class="k">16</span><h2>Settings</h2>
+  <p>There are only two, both in the ⋯ menu — everything else is deliberately decided for you.</p>
+  <ul>
+    <li><b>While a timer runs:</b> <kbd>Silent</kbd> / <kbd>Soft tick</kbd> / <kbd>Keep-alive</kbd> (see <a href="#timer">Timers</a>).</li>
+    <li><b>Halfway &amp; 5-minutes-left nudges:</b> on or off.</li>
+  </ul>
+  <p><b>Dark mode</b> follows your phone automatically. Notification permission is your phone's own setting.</p>
+</section>
+
+<section id="shortcuts"><span class="k">17</span><h2>Shortcuts &amp; accessibility</h2>
+  <ul>
+    <li><kbd>Enter</kbd> adds a task, creates a countdown, or sends the sign-in link — whichever field you're in.</li>
+    <li><kbd>Esc</kbd> closes any sheet.</li>
+    <li>Everything works with a keyboard and a screen reader: timers announce when they start, hit halfway, and end; day cards, stars, and checkboxes all report their state.</li>
+    <li>Prefer reduced motion? The end-of-timer flash becomes a single gentle fade.</li>
+  </ul>
+</section>
+
+<section id="trouble"><span class="k">18</span><h2>Troubleshooting</h2>
+  <p><b>The alarm didn't sound when I switched apps.</b> Set the sound mode to <b>Keep-alive</b> (or Soft tick) — Silent only rings while Dayfall is open. On iPhone, also make sure the app is on your Home Screen and you tapped <kbd>Enable</kbd> on the alerts banner.</p>
+  <p><b>No notification on iPhone at all.</b> Web notifications need the app added to the Home Screen (iOS 16.4+). Open it from that icon, not from Safari.</p>
+  <p><b>The "From earlier days" sheet didn't appear.</b> It's shown once per day. Tap <i>Not now</i> and it genuinely waits until tomorrow.</p>
+  <p><b>Sync says Retry or Offline.</b> Check your connection and tap <kbd>Sync</kbd> → <kbd>Sync now</kbd>. Your edits are safe on the device and push when you're back online.</p>
+  <p><b>"Email limit reached."</b> Sign-in links are rate-limited to a few per hour. Wait a bit and try once — don't tap repeatedly.</p>
+  <p><b>The link opened but I'm not signed in.</b> Open the email and tap the link <b>on the same device</b> you asked from.</p>
+  <p><b>"Couldn't save to this device (storage full?)"</b> Free up space on your phone; the message clears once a save succeeds. Do a <kbd>Download my data</kbd> when you can.</p>
+  <p><b>A helper's checkmarks don't show on my phone.</b> That means they have their <i>own copy</i> (Way 2). To see each other's check-offs you both need to sign in to the same account (Way 1) — see <a href="#share">Sharing with a helper</a>.</p>
+  <p><b>I imported a pack and it started on the wrong day.</b> Packs always start the day you load them (day 0 = today). Load it on the day you want to begin.</p>
+</section>
+
+<section id="quick"><span class="k">19</span><h2>Quick reference</h2>
+  <dl class="quick">
+    <dt>New countdown</dt><dd>Tap the name at the top → + New countdown</dd>
+    <dt>Switch countdown</dt><dd>Tap the name at the top</dd>
+    <dt>Plan ahead</dt><dd>Month → tap a date</dd>
+    <dt>One thing</dt><dd>Tap ☆ on a task (one per day)</dd>
+    <dt>Start a timer</dt><dd>Tap the minutes on a task</dd>
+    <dt>Tiny start</dt><dd>Just the first 5 (under the Start button)</dd>
+    <dt>Change minutes / move / repeat / delete</dt><dd>Open the day → Edit</dd>
+    <dt>Undo</dt><dd>The toast, within 7 seconds</dd>
+    <dt>Missed days</dt><dd>Automatic, once a day</dd>
+    <dt>Share (live)</dt><dd>Sync on both phones, same email</dd>
+    <dt>Share (their own copy)</dt><dd>Download my data → they Import a backup</dd>
+    <dt>Backup</dt><dd>⋯ → Download my data</dd>
+    <dt>Restore an archived countdown</dt><dd>⋯ → Archived → Restore</dd>
+    <dt>Calendar reminders</dt><dd>⋯ → Add this countdown to your calendar</dd>
+    <dt>Alarm in the background</dt><dd>⋯ → While a timer runs → Keep-alive</dd>
+  </dl>
+  <a class="go" href="./">Open Dayfall</a>
+</section>
+
+</main>
+<footer><a href="landing.html">About Dayfall</a> · <a href="packs.html">Plan packs</a> · <a href="./">Open the app</a> · <a href="mailto:hello@dayfall.day">hello@dayfall.day</a></footer>
+</body>
+</html>
