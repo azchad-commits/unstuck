@@ -199,11 +199,14 @@ main{padding:14px 12px 120px;max-width:560px;margin:0 auto}
 
 <div class="sheet" id="menuSheet"><div role="dialog" aria-modal="true" aria-labelledby="menuH">
   <h2 id="menuH">Menu</h2>
-  <p>Your countdowns live on this device. Keep a backup, or move them to another device.</p>
-  <button class="btn" id="mexport">Download my data</button>
+  <h3>Plan packs</h3>
+  <p class="mnote">Complete, ready-made countdowns. Free ones load in one tap; premium ones import as a file.</p>
+  <a class="btn" href="packs.html">Browse plan packs</a>
+  <h3>Backup</h3>
+  <p class="mnote">Your countdowns live on this device. Keep a backup, or move them to another device.</p>
+  <button class="btn ghost" id="mexport">Download my data</button>
   <button class="btn ghost" id="mimport">Import a backup</button>
   <input type="file" id="mimportfile" accept="application/json,.json" hidden>
-  <a class="btn ghost" href="packs.html">Browse plan packs</a>
   <h3>Reminders</h3>
   <button class="btn ghost" id="mics">Add this countdown to your calendar</button>
   <p class="mnote">Saves an .ics file: one 8:00 AM event per day with the day number and your one thing, each with an alert. Your calendar does the reminding — open it after downloading and tap Add All.</p>
