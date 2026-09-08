@@ -87,6 +87,18 @@ form[data-gumroad-follow] button{border:0; border-radius:12px; padding:15px 24px
 
 footer{padding:30px 0 48px; color:var(--muted); font-size:14px; text-align:center}
 footer a{color:inherit}
+
+/* Deals */
+.deals{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+.deal{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px; display:flex; flex-direction:column}
+.deal.navy{background:var(--navy); color:#fff; border-color:var(--navy)}
+.deal .db{align-self:flex-start; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; background:var(--amber); color:var(--amber-ink); border-radius:99px; padding:4px 11px; margin-bottom:12px}
+.deal h3{margin:0 0 8px; font-size:22px}
+.deal p{color:var(--muted); margin:0 0 16px; flex:1; font-size:15px}
+.deal.navy p{color:rgba(255,255,255,.85)}
+.deal .code{font-family:ui-monospace,Menlo,monospace; font-weight:700; background:var(--amber); color:var(--amber-ink); padding:1px 8px; border-radius:6px; letter-spacing:.06em}
+.deal .chip2{display:inline-block; font-size:11px; font-weight:700; color:var(--amber); border:1px solid var(--amber); border-radius:99px; padding:2px 9px; margin-left:8px; vertical-align:middle}
+@media(max-width:640px){.deals{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -150,6 +162,32 @@ footer a{color:inherit}
 </section>
 
 <section>
+  <div class="wrap">
+    <div class="sec-h">
+      <span class="eyebrow">Deals</span>
+      <h2>Stock up for less</h2>
+      <p>Two ways to save — both work right here at checkout.</p>
+    </div>
+    <div class="deals">
+      <div class="deal">
+        <span class="db">Bundle deal</span>
+        <h3>Buy 3, get 2 free</h3>
+        <p>Add any <b>5 packs</b> to your cart, enter code <span class="code">HIGH5</span> at checkout, and two are on us — five complete countdowns for <b>$27</b> instead of $45.</p>
+        <a class="btn amber" href="#packs">Pick your 5</a>
+      </div>
+      <!--ALLACCESS-START-->
+      <div class="deal navy">
+        <span class="db">Best value</span>
+        <h3>All-Access Pass <span class="chip2">Launching</span></h3>
+        <p>Every plan pack — all 17 complete countdowns — for <b>$99</b>. Over $150 of packs in one purchase; landing shortly. Grab any 5 with <b>HIGH5</b> in the meantime.</p>
+        <a class="btn amber" href="#packs">See all packs</a>
+      </div>
+      <!--ALLACCESS-END-->
+    </div>
+  </div>
+</section>
+
+<section id="packs">
   <div class="wrap">
     <div class="sec-h">
       <span class="eyebrow">Plan packs · $9 each</span>
