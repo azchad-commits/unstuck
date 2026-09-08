@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What's Inside Every Dayfall Plan Pack</title>
+<meta name="description" content="See a real sample of every Dayfall plan pack before you buy — the actual day-by-day, timed tasks inside each countdown.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0F2A44">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0F2A44;--ink:#1B2733;--muted:#4F5B68;--paper:#E9EEF3;--card:#fff;--amber:#E8A33D;--amber-ink:#5A3A00;--line:#D4DCE5;--track:#344C64;--btn:#0F2A44}
+@media(prefers-color-scheme:dark){:root{--ink:#E7EDF3;--muted:#9BA9B7;--paper:#0F1722;--card:#1A2431;--line:#2C3947;--btn:#2E5F92}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Lexend",system-ui,sans-serif;font-size:16px;line-height:1.55}
+h1,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;letter-spacing:-.01em;margin:0;text-wrap:balance}
+a{color:inherit}
+.top{background:var(--navy);color:#fff;padding:30px 20px 26px;padding-top:calc(30px + env(safe-area-inset-top))}
+.top .crumb{font-size:14px;opacity:.8;margin-bottom:8px}.top .crumb a{color:#fff}
+.top h1{font-size:clamp(27px,6vw,40px);line-height:1.12;max-width:20ch}
+.top p{margin:12px 0 0;opacity:.85;font-size:17px;max-width:60ch}
+main{max-width:1000px;margin:0 auto;padding:22px 16px calc(56px + env(safe-area-inset-bottom))}
+.deals{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.deal{border-radius:14px;padding:16px 18px;border:1px solid var(--line);background:var(--card)}
+.deal.navy{background:var(--navy);color:#fff;border-color:var(--navy)}
+.deal b{font-size:16px}.deal p{margin:4px 0 0;font-size:14px;color:var(--muted)}.deal.navy p{color:rgba(255,255,255,.85)}
+.deal .code{font-family:ui-monospace,monospace;font-weight:700;background:var(--amber);color:var(--amber-ink);padding:1px 7px;border-radius:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.pk{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column}
+.pk-h .cat{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--amber-ink);background:var(--amber);border-radius:99px;padding:2px 9px;margin-bottom:8px}
+@media(prefers-color-scheme:dark){.pk-h .cat{color:#0F1722}}
+.pk-h h3{font-size:20px}.pk-h .meta{font-size:13px;color:var(--muted);margin-top:3px}
+.desc{font-size:14.5px;color:var(--muted);margin:10px 0 12px}
+.peek{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin-bottom:14px}
+@media(prefers-color-scheme:dark){.peek{background:#0F1722}}
+.peek-l{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.day{margin-bottom:9px}.day:last-child{margin-bottom:0}
+.dl{font-size:11.5px;font-weight:700;color:var(--amber-ink);background:rgba(232,163,61,.16);border-radius:6px;padding:1px 7px}
+@media(prefers-color-scheme:dark){.dl{color:var(--amber)}}
+.rows{margin-top:5px;display:flex;flex-direction:column;gap:5px}
+.t{display:flex;align-items:center;gap:9px;font-size:13.5px}
+.mk{width:18px;height:18px;flex:none;display:grid;place-items:center;border:1.5px solid var(--line);border-radius:5px;font-size:11px;color:var(--muted)}
+.mk.star{border-color:var(--amber);color:var(--amber);background:rgba(232,163,61,.12)}
+.tt{flex:1}.min{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;border:1px solid var(--line);border-radius:99px;padding:1px 8px}
+.pk-f{margin-top:auto}
+.go{display:inline-block;text-align:center;background:var(--amber);color:var(--amber-ink);text-decoration:none;font-weight:700;font-size:15px;border-radius:10px;padding:11px 18px}
+.go.navy{background:var(--btn);color:#fff}
+.soon{display:inline-block;font-weight:700;font-size:14px;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:10px 16px}
+.note{font-size:13px;color:var(--muted);margin-top:22px}
+footer{max-width:1000px;margin:0 auto;padding:0 16px 34px;font-size:14px;color:var(--muted)}footer a{color:inherit}
+@media(max-width:560px){.deals{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="crumb"><a href="landing.html">Dayfall</a> / <a href="packs.html">Plan packs</a> / What's inside</div>
+  <h1>See exactly what you're getting.</h1>
+  <p>Every pack is a full countdown — each day already broken into small, timed tasks with a starred "one thing" and rest days built in. Here's a real peek inside all 20, before you spend a cent.</p>
+</div>
+<main>
+  <div class="deals">
+    <div class="deal"><b>Buy 3, get 2 free</b><p>Add any 5 packs, use code <span class="code">HIGH5</span> at checkout — 5 for <b>$27</b>.</p></div>
+    <div class="deal navy"><b>All-Access Pass — $99</b><p>Every pack, all 20 countdowns — over $180 of packs in one purchase.</p></div>
+  </div>
+  <div class="grid">
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Moving</span><h3>Move Out in 24 Days</h3><div class="meta">24 days · 48 timed tasks</div></div>
+      <p class="desc">A complete ADHD-friendly move-out countdown: sort, sell, pack, purge, and hand back the keys — one doable day at a time. Day 0 is the day you load it.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">OFFICE: tag everything keep / sell / donate / trash. No packing yet.</span><span class="min">45 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Post 3 more items for sale</span><span class="min">20 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 13</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Pack LAUNDRY + SPARE ROOM keep items</span><span class="min">45 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Porch pickups</span><span class="min">0 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 24</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Clean: wipe counters, sweep, vacuum, bathroom</span><span class="min">90 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Photograph every empty room (proof for the deposit)</span><span class="min">15 min</span></div></div></div></div>
+      <div class="pk-f"><a class="go navy" href="https://chadventure2112.gumroad.com/l/tvjlk" target="_blank" rel="noopener">Get it — $9</a></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Home</span><h3>Declutter the Whole House</h3><div class="meta">30 days · 47 timed tasks</div></div>
+      <p class="desc">One zone a day for a month, never the whole room at once. Timers keep it from swallowing your afternoon; a keep/donate/sell/trash system keeps decisions fast; rest days keep you in it. By day 30 the whole house is lighter — and you never had a meltdown doing it.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Entryway / mail drop zone. Timer on, 20 minutes, stop when it rings.</span><span class="min">20 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Bag one full bag of obvious trash from anywhere</span><span class="min">10 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 16</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Media: cords, remotes, dead electronics into an e-waste bag</span><span class="min">20 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Books/games: keep what you'll actually revisit</span><span class="min">20 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 30</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Drop the last load. Then sit in your lighter house and do nothing.</span><span class="min">0 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Whole house, one small day at a time. You did that.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><a class="go navy" href="https://chadventure2112.gumroad.com/l/uoqgwy" target="_blank" rel="noopener">Get it — $9</a></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Adulting</span><h3>Life Admin Catch-Up</h3><div class="meta">14 days · 27 timed tasks</div></div>
+      <p class="desc">Two weeks to clear the adult-admin backlog — the unopened mail, the dodged phone call, the forms and renewals — one small, timed job a day, so "I'll deal with it later" finally becomes done.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Open every unopened envelope — don't act yet, just open</span><span class="min">15 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Sort the mail into three piles: act, keep, recycle</span><span class="min">10 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 8</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Check what's expiring: ID, license, passport, insurance</span><span class="min">12 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Start the renewal that's due soonest</span><span class="min">15 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 14</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Set a repeating weekly "Admin 20" block on your calendar</span><span class="min">8 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Look at what you cleared — that was the whole backlog. Done</span><span class="min">5 min</span></div></div></div></div>
+      <div class="pk-f"><span class="soon">Coming soon</span></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Self-care</span><h3>Fed for the Week</h3><div class="meta">7 days · 14 timed tasks</div></div>
+      <p class="desc">A week of feeding yourself without the decision fatigue — a handful of easy meals, one grocery run, a little prep, and safe-food backups — so eating stops being a daily executive-function boss fight.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Do the grocery run, or place a delivery/pickup order</span><span class="min">30 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Put it all away — prep-friendly stuff up front</span><span class="min">8 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 5</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Rest day — just eat what you prepped. That's the win</span><span class="min">5 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 7</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Write your "safe foods" list on the fridge</span><span class="min">8 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Set a repeating weekly 15-minute meal-plan block</span><span class="min">5 min</span></div></div></div></div>
+      <div class="pk-f"><span class="soon">Coming soon</span></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Focus</span><h3>Deep Work Week</h3><div class="meta">7 days · 14 timed tasks</div></div>
+      <p class="desc">Seven days to finally move the thing that's been stalled — one clear outcome, five focus sprints with built-in rest, using timers and body-doubling so starting stops being the wall.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">One 25-minute focus sprint on chunk 1 — timer on</span><span class="min">25 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Note the top distraction to tame tomorrow</span><span class="min">4 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 5</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Rest day — skim what you've done, no new work</span><span class="min">8 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 7</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Final sprint on chunk 5 — get it to "done enough"</span><span class="min">25 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Ship it, send it, or share it — then stop</span><span class="min">10 min</span></div></div></div></div>
+      <div class="pk-f"><span class="soon">Coming soon</span></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Creative</span><h3>Finish the Damn Project</h3><div class="meta">21 days · 30 timed tasks</div></div>
+      <p class="desc">That novel, portfolio, album, or thesis chapter that's been 80% done for a year. Three weeks to define 'finished', kill the perfectionism that's stalling you, work in small daily blocks, and actually ship it — with a hard finish line on day 20. For the brain that starts everything and ends nothing.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">List every remaining piece between now and done. Circle the top 3.</span><span class="min">15 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 12</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Block 8: finish piece #3. The scary parts are done now.</span><span class="min">45 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 21</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Ship it — publish, send, submit, or post. Then screenshot it done.</span><span class="min">30 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">You finished. Most people never do. Sit with that.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><span class="soon">Coming soon</span></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Studying</span><h3>Finals Week</h3><div class="meta">10 days · 23 timed tasks</div></div>
+      <p class="desc">Ten days, every exam covered: hardest topics first, past papers, one-page cheat sheets from memory, and protected sleep. Built for the brain that studies best against a wall.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Subject A: topic list + gather every material</span><span class="min">30 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Subject A: hardest topic first, 45 minutes on it</span><span class="min">45 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 6</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Subject C: hardest topics</span><span class="min">60 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">One-pager for C</span><span class="min">15 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 10</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Morning: one-pagers only. Nothing new enters your head today.</span><span class="min">15 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">You prepared. Go collect it.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><a class="go navy" href="https://chadventure2112.gumroad.com/l/grjcr" target="_blank" rel="noopener">Get it — $9</a></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Makers</span><h3>Launch in 30</h3><div class="meta">30 days · 32 timed tasks</div></div>
+      <p class="desc">Thirty days from 'almost done' to actually launched — scope cuts, a feature freeze that means it, dress rehearsals, and rest days so you arrive alive. For indie makers, creators, and anyone shipping a thing.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">List every blocker between you and shippable. Circle the top 3.</span><span class="min">15 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 16</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Rough-edges list, fix the top 5</span><span class="min">90 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 30</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">LAUNCH. Post everywhere, reply to everything, screenshot the first sale.</span><span class="min">60 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">You shipped. Most people never do.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><a class="go navy" href="https://chadventure2112.gumroad.com/l/edszmt" target="_blank" rel="noopener">Get it — $9</a></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Career</span><h3>Job Hunt Sprint</h3><div class="meta">14 days · 23 timed tasks</div></div>
+      <p class="desc">Fourteen days of showing up: a one-page resume that fits the target, three tailored applications at a time, real humans messaged, interview stories rehearsed. Momentum over perfection.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Cut the master to ONE page aimed at the target</span><span class="min">45 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Ask 2 people for a blunt read</span><span class="min">10 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 8</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Apply ×3</span><span class="min">60 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Fold the feedback into the resume</span><span class="min">20 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 14</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Pipeline review: what's alive, what to chase, next week's plan</span><span class="min">30 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">14 days of showing up. That's the whole trick.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><a class="go navy" href="https://chadventure2112.gumroad.com/l/aapym" target="_blank" rel="noopener">Get it — $9</a></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Career</span><h3>First 30 Days at a New Job</h3><div class="meta">30 days · 44 timed tasks</div></div>
+      <p class="desc">The month that decides how the whole job goes. A plan for learning the systems, meeting the right people, landing an early visible win, and setting up habits that make you look organized and calm — even if your brain is neither. Load it the night before day one.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Day 1: names + roles of everyone you meet — write them down immediately</span><span class="min">15 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Set up your tools/logins; note what's still blocked</span><span class="min">15 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 16</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Take on a slightly bigger task; break it down before starting</span><span class="min">45 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 30</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">30 days in and you look organized, connected, and useful. Keep the habits.</span><span class="min">10 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">You didn't just survive the month. You set the tone. Done.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><span class="soon">Coming soon</span></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Confidence</span><h3>Nail the Big Talk</h3><div class="meta">15 days · 23 timed tasks</div></div>
+      <p class="desc">Two weeks to a talk you're dreading — a conference session, a pitch, a wedding speech, a big presentation. Message first, then structure, then slides, then rehearsal after rehearsal until it's in your body, not your notes. Ends with a full dress run so the real thing feels like the fourth time, not the first.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Brain-dump every point you might make. Messy list, no order.</span><span class="min">20 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 9</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Read it out loud once, standing. Time it. Note where you stumble.</span><span class="min">25 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 15</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">You've done this four times already. Walk out and do it once more.</span><span class="min">20 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">It's in your body now. Trust it. Go.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><span class="soon">Coming soon</span></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Health</span><h3>Couch to 5K</h3><div class="meta">42 days · 43 timed tasks</div></div>
+      <p class="desc">Six weeks from the couch to running a 5K, the proven run/walk way — every single day mapped, including the rest and cross-training days that are the real secret. Tap the timer, follow the intervals, and let race day arrive with your body already ready.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">W1 run: 5-min walk, then 60s jog / 90s walk × 8, 5-min walk</span><span class="min">30 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 22</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">W4 run: repeat W4 intervals</span><span class="min">32 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 42</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">RACE DAY: warm up, start slow, finish your first 5K. You're a runner now.</span><span class="min">40 min</span></div></div></div></div>
+      <div class="pk-f"><a class="go navy" href="https://chadventure2112.gumroad.com/l/bvyxqi" target="_blank" rel="noopener">Get it — $9</a></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Health</span><h3>Sober 30</h3><div class="meta">30 days · 43 timed tasks</div></div>
+      <p class="desc">The first thirty days without alcohol, built for a brain that does better with a plan than with willpower. Each day has one small anchor — a trigger named, a replacement ready, a person told, a milestone marked. No preaching, no streak-shaming a hard day. Just a hand on the wheel for the month that's hardest.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Day 1. Name your top 3 trigger moments (time, place, feeling).</span><span class="min">10 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Stock the fridge with the drink you'll reach for instead</span><span class="min">10 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 16</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Refresh the fridge with your go-to alternatives</span><span class="min">10 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 30</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">30 days. Read the reason in your wallet again. You kept it.</span><span class="min">10 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Decide the next 30 is yours too — or just be proud of this one.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><span class="soon">Coming soon</span></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Money</span><h3>Debt Payoff Kickstart</h3><div class="meta">21 days · 30 timed tasks</div></div>
+      <p class="desc">Not a fantasy of paying it all off — the setup that actually makes it happen: every debt on one page, a realistic budget, bills negotiated down, expenses trimmed, the first snowball payment sent, and everything automated so momentum doesn't depend on memory. Three weeks to a plan you can run on autopilot.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Pull your income: what actually lands each month, after tax</span><span class="min">15 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 12</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Automate the minimums on every debt so nothing goes late</span><span class="min">20 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 21</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Automate the whole thing: minimums + the extra payment, hands-off</span><span class="min">20 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">You built a machine that pays this down without you remembering. Done.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><span class="soon">Coming soon</span></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Money</span><h3>Tax Crunch</h3><div class="meta">10 days · 15 timed tasks</div></div>
+      <p class="desc">Ten days from shoebox to filed: one folder, document hunts with a timer, the return in small sections, and a confirmation screenshot at the end. No meltdown required.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Hunt the W-2s and 1099s: search email for 'tax', '1099', check payroll portals</span><span class="min">30 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 6</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Pick the filing tool — or book the preparer appointment</span><span class="min">15 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Start the return: personal info and nothing else</span><span class="min">30 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 10</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">FILE IT. Screenshot the confirmation.</span><span class="min">30 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Folder somewhere findable. Future-you says thanks.</span><span class="min">5 min</span></div></div></div></div>
+      <div class="pk-f"><a class="go navy" href="https://chadventure2112.gumroad.com/l/fuyupr" target="_blank" rel="noopener">Get it — $9</a></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Home</span><h3>Sell Your House</h3><div class="meta">30 days · 40 timed tasks</div></div>
+      <p class="desc">A month to go from lived-in to listing-ready and priced right: declutter and depersonalize, the small repairs buyers notice, a room-by-room deep clean, curb appeal, staging, and photos that sell — ending with an agent chosen and the listing live. Every task sized for one evening.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Interview or shortlist 2–3 agents; ask for a comps/pricing opinion</span><span class="min">30 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 16</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Curb appeal: mow, edge, trim, sweep the entry</span><span class="min">45 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 30</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">LISTING LIVE. Do your reset routine and let the showings come.</span><span class="min">20 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">You turned a home into a product in 30 days. Well done.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><span class="soon">Coming soon</span></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Events</span><h3>Wedding Countdown</h3><div class="meta">30 days · 31 timed tasks</div></div>
+      <p class="desc">The final 30 days before the wedding, one small job at a time: vendor confirmations, vows in two drafts, the seating chart, an emergency kit, tips in labeled envelopes — and scheduled no-wedding-talk nights.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Venue: final headcount deadline + anything they still need from you</span><span class="min">15 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Chase every non-RSVP with one loving nag text</span><span class="min">30 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 16</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Vows draft 2 — say them out loud once</span><span class="min">20 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 30</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Get married. Eat the food. Dance. Everything else is someone else's job today.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><a class="go navy" href="https://chadventure2112.gumroad.com/l/rtdiz" target="_blank" rel="noopener">Get it — $9</a></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Events</span><h3>Host the Holiday</h3><div class="meta">15 days · 24 timed tasks</div></div>
+      <p class="desc">Two weeks out to a calm, delicious holiday: the guest count, the menu locked, shopping split across two trips, the house cleaned in layers so nothing waits for the last night, and a to-the-minute cooking timeline for the day itself. You host; you also get to enjoy it.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Turn the menu into a full shopping list, split: non-perishables vs fresh</span><span class="min">25 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 9</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Write the cooking timeline: work backward from serving time, every dish</span><span class="min">25 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Defrost plan: what moves to the fridge and when</span><span class="min">10 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 15</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Follow your timeline. Pour yourself something. You planned this — enjoy it.</span><span class="min">30 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Sit down and eat with everyone. The dishes can wait.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><span class="soon">Coming soon</span></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Family</span><h3>Baby Prep</h3><div class="meta">30 days · 57 timed tasks</div></div>
+      <p class="desc">The last month before your due date, one small job a day: hospital bag, car seat installed and checked, nursery to functional, a freezer full of meals, paperwork and pediatrician sorted — and rest, because you'll need it. Written so an exhausted brain can follow it.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Wash and dry one load of the smallest clothes (0–3 mo) + swaddles</span><span class="min">30 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Set up the bassinet or crib where baby will actually sleep</span><span class="min">30 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 16</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Pre-register at the hospital (online or by phone) so admitting is fast</span><span class="min">20 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">Program the hospital + doctor numbers into your phone</span><span class="min">5 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 30</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Everything's ready. Nap. Watch something dumb. Eat well.</span><span class="min">0 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">You did the work. Now you just meet them.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><a class="go navy" href="https://chadventure2112.gumroad.com/l/fidhds" target="_blank" rel="noopener">Get it — $9</a></div>
+    </article>
+    <article class="pk">
+      <div class="pk-h"><span class="cat">Life</span><h3>Estate Cleanout</h3><div class="meta">21 days · 25 timed tasks</div></div>
+      <p class="desc">Clearing a loved one's home in 21 days, gently: paperwork first, keep-forever boxes, family claim deadlines, and rest days — because grief is work too. Written to be doable on the worst weeks of your life.</p>
+      <div class="peek"><div class="peek-l">Peek inside</div>
+        <div class="day"><span class="dl">Day 2</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">PAPERWORK sweep: every document into the box. Sorting is later.</span><span class="min">45 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 12</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Garage / storage: 60 minutes maximum, timer on, stop when it rings</span><span class="min">60 min</span></div></div></div>
+        <div class="day"><span class="dl">Day 21</span><div class="rows"><div class="t"><span class="mk star">★</span><span class="tt">Final walkthrough with the day-0 video. Take one last photo.</span><span class="min">15 min</span></div><div class="t"><span class="mk ">○</span><span class="tt">You did right by them.</span><span class="min">0 min</span></div></div></div></div>
+      <div class="pk-f"><a class="go navy" href="https://chadventure2112.gumroad.com/l/bzrju" target="_blank" rel="noopener">Get it — $9</a></div>
+    </article>
+  </div>
+  <p class="note">★ = the day's starred "one thing" — do just that and the day counts. ○ = the other small tasks. Packs marked <b>Coming soon</b> are written and landing shortly. Every pack opens in <a href="./">Dayfall</a> (free) — after buying, tap the ⋯ menu → Import a backup → pick the file.</p>
+</main>
+<footer><a href="packs.html">← Back to all packs</a> · <a href="./">Open the app</a></footer>
+</body>
+</html>
