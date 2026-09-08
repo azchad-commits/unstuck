@@ -1,0 +1,49 @@
+{
+ "app": "dayfall",
+ "pack": 1,
+ "name": "Doom Pile Weekend",
+ "description": "Three days, three doom piles. Timer on, music on, guilt off.",
+ "tasks": {
+  "0": [
+   {
+    "title": "Pick your 3 worst piles. Photograph them — before shots.",
+    "min": 10,
+    "star": true
+   },
+   {
+    "title": "Stage the kit: trash bag, donate box, a 'belongs elsewhere' basket",
+    "min": 5
+   }
+  ],
+  "1": [
+   {
+    "title": "Pile #1: timer on, music on. Trash / donate / put away.",
+    "min": 30,
+    "star": true
+   },
+   {
+    "title": "Pile #2, same drill",
+    "min": 30
+   },
+   {
+    "title": "Walk the 'belongs elsewhere' basket around the house",
+    "min": 10
+   }
+  ],
+  "2": [
+   {
+    "title": "Pile #3 — the last one",
+    "min": 30,
+    "star": true
+   },
+   {
+    "title": "After photos next to the befores. Post them, or just gloat.",
+    "min": 10
+   },
+   {
+    "title": "Do nothing else. That was the weekend.",
+    "min": 0
+   }
+  ]
+ }
+}

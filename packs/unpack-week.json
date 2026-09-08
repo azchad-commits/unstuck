@@ -1,0 +1,89 @@
+{
+ "app": "dayfall",
+ "pack": 1,
+ "name": "Unpack Week",
+ "description": "You moved. Seven days from boxes to a place that feels like yours.",
+ "tasks": {
+  "0": [
+   {
+    "title": "Beds made, shower working, coffee or tea findable",
+    "min": 30,
+    "star": true
+   },
+   {
+    "title": "Order easy dinner — unpacking is enough work for one day",
+    "min": 5
+   }
+  ],
+  "1": [
+   {
+    "title": "KITCHEN: unpack to working, flatten the boxes",
+    "min": 45,
+    "star": true
+   },
+   {
+    "title": "Find the box with the chargers and the meds",
+    "min": 10
+   }
+  ],
+  "2": [
+   {
+    "title": "BATHROOM + LAUNDRY to working",
+    "min": 30,
+    "star": true
+   },
+   {
+    "title": "Start one load of laundry",
+    "min": 5
+   }
+  ],
+  "3": [
+   {
+    "title": "CLOTHES: closet to working, not perfect",
+    "min": 45,
+    "star": true
+   },
+   {
+    "title": "Flatten boxes, stack them by the door",
+    "min": 10
+   }
+  ],
+  "4": [
+   {
+    "title": "LIVING ROOM: make it sit-down-able",
+    "min": 45,
+    "star": true
+   },
+   {
+    "title": "Photograph anything broken in transit, for claims",
+    "min": 10
+   }
+  ],
+  "5": [
+   {
+    "title": "DESK corner working: wifi, a clear surface",
+    "min": 45,
+    "star": true
+   },
+   {
+    "title": "Change your address at just 3 places: bank, license, one subscription",
+    "min": 15
+   }
+  ],
+  "6": [
+   {
+    "title": "Hang ONE thing on a wall. It's home now.",
+    "min": 15,
+    "star": true
+   },
+   {
+    "title": "Boxes out to recycling or storage",
+    "min": 30
+   },
+   {
+    "title": "Order the good takeout. You moved.",
+    "min": 0
+   }
+  ]
+ }
+}

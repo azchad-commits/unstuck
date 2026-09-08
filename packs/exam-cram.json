@@ -1,0 +1,71 @@
+{
+ "app": "dayfall",
+ "pack": 1,
+ "name": "Exam Cram",
+ "description": "The test is in five days and you haven't started. Here's the plan.",
+ "tasks": {
+  "0": [
+   {
+    "title": "List every topic; mark the 3 scariest",
+    "min": 15,
+    "star": true
+   },
+   {
+    "title": "Notes and past papers into one folder — hunting is today's job, not studying",
+    "min": 15
+   },
+   {
+    "title": "Set the exam-day alarms now. Two of them.",
+    "min": 5
+   }
+  ],
+  "1": [
+   {
+    "title": "Scariest topic #1: study it, make one page of notes",
+    "min": 45,
+    "star": true
+   },
+   {
+    "title": "10 practice questions on it — circle every wrong answer",
+    "min": 30
+   }
+  ],
+  "2": [
+   {
+    "title": "Scariest topic #2: study + one page",
+    "min": 45,
+    "star": true
+   },
+   {
+    "title": "Redo yesterday's circled questions",
+    "min": 15
+   }
+  ],
+  "3": [
+   {
+    "title": "Scariest topic #3: study + one page",
+    "min": 45,
+    "star": true
+   },
+   {
+    "title": "One past paper, timed. Score it kindly.",
+    "min": 60
+   }
+  ],
+  "4": [
+   {
+    "title": "Exam day: re-read your one-pagers only. Nothing new.",
+    "min": 15,
+    "star": true
+   },
+   {
+    "title": "Pack: ID, water, pens, calculator",
+    "min": 5
+   },
+   {
+    "title": "You know more than you think. Go.",
+    "min": 0
+   }
+  ]
+ }
+}

@@ -18,22 +18,23 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:"Lexend",syst
 .top .crumb{font-size:14px;opacity:.8;margin-bottom:6px}.top .crumb a{color:#fff}
 .top h1{margin:0 0 6px;font-size:clamp(26px,6vw,36px);line-height:1.15}
 .top p{margin:0;opacity:.85;font-size:17px;max-width:560px}
-main{max-width:640px;margin:0 auto;padding:18px 16px calc(48px + env(safe-area-inset-bottom))}
+main{max-width:880px;margin:0 auto;padding:18px 16px calc(48px + env(safe-area-inset-bottom))}
 .how{font-size:15px;color:var(--muted);margin:6px 0 16px}
-.pack{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
-.pack .tagline{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:99px;padding:4px 10px;margin-bottom:8px}
+h2.sec{font-size:22px;margin:26px 0 4px}
+p.secsub{color:var(--muted);font-size:15px;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.pack{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column}
+.pack .tagline{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:99px;padding:3px 9px;margin-bottom:8px}
 .free .tagline{background:var(--green);color:#fff}
 .paid .tagline{background:var(--amber);color:var(--amber-ink)}
-.pack h2{margin:0 0 6px;font-size:24px}
-.pack .price{font-weight:700}
-.pack p{color:var(--muted);margin:8px 0}
-.pack ul{color:var(--muted);font-size:15px;margin:10px 0;padding-left:20px}
-.pack li{margin:4px 0}
-.go{display:block;text-align:center;background:var(--amber);color:var(--amber-ink);text-decoration:none;font-weight:700;font-size:18px;border-radius:12px;padding:15px;margin-top:12px}
+.pack h3{margin:0 0 4px;font-size:19px}
+.pack .meta{font-size:13px;color:var(--muted);margin-bottom:6px}
+.pack p{color:var(--muted);font-size:14px;margin:0 0 12px;flex:1}
+.go{display:block;text-align:center;background:var(--amber);color:var(--amber-ink);text-decoration:none;font-weight:700;font-size:15px;border-radius:10px;padding:12px}
 .go.navy{background:var(--btn);color:#fff}
-.note{font-size:13px;color:var(--muted);margin-top:10px}
-.steps{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:12px 16px;font-size:14px;color:var(--muted);margin-top:12px}
-footer{max-width:640px;margin:0 auto;padding:0 16px 30px;font-size:14px;color:var(--muted)}
+.steps{background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:12px 16px;font-size:14px;color:var(--muted);margin-top:16px}
+.note{font-size:13px;color:var(--muted);margin-top:14px}
+footer{max-width:880px;margin:0 auto;padding:0 16px 30px;font-size:14px;color:var(--muted)}
 footer a{color:inherit}
 </style>
 </head>
@@ -41,33 +42,56 @@ footer a{color:inherit}
 <div class="top">
   <div class="crumb"><a href="landing.html">Dayfall</a> / Plan packs</div>
   <h1>Don't plan the plan. Load it.</h1>
-  <p>Plan packs are complete, ADHD-friendly countdowns written in advance — every day already broken into small, timed tasks. Day 0 is the day you load one.</p>
+  <p>Plan packs are complete, ADHD-friendly countdowns written in advance — every day already broken into small, timed tasks, rest days included. Day 0 is the day you load one.</p>
 </div>
 <main>
   <p class="how">Packs open in <a href="./">Dayfall</a> — free, no account needed, works on your phone.</p>
 
-  <div class="pack free">
-    <span class="tagline">Free</span>
-    <h2>Reset Week</h2>
-    <p>Seven gentle days to get back on top of life — one theme a day (surfaces, inbox, body, money, space, people), nothing over 20 minutes, and day 7 ends with doing nothing on purpose.</p>
-    <a class="go" href="./?import=packs/reset-week.json">Load Reset Week — free</a>
-    <p class="note">One tap adds it to your Dayfall, starting today. Loading it twice won't duplicate anything you've done.</p>
+  <h2 class="sec">Free — load in one tap</h2>
+  <p class="secsub">Tap and it's in your Dayfall, starting today. Loading twice never duplicates.</p>
+  <div class="grid">
+    <div class="pack free"><span class="tagline">Free</span><h3>Reset Week</h3><div class="meta">7 days · nothing over 20 min</div>
+      <p>One gentle theme a day — surfaces, inbox, body, money, space, people — ending with doing nothing on purpose.</p>
+      <a class="go" href="./?import=packs/reset-week.json">Load Reset Week</a></div>
+    <div class="pack free"><span class="tagline">Free</span><h3>Doom Pile Weekend</h3><div class="meta">3 days · Fri–Sun energy</div>
+      <p>Three days, three doom piles. Timer on, music on, guilt off. Before-and-after photos included.</p>
+      <a class="go" href="./?import=packs/doom-pile-weekend.json">Load Doom Pile Weekend</a></div>
+    <div class="pack free"><span class="tagline">Free</span><h3>Unpack Week</h3><div class="meta">7 days · post-move</div>
+      <p>You moved. Seven days from boxes to a place that feels like yours — one room at a time.</p>
+      <a class="go" href="./?import=packs/unpack-week.json">Load Unpack Week</a></div>
+    <div class="pack free"><span class="tagline">Free</span><h3>Exam Cram</h3><div class="meta">5 days · one exam</div>
+      <p>The test is in five days and you haven't started. Scariest topics first, one-page notes, protected sleep.</p>
+      <a class="go" href="./?import=packs/exam-cram.json">Load Exam Cram</a></div>
   </div>
 
-  <div class="pack paid">
-    <span class="tagline">Pack</span>
-    <h2>Move Out in 24 Days <span class="price">· $9</span></h2>
-    <p>The complete move-out countdown, tested on a real move: tag every room keep/sell/donate/trash, sell before you pack, one early garage hour at a time, hard deadlines for the sell-off, donation pickup and junk haul — through to photographing empty rooms and handing back the keys.</p>
-    <ul>
-      <li>24 days, ~50 tasks, every one timed and starred</li>
-      <li>Built-in rest day and porch-pickup rhythm</li>
-      <li>Deposit-protection steps baked in</li>
-    </ul>
-    <a class="go navy" id="buy" href="https://chadventure2112.gumroad.com/l/tvjlk" target="_blank" rel="noopener">Get the pack — $9</a>
-    <div class="steps"><b>After purchase:</b> you'll download a small file. Open Dayfall → <b>⋯ menu</b> → <b>Import a backup</b> → pick the file. Your 24-day countdown starts today.</div>
+  <h2 class="sec">Packs — $9 each</h2>
+  <p class="secsub">Delivered as a small file. Open Dayfall → ⋯ menu → Import a backup → pick it. Starts the day you load it.</p>
+  <div class="grid">
+    <div class="pack paid"><span class="tagline">Pack</span><h3>Move Out in 24 Days</h3><div class="meta">24 days · ~50 tasks</div>
+      <p>The complete move-out countdown, tested on a real move: tag, sell, pack, purge, hand back the keys — with deposit-protection steps baked in.</p>
+      <a class="go navy" href="https://chadventure2112.gumroad.com/l/tvjlk" target="_blank" rel="noopener">Get it — $9</a></div>
+    <div class="pack paid"><span class="tagline">Pack</span><h3>Finals Week</h3><div class="meta">10 days · every exam covered</div>
+      <p>Hardest topics first, past papers, one-page cheat sheets from memory, and sleep treated as a graded task.</p>
+      <a class="go navy" href="https://chadventure2112.gumroad.com/l/grjcr" target="_blank" rel="noopener">Get it — $9</a></div>
+    <div class="pack paid"><span class="tagline">Pack</span><h3>Launch in 30</h3><div class="meta">30 days · for makers</div>
+      <p>From "almost done" to actually launched: scope cuts, a feature freeze that means it, dress rehearsals, rest days.</p>
+      <a class="go navy" href="https://chadventure2112.gumroad.com/l/edszmt" target="_blank" rel="noopener">Get it — $9</a></div>
+    <div class="pack paid"><span class="tagline">Pack</span><h3>Job Hunt Sprint</h3><div class="meta">14 days · momentum over perfection</div>
+      <p>A one-page resume aimed at the target, three tailored applications at a time, humans messaged, stories rehearsed.</p>
+      <a class="go navy" href="https://chadventure2112.gumroad.com/l/aapym" target="_blank" rel="noopener">Get it — $9</a></div>
+    <div class="pack paid"><span class="tagline">Pack</span><h3>Wedding Countdown</h3><div class="meta">30 days · the final month</div>
+      <p>Vendors confirmed, vows in two drafts, the seating chart, tips in labeled envelopes — and no-wedding-talk nights.</p>
+      <a class="go navy" href="https://chadventure2112.gumroad.com/l/rtdiz" target="_blank" rel="noopener">Get it — $9</a></div>
+    <div class="pack paid"><span class="tagline">Pack</span><h3>Estate Cleanout</h3><div class="meta">21 days · written gently</div>
+      <p>Clearing a loved one's home: paperwork first, keep-forever boxes, family claim deadlines, rest days — grief is work too.</p>
+      <a class="go navy" href="https://chadventure2112.gumroad.com/l/bzrju" target="_blank" rel="noopener">Get it — $9</a></div>
+    <div class="pack paid"><span class="tagline">Pack</span><h3>Tax Crunch</h3><div class="meta">10 days · shoebox to filed</div>
+      <p>One folder, document hunts with a timer, the return in small sections, a confirmation screenshot at the end.</p>
+      <a class="go navy" href="https://chadventure2112.gumroad.com/l/fuyupr" target="_blank" rel="noopener">Get it — $9</a></div>
   </div>
 
-  <p class="note">More packs are coming — finals week, launch month, estate cleanout. Want one first? Say so: <a href="mailto:hello@dayfall.day">hello@dayfall.day</a></p>
+  <div class="steps"><b>After purchase:</b> you'll download a small file. Open Dayfall → <b>⋯ menu</b> → <b>Import a backup</b> → pick the file. Your countdown starts today — day 0 is always the day you load it.</div>
+  <p class="note">Want a pack that doesn't exist yet? Say so: <a href="mailto:hello@dayfall.day">hello@dayfall.day</a></p>
 </main>
 <footer>
   <a href="landing.html">About Dayfall</a> · <a href="./">Open the app</a>
