@@ -1,0 +1,80 @@
+{
+  "app": "dayfall",
+  "pack": 1,
+  "name": "Inbox Zero Week — 7 Days",
+  "description": "Seven days from a scary inbox to a system you can keep: fast timed sweeps with the two-minute rule, filters that kill the noise, the emails you've been avoiding finally handled, and a 10-minute daily habit so it never piles up again. For the brain that opens email, freezes, and closes the tab.",
+  "tasks": {
+    "0": [
+      {
+        "title": "Make 3 folders: Do / Waiting / Archive",
+        "min": 15,
+        "star": true
+      },
+      {
+        "title": "Unsubscribe from 10 senders you never actually read",
+        "min": 15
+      }
+    ],
+    "1": [
+      {
+        "title": "One 30-min sweep — oldest first, two-minute rule: do, delete, or defer",
+        "min": 30,
+        "star": true
+      }
+    ],
+    "2": [
+      {
+        "title": "Set up 3 filters/rules to auto-sort the noise",
+        "min": 15,
+        "star": true
+      },
+      {
+        "title": "Second 30-min sweep",
+        "min": 30
+      }
+    ],
+    "3": [
+      {
+        "title": "Handle the 3 emails you've been avoiding",
+        "min": 30,
+        "star": true
+      }
+    ],
+    "4": [
+      {
+        "title": "Reply to everything under 2 minutes in one sweep",
+        "min": 30,
+        "star": true
+      },
+      {
+        "title": "Chase anything stuck in 'Waiting'",
+        "min": 15
+      }
+    ],
+    "5": [
+      {
+        "title": "Get the inbox under 10 — sweep it to zero if you can",
+        "min": 45,
+        "star": true
+      }
+    ],
+    "6": [
+      {
+        "title": "Clear the 3 non-email tasks hiding in there — a form, a call, a bill",
+        "min": 30,
+        "star": true
+      }
+    ],
+    "7": [
+      {
+        "title": "Set a daily 10-min inbox appointment and make it a repeat",
+        "min": 10,
+        "star": true
+      },
+      {
+        "title": "Note the system so you can re-run it in a month",
+        "min": 10
+      }
+    ]
+  }
+}

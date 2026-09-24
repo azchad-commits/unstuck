@@ -5,13 +5,13 @@
    - Icons and cross-origin assets (fonts, supabase-js): cache-first / stale-while-revalidate.
    - Supabase API calls: never touched.
    Bump CACHE anyway when you ship, so stale entries from old shells get evicted. */
-const CACHE = "dayfall-v4";
+const CACHE = "dayfall-v5";
 const SHELL = [
-  "./", "./index.html", "./app.js", "./config.js", "./manifest.webmanifest",
+  "./", "./index.html", "./app.html", "./app.js", "./config.js", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/maskable-192.png", "./icons/maskable-512.png",
   "./icons/apple-touch-icon.png", "./icons/favicon-32.png"
 ];
-const NETWORK_FIRST = /\/(index\.html|app\.js|config\.js|manifest\.webmanifest)?$/;
+const NETWORK_FIRST = /\/(index\.html|app\.html|app\.js|config\.js|manifest\.webmanifest)?$/;
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -29,7 +29,7 @@ self.addEventListener("notificationclick", e => {
   e.notification.close();
   e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(list => {
     for (const c of list) if ("focus" in c) return c.focus();
-    return self.clients.openWindow("./");
+    return self.clients.openWindow("./app.html");
   }));
 });
 
@@ -45,7 +45,7 @@ self.addEventListener("fetch", e => {
     if (req.mode === "navigate" || NETWORK_FIRST.test(url.pathname)) {
       e.respondWith(
         fetch(req).then(res => put(CACHE, req, res))
-          .catch(() => caches.match(req, { ignoreSearch: true }).then(hit => hit || (req.mode === "navigate" ? caches.match("./index.html") : undefined)))
+          .catch(() => caches.match(req, { ignoreSearch: true }).then(hit => hit || (req.mode === "navigate" ? caches.match("./app.html") : undefined)))
       );
     } else {
       e.respondWith(caches.match(req, { ignoreSearch: true }).then(hit => hit || fetch(req).then(res => put(CACHE, req, res))));

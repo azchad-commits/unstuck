@@ -1,0 +1,268 @@
+{
+  "app": "dayfall",
+  "pack": 1,
+  "name": "Strength Foundations — 4 Weeks",
+  "description": "Four weeks to a real strength habit for total beginners: three simple full-body workouts a week — squat, hinge, push, pull — with warm-ups, recovery walks, mobility, and the rest days that are the actual program. Start light, learn the moves, add a little each week, and retest on day 25. No gym-bro grind, no daily punishment. Works at a gym or at home with almost nothing.",
+  "tasks": {
+    "0": [
+      {
+        "title": "Pick your 3 moves and set up your space",
+        "min": 15,
+        "star": true
+      },
+      {
+        "title": "Book your 3 workout days this week in your calendar",
+        "min": 10
+      },
+      {
+        "title": "Baseline: how many push-ups and squats in one clean set? Write it down.",
+        "min": 10
+      }
+    ],
+    "1": [
+      {
+        "title": "Workout A — squat, push, row (light, learn the moves)",
+        "min": 30,
+        "star": true
+      },
+      {
+        "title": "Warm up first: 5 min easy movement",
+        "min": 5
+      }
+    ],
+    "2": [
+      {
+        "title": "Easy 20–30 min walk — recovery counts as training",
+        "min": 30,
+        "star": true
+      }
+    ],
+    "3": [
+      {
+        "title": "Workout B — hinge, press, pull (light)",
+        "min": 30,
+        "star": true
+      },
+      {
+        "title": "Warm up",
+        "min": 5
+      }
+    ],
+    "4": [
+      {
+        "title": "10 min mobility — hips, shoulders, ankles",
+        "min": 10,
+        "star": true
+      }
+    ],
+    "5": [
+      {
+        "title": "Workout C — full body, light and controlled",
+        "min": 30,
+        "star": true
+      },
+      {
+        "title": "Warm up",
+        "min": 5
+      }
+    ],
+    "6": [
+      {
+        "title": "Real rest. A short walk if you want — that's it.",
+        "min": 0,
+        "star": true
+      },
+      {
+        "title": "Lay out clothes for the first workout next week",
+        "min": 5
+      }
+    ],
+    "7": [
+      {
+        "title": "Workout A — add one set, a touch heavier",
+        "min": 45,
+        "star": true
+      },
+      {
+        "title": "Warm up well",
+        "min": 10
+      }
+    ],
+    "8": [
+      {
+        "title": "30 min walk",
+        "min": 30,
+        "star": true
+      }
+    ],
+    "9": [
+      {
+        "title": "Workout B — add one set",
+        "min": 45,
+        "star": true
+      },
+      {
+        "title": "Warm up",
+        "min": 10
+      }
+    ],
+    "10": [
+      {
+        "title": "15 min mobility + stretch the tight spots",
+        "min": 15,
+        "star": true
+      }
+    ],
+    "11": [
+      {
+        "title": "Workout C — steady, controlled reps",
+        "min": 45,
+        "star": true
+      },
+      {
+        "title": "Warm up",
+        "min": 10
+      }
+    ],
+    "12": [
+      {
+        "title": "Rest. You've trained six times — that's the habit forming.",
+        "min": 0,
+        "star": true
+      }
+    ],
+    "13": [
+      {
+        "title": "Fun movement — bike, hike, sport, dance. It all counts.",
+        "min": 30,
+        "star": true
+      }
+    ],
+    "14": [
+      {
+        "title": "Workout A — heavier, 3 working sets",
+        "min": 45,
+        "star": true
+      },
+      {
+        "title": "Warm up",
+        "min": 10
+      }
+    ],
+    "15": [
+      {
+        "title": "Easy 30 min walk — recover",
+        "min": 30,
+        "star": true
+      }
+    ],
+    "16": [
+      {
+        "title": "Workout B — 3 working sets, add reps or a little load",
+        "min": 45,
+        "star": true
+      },
+      {
+        "title": "Warm up",
+        "min": 10
+      }
+    ],
+    "17": [
+      {
+        "title": "15 min mobility — keep the joints happy",
+        "min": 15,
+        "star": true
+      }
+    ],
+    "18": [
+      {
+        "title": "Workout C — push the last set a little",
+        "min": 45,
+        "star": true
+      },
+      {
+        "title": "Warm up",
+        "min": 10
+      }
+    ],
+    "19": [
+      {
+        "title": "Rest hard so you grow. Sleep is part of the program.",
+        "min": 0,
+        "star": true
+      }
+    ],
+    "20": [
+      {
+        "title": "Movement you actually enjoy, 30+ min",
+        "min": 30,
+        "star": true
+      }
+    ],
+    "21": [
+      {
+        "title": "Workout A — strong, familiar, controlled",
+        "min": 45,
+        "star": true
+      },
+      {
+        "title": "Warm up",
+        "min": 10
+      }
+    ],
+    "22": [
+      {
+        "title": "30 min walk — notice how your body feels vs day 1",
+        "min": 30,
+        "star": true
+      }
+    ],
+    "23": [
+      {
+        "title": "Workout B — beat one number from week 1",
+        "min": 45,
+        "star": true
+      },
+      {
+        "title": "Warm up",
+        "min": 10
+      }
+    ],
+    "24": [
+      {
+        "title": "15 min mobility",
+        "min": 15,
+        "star": true
+      }
+    ],
+    "25": [
+      {
+        "title": "Workout C + retest: push-ups and squats in one set. Compare to day 0.",
+        "min": 45,
+        "star": true
+      },
+      {
+        "title": "Warm up",
+        "min": 10
+      }
+    ],
+    "26": [
+      {
+        "title": "Rest. You built a base that wasn't there a month ago.",
+        "min": 0,
+        "star": true
+      }
+    ],
+    "27": [
+      {
+        "title": "Plan the next 4 weeks: same moves, a bit more load — book the days",
+        "min": 15,
+        "star": true
+      },
+      {
+        "title": "Write down your wins: what got easier?",
+        "min": 10
+      }
+    ]
+  }
+}

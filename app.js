@@ -5,7 +5,7 @@
 "use strict";
 
 // ---------- storage (device-local, always on) ----------
-const KEY = "unstuck-v1", TKEY = "unstuck-timer", MINS = [5, 10, 15, 30, 45, 60, 90];
+const KEY = "unstuck-v1", TKEY = "unstuck-timer", MINS = [5, 10, 15, 20, 25, 30, 45, 60, 90];
 let db = { plans: [], current: null, stats: {} };
 let view = "day", openDay = null, monthCursor = null, weekStart = null, editDays = new Set(), lastDayIso = null;
 const $ = id => document.getElementById(id);
@@ -223,7 +223,8 @@ function taskRowHTML(p, ds, t, ctx) {
   const daily = isDailyTask(p, t);
   const pull = ctx.isPast || (!ctx.isPast && !ctx.isToday); // past and future both offer "→ Today"
   const mvLabel = !t.done && (pull ? "→ Today" : (ctx.isToday && ctx.canTomorrow ? "→ Tmrw" : null));
-  const mins = `<select class="mins" aria-label="Minutes for: ${esc(t.title)}">${MINS.map(m => `<option value="${m}" ${t.min === m ? "selected" : ""}>${m}m</option>`).join("")}<option value="0" ${!t.min ? "selected" : ""}>no timer</option></select>`;
+  const minOpts = (t.min && !MINS.includes(t.min)) ? [...MINS, t.min].sort((a, b) => a - b) : MINS;
+  const mins = `<select class="mins" aria-label="Minutes for: ${esc(t.title)}">${minOpts.map(m => `<option value="${m}" ${t.min === m ? "selected" : ""}>${m}m</option>`).join("")}<option value="0" ${!t.min ? "selected" : ""}>no timer</option></select>`;
   return `<div class="task ${t.done ? "on" : ""}" data-id="${t.id}"><button class="chk ${t.done ? "on" : ""}" aria-pressed="${t.done}" aria-label="${t.done ? "Mark not done" : "Mark done"}: ${esc(t.title)}"></button><div class="txt">${esc(t.title)}${daily ? '<span class="repmark" aria-hidden="true">↻</span>' : ""}</div><button class="star ${t.star ? "on" : ""}" aria-pressed="${t.star}" aria-label="${t.star ? "This is the one thing" : "Make this the one thing"}: ${esc(t.title)}">${t.star ? "★" : "☆"}</button>${t.min ? `<button class="min" aria-label="Start ${t.min} minute timer: ${esc(t.title)}">${t.min} min</button>` : ""}${mins}${mvLabel ? `<button class="mv" aria-label="Move to ${pull ? "today" : "tomorrow"}: ${esc(t.title)}">${mvLabel}</button>` : ""}<button class="rep" aria-pressed="${daily}" aria-label="${daily ? "Stop repeating daily" : "Repeat every day"}: ${esc(t.title)}">↻</button><button class="del" aria-label="Delete: ${esc(t.title)}">×</button></div>`;
 }
 
@@ -630,14 +631,30 @@ $("stuckBtn").onclick = () => { prepStuck(); openSheet("stuck", $("stuckBtn")); 
 $("ten").onclick = () => { closeSheet($("stuck")); startTimer(10, stuckName, stuckRef); };
 
 // ---------- new countdown ----------
+let editingPlanId = null;
 function openNew(opener) {
+  editingPlanId = null;
   const T = today(); $("pstart").value = iso(T); $("pend").value = iso(addDays(T, 21)); $("pname").value = ""; $("pmsg").textContent = "";
+  $("newH").textContent = "New countdown"; $("pcreate").textContent = "Create";
+  openSheet("newplan", opener);
+}
+// Reuse the same sheet to edit the current countdown's name / start / end.
+function openEdit(opener) {
+  const p = plan(); if (!p) return;
+  editingPlanId = p.id;
+  $("pname").value = p.name; $("pstart").value = p.start; $("pend").value = p.end; $("pmsg").textContent = "";
+  $("newH").textContent = "Edit countdown"; $("pcreate").textContent = "Save";
   openSheet("newplan", opener);
 }
 $("pcreate").onclick = () => {
   const name = $("pname").value.trim() || "Countdown";
   if (!$("pstart").value || !$("pend").value) { $("pmsg").textContent = "Pick a start and end date."; return; }
   if ($("pend").value < $("pstart").value) { $("pmsg").textContent = "The deadline needs to be on or after the start."; return; }
+  if (editingPlanId) {
+    const p = db.plans.find(x => x.id === editingPlanId);
+    if (p) { p.name = name; p.start = $("pstart").value; p.end = $("pend").value; save(p); }
+    editingPlanId = null; closeSheet($("newplan")); render(); return;
+  }
   const p = normalize({ id: uid(), name, start: $("pstart").value, end: $("pend").value });
   db.plans.push(p); db.current = p.id; save(p); closeSheet($("newplan")); view = "day"; weekStart = null; render();
 };
@@ -726,6 +743,18 @@ $("carryDrop").onclick = () => {
 // ---------- menu: backup, import, archived ----------
 $("menuBtn").onclick = () => { renderMenu(); openSheet("menuSheet", $("menuBtn")); };
 function renderMenu() {
+  // This-countdown actions (only when one is selected): edit reuses the new-countdown sheet;
+  // delete sets the synced `deleted` flag with an undo, so it clears from every device.
+  const cur = plan();
+  $("mplan").hidden = !cur;
+  $("medit").onclick = () => { closeSheet($("menuSheet")); openEdit($("menuBtn")); };
+  $("mdelete").onclick = () => {
+    const p = plan(); if (!p) return;
+    p.deleted = true; save(p);
+    const l = livePlans(); db.current = l.length ? l[0].id : null; persist();
+    closeSheet($("menuSheet")); render();
+    toast(`Deleted "${p.name}"`, () => { p.deleted = false; save(p); db.current = p.id; persist(); render(); });
+  };
   const arch = db.plans.filter(p => !p.deleted && p.archived);
   $("marchived").innerHTML = arch.length ? "<h3>Archived</h3>" + arch.map(p => `<div class="arow"><span>${esc(p.name)}</span><button data-id="${p.id}">Restore</button></div>`).join("") : "";
   $("marchived").querySelectorAll("button").forEach(b => b.onclick = () => {

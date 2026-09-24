@@ -1,0 +1,118 @@
+{
+  "app": "dayfall",
+  "pack": 1,
+  "name": "Desk Reset — 14 Days",
+  "description": "Two weeks of short, targeted mobility for a body that sits too much: 8–15 minutes a day undoing the neck, shoulders, hips, and back that a desk (and a long hyperfocus session) locks up. Movement snacks, easy days, and — at the end — the two routines that actually helped, set to repeat so the reset sticks.",
+  "tasks": {
+    "0": [
+      {
+        "title": "Set two phone reminders to stand up every 90 minutes",
+        "min": 5,
+        "star": true
+      },
+      {
+        "title": "Quick body scan — where are you tight? Neck, back, or hips?",
+        "min": 5
+      }
+    ],
+    "1": [
+      {
+        "title": "8 min neck + shoulder release",
+        "min": 10,
+        "star": true
+      }
+    ],
+    "2": [
+      {
+        "title": "10 min hip openers — you fold these up all day",
+        "min": 10,
+        "star": true
+      }
+    ],
+    "3": [
+      {
+        "title": "10 min upper-back + posture reset",
+        "min": 10,
+        "star": true
+      }
+    ],
+    "4": [
+      {
+        "title": "5 min wrist mobility + 20-20-20 eye breaks",
+        "min": 5,
+        "star": true
+      },
+      {
+        "title": "Stand and walk for 5 minutes",
+        "min": 5
+      }
+    ],
+    "5": [
+      {
+        "title": "12 min full-body mobility flow",
+        "min": 15,
+        "star": true
+      }
+    ],
+    "6": [
+      {
+        "title": "Easy day: 5 min box breathing + a short walk",
+        "min": 10,
+        "star": true
+      }
+    ],
+    "7": [
+      {
+        "title": "10 min neck/shoulder + chest opener",
+        "min": 10,
+        "star": true
+      }
+    ],
+    "8": [
+      {
+        "title": "12 min hips + glute activation — the real anti-sitting fix",
+        "min": 15,
+        "star": true
+      }
+    ],
+    "9": [
+      {
+        "title": "10 min low-back care — cat/cow and gentle rotation",
+        "min": 10,
+        "star": true
+      }
+    ],
+    "10": [
+      {
+        "title": "10 min standing core + balance",
+        "min": 10,
+        "star": true
+      }
+    ],
+    "11": [
+      {
+        "title": "15 min full mobility flow",
+        "min": 15,
+        "star": true
+      }
+    ],
+    "12": [
+      {
+        "title": "Walk 15 min outside. That's the whole task.",
+        "min": 15,
+        "star": true
+      }
+    ],
+    "13": [
+      {
+        "title": "Pick the 2 routines that helped most and set them to repeat daily",
+        "min": 10,
+        "star": true
+      },
+      {
+        "title": "Note what changed — neck? hips? back?",
+        "min": 5
+      }
+    ]
+  }
+}

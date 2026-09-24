@@ -3,7 +3,7 @@
   "short_name": "Dayfall",
   "description": "A countdown planner for ADHD and time blindness. Every task has a time; tapping the time starts a timer.",
   "id": "./",
-  "start_url": "./",
+  "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
@@ -16,6 +16,6 @@
     { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "I'm stuck", "short_name": "Stuck", "description": "Reset script + 10-minute timer", "url": "./?stuck=1", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+    { "name": "I'm stuck", "short_name": "Stuck", "description": "Reset script + 10-minute timer", "url": "./app.html?stuck=1", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }
