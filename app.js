@@ -814,17 +814,22 @@ function packToBackup(p) {
 }
 // Merge a backup object ({db:{plans,stats}}, bare {plans}, or a pack) into local state. Returns how many plans landed.
 function importBackup(d) {
-  if (d && d.pack === 1 && d.tasks) d = packToBackup(d);
+  const wasPack = !!(d && d.pack === 1 && d.tasks);
+  if (wasPack) d = packToBackup(d);
   const src = d && d.db && Array.isArray(d.db.plans) ? d.db : (d && Array.isArray(d.plans) ? d : null);
   if (!src) throw new Error("That file doesn't look like a Dayfall backup.");
-  let n = 0;
+  let n = 0, firstId = null;
   for (const raw of src.plans) {
     if (!raw || !raw.id || !raw.start || !raw.end) continue;
     const inc = normalize(raw); const i = db.plans.findIndex(x => x.id === inc.id);
     if (i < 0) db.plans.push(inc); else db.plans[i] = mergePlans(db.plans[i], inc);
+    if (!firstId) firstId = inc.id;
     sync.markDirty(inc.id); n++;
   }
   for (const [ds, sec] of Object.entries(src.stats || {})) db.stats[ds] = Math.max(db.stats[ds] || 0, +sec || 0);
+  // Loading a pack should drop you straight into it — not leave an old (maybe expired)
+  // countdown showing "You made it." Also select something if nothing is current.
+  if (firstId && (wasPack || !plan())) db.current = firstId;
   persist(); render();
   return n;
 }
