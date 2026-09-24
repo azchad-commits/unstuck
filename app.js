@@ -821,7 +821,14 @@ function importBackup(d) {
   let n = 0, firstId = null;
   for (const raw of src.plans) {
     if (!raw || !raw.id || !raw.start || !raw.end) continue;
-    const inc = normalize(raw); const i = db.plans.findIndex(x => x.id === inc.id);
+    const inc = normalize(raw);
+    // Loading a pack twice the same day shouldn't duplicate it: open the live instance you
+    // already have (matched by name + start). A different day, or after archiving, still makes a fresh one.
+    if (wasPack) {
+      const dup = db.plans.find(x => !x.deleted && !x.archived && x.name === inc.name && x.start === inc.start);
+      if (dup) { if (!firstId) firstId = dup.id; continue; }
+    }
+    const i = db.plans.findIndex(x => x.id === inc.id);
     if (i < 0) db.plans.push(inc); else db.plans[i] = mergePlans(db.plans[i], inc);
     if (!firstId) firstId = inc.id;
     sync.markDirty(inc.id); n++;
@@ -851,7 +858,7 @@ function importFromUrl(imp) {
   fetch(u).then(r => { if (!r.ok) throw new Error("Couldn't fetch that list (" + r.status + ")."); return r.json(); })
     .then(d => {
       const n = importBackup(d);
-      toast(`Added ${n} countdown${n === 1 ? "" : "s"}. It's yours now — it saves on this phone.`, null);
+      toast(n ? `Added ${n} countdown${n === 1 ? "" : "s"}. It's yours now — it saves on this phone.` : "You already have this pack — opened it.", null);
     })
     .catch(e => banner((e && e.message) || "Couldn't load that list.", true));
 }
